@@ -1,7 +1,4 @@
 #pragma once
 
-#include <iostream>
-
-inline void PrintEngineHelloWorld() {
-	std::cout << "Engine Hello World" << std::endl;
-}
+#include "api/scenes/SceneManager.h"
+#include "api/Engine.h"

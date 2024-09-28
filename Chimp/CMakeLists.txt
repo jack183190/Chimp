@@ -10,7 +10,11 @@ project ("Chimp")
 
 add_subdirectory("ChimpGame")
 
-add_executable (Chimp "src/main.cpp" "src/Chimp.h")
+add_executable (Chimp "src/main.cpp" "src/Chimp.h"  "src/api/scenes/Scene.h" "src/stdafx.h" "src/api/scenes/SceneManager.h" "src/impl/scenes/SceneManager.cpp" "src/impl/MainLoop.h" "src/impl/MainLoop.cpp" "src/api/Engine.h")
+
+target_include_directories(Chimp PRIVATE "src/")
+target_include_directories(Chimp PRIVATE "src/api/")
+target_include_directories(Chimp PRIVATE "src/impl/")
 
 target_link_libraries(Chimp PRIVATE ChimpGame)
 
