@@ -1,7 +1,9 @@
 #include "Main.h"
+#include "MainLoop.h"
 
 int main(int argc, char** argv)
 {
-	init();
+	std::unique_ptr<Chimp::Scene> entryScene = CreateEntryScene();
+	Chimp::MainLoop mainLoop(std::move(entryScene));
     return 0;
 }

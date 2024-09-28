@@ -1,8 +1,5 @@
-#include <iostream>
+#include "TestScene.h"
 
-#include "Chimp.h"
-
-void init() {
-    std::cout << "Game Hello World" << std::endl;
-	PrintEngineHelloWorld();
+std::unique_ptr<Chimp::Scene> CreateEntryScene() {
+	return std::make_unique<TestScene>();
 }
