@@ -2,7 +2,7 @@
 
 class TestScene : public Chimp::Scene {
 public:
-	TestScene();
+	TestScene(Chimp::Engine &engine);
 	~TestScene();
 
 public:
@@ -14,4 +14,7 @@ protected:
 
 	void OnUpdate() override;
 	void OnRender() override;
+
+private:
+	Chimp::Engine& m_Engine;
 };

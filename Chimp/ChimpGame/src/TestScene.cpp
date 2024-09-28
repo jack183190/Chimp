@@ -1,6 +1,7 @@
 #include "TestScene.h"
 
-TestScene::TestScene()
+TestScene::TestScene(Chimp::Engine& engine)
+	: m_Engine(engine)
 {
 }
 
