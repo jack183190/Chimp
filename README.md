@@ -82,7 +82,7 @@ The render should support:
 ### Other
 - Multithreading (networking, asset loading, thread pool to submit jobs to)
 - Windows & keyboard/mouse input
-- Audio (non-positional sound effects with  & music)
+- Audio (non-positional sound effects with optionally randomised pitch/volume)
 - Asset Manager
 
 ## Demo Game
