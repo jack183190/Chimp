@@ -8,6 +8,6 @@ int main(int argc, char** argv)
 {
 	using namespace Chimp;
 	std::unique_ptr<Scene> entryScene = CreateEntryScene(*EntryPoint::Engine);
-	MainLoop mainLoop(std::move(entryScene));
+	MainLoop mainLoop(std::move(entryScene), *EntryPoint::Engine);
     return 0;
 }

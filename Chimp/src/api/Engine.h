@@ -1,5 +1,7 @@
 #pragma once
 
+#include "api/time/TimeManager.h"
+
 namespace Chimp {
 	class EntryPoint;
 	class Engine {
@@ -8,5 +10,9 @@ namespace Chimp {
 		Engine() = default;
 
 	public:
+		[[nodiscard]] TimeManager& GetTimeManager();
+
+	private:
+		TimeManager m_TimeManager;
 	};
 }

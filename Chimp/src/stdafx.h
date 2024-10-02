@@ -12,6 +12,7 @@
 #include <string>
 #include <queue>
 #include <tuple>
+#include <array>
 
 // STD Multithreading
 
