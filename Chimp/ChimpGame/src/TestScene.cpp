@@ -3,6 +3,7 @@
 TestScene::TestScene(Chimp::Engine& engine)
 	: m_Engine(engine)
 {
+
 }
 
 TestScene::~TestScene()
@@ -19,7 +20,10 @@ void TestScene::OnDeactivate()
 
 void TestScene::OnUpdate()
 {
-	std::cout << "delta time: " << m_Engine.GetTimeManager().GetDeltaTime() * 1'000 << " ms." << std::endl;
+	if (m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::SPACE))
+	{
+		std::cout << "Space key is pressed" << std::endl;
+	}
 }
 
 void TestScene::OnRender()

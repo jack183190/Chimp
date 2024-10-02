@@ -38,3 +38,8 @@
 #include <random>
 #include <optional>
 #include <utility>
+
+// GLFW
+#ifdef CHIMP_GLFW
+#include <GLFW/glfw3.h>
+#endif
