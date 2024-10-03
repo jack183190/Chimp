@@ -8,9 +8,15 @@ namespace Chimp {
 		m_Engine(engine) {
 		while (!m_SceneManager.m_CurrentScene->ShouldExit()) {
 			m_Engine.GetTimeManager().Update();
+			m_Engine.GetWindow().Update();
 
 			m_SceneManager.Update();
+			m_Engine.GetWindow().UpdateEnd();
+
 			m_SceneManager.Render();
+
+			m_Engine.GetWindow().SwapBuffers();
+
 			m_SceneManager.CheckForSceneChange();
 		}
 	}

@@ -6,7 +6,7 @@ public:
 	~TestScene();
 
 public:
-	bool ShouldExit() const override { return false; }
+	bool ShouldExit() const override { return m_Engine.GetWindow().GetStatus() == Chimp::WindowStatus::SHOULD_CLOSE; }
 
 protected:
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;

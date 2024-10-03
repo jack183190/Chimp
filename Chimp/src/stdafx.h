@@ -1,5 +1,8 @@
 #pragma once
 
+// Maths
+#include "api/Maths.h"
+
 // STD Data Structures
 
 #include <vector>
@@ -38,3 +41,8 @@
 #include <random>
 #include <optional>
 #include <utility>
+
+// GLFW
+#ifdef CHIMP_GLFW
+#include <GLFW/glfw3.h>
+#endif
