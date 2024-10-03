@@ -101,7 +101,7 @@ namespace Chimp {
 
 	void WindowGLFW::SetSize(const Vector2f& size)
 	{
-		glfwSetWindowSize(m_Window, size.x, size.y);
+		glfwSetWindowSize(m_Window, static_cast<int>(size.x), static_cast<int>(size.y));
 	}
 
 	void WindowGLFW::SetTitle(const std::string& title)
