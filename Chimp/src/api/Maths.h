@@ -1,8 +1,8 @@
 #pragma once
 
-// Done so glm can be swapped out by just changing this file rather than the whole project
-
 #include <../vendor/glm/glm/glm.hpp>
+
+// Done so glm can be swapped out by just changing this file rather than the whole project
 
 namespace Chimp {
 	typedef glm::vec2 Vector2f;

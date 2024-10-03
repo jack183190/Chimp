@@ -42,6 +42,12 @@
 #include <optional>
 #include <utility>
 
+// OpenGL
+#ifdef CHIMP_OPENGL
+#include <GL/glew.h>
+#include <GL/gl.h>
+#endif
+
 // GLFW
 #ifdef CHIMP_GLFW
 #include <GLFW/glfw3.h>
