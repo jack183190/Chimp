@@ -23,6 +23,9 @@ namespace Chimp {
 		virtual void Update() = 0;
 
 		// Will be called at the end of every frame.
+		void UpdateEnd();
+
+		// Will be called after rendering of the frame is complete.
 		// This function should swap the front and back buffers.
 		virtual void SwapBuffers() = 0;
 

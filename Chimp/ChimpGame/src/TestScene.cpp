@@ -24,6 +24,11 @@ void TestScene::OnUpdate()
 	{
 		std::cout << "Space key is pressed" << std::endl;
 	}
+
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::A))
+	{
+		std::cout << "A key is pressed" << std::endl;
+	}
 }
 
 void TestScene::OnRender()

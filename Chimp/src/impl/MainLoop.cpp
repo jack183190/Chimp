@@ -11,6 +11,8 @@ namespace Chimp {
 			m_Engine.GetWindow().Update();
 
 			m_SceneManager.Update();
+			m_Engine.GetWindow().UpdateEnd();
+
 			m_SceneManager.Render();
 
 			m_Engine.GetWindow().SwapBuffers();
