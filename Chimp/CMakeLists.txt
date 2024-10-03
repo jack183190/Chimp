@@ -25,7 +25,7 @@ include(FetchContent)
 add_subdirectory("ChimpGame")
 
 # Sources
-add_executable (Chimp "src/main.cpp" "src/Chimp.h"  "src/api/scenes/Scene.h" "src/stdafx.h" "src/api/scenes/SceneManager.h" "src/impl/scenes/SceneManager.cpp" "src/impl/MainLoop.h" "src/impl/MainLoop.cpp" "src/api/Engine.h" "src/impl/time/TimeManager.cpp" "src/impl/Engine.cpp" "src/api/window/IWindow.h" "src/api/window/InputManager.h" "src/api/window/Keys.h" "src/impl/window/InputManager.cpp" "src/impl/window/WindowGLFW.h" "src/impl/window/IWindow.cpp" "src/impl/window/WindowGLFW.cpp")
+add_executable (Chimp "src/main.cpp" "src/Chimp.h"  "src/api/scenes/Scene.h" "src/stdafx.h" "src/api/scenes/SceneManager.h" "src/impl/scenes/SceneManager.cpp" "src/impl/MainLoop.h" "src/impl/MainLoop.cpp" "src/api/Engine.h" "src/impl/time/TimeManager.cpp" "src/impl/Engine.cpp" "src/api/window/IWindow.h" "src/api/window/InputManager.h" "src/api/window/Keys.h" "src/impl/window/InputManager.cpp" "src/impl/window/WindowGLFW.h" "src/impl/window/IWindow.cpp" "src/impl/window/WindowGLFW.cpp" "src/api/Maths.h")
 
 # Include directories
 target_include_directories(Chimp PRIVATE "src/")
@@ -33,6 +33,14 @@ target_include_directories(Chimp PRIVATE "src/api/")
 target_include_directories(Chimp PRIVATE "src/impl/")
 
 target_link_libraries(Chimp PRIVATE ChimpGame)
+
+# GLM
+set(GLM_VERSION 1.0.1)
+# TODO convert to a shell script to support other platforms, or maybe as a git submodule
+execute_process(
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/lib_glm.bat ${GLM_VERSION}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 # GLFW
 if (CHIMP_PLATFORM EQUAL CHIMP_PLATFORM_WINDOWS)

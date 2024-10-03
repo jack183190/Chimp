@@ -9,13 +9,13 @@ namespace Chimp
 		Mouse() = default;
 
 	public:
-		typedef int MouseButton;
+		typedef int Button;
 
-		static constexpr MouseButton LEFT = 0;
-		static constexpr MouseButton RIGHT = 1;
-		static constexpr MouseButton MIDDLE = 2;
+		static constexpr Button LEFT = 0;
+		static constexpr Button RIGHT = 1;
+		static constexpr Button MIDDLE = 2;
 
-		static constexpr MouseButton LAST = MIDDLE;
+		static constexpr Button LAST_BUTTON = MIDDLE;
 	};
 
 	class Keyboard {
@@ -148,6 +148,6 @@ namespace Chimp
 		static constexpr Key RIGHT_SUPER = 347;
 		static constexpr Key MENU = 348;
 
-		static constexpr Key LAST = MENU;
+		static constexpr Key LAST_KEY = MENU;
 	};
 }

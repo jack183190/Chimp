@@ -29,6 +29,18 @@ void TestScene::OnUpdate()
 	{
 		std::cout << "A key is pressed" << std::endl;
 	}
+
+	if (m_Engine.GetWindow().GetInputManager().IsMouseButtonDown(Chimp::Mouse::LEFT))
+	{
+		std::cout << "Left mouse button is down" << std::endl;
+		auto pos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
+		std::cout << "Mouse pos is " << pos.x << ", " << pos.y << std::endl;
+	}
+
+	if (m_Engine.GetWindow().GetInputManager().IsMouseButtonPressed(Chimp::Mouse::RIGHT))
+	{
+		std::cout << "Right mouse button is pressed" << std::endl;
+	}
 }
 
 void TestScene::OnRender()

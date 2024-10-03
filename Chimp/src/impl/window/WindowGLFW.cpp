@@ -27,15 +27,39 @@ namespace Chimp {
 		m_Status = WindowStatus::OPEN;
 
 		// Callbacks
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-			auto* win = static_cast<WindowGLFW*>(glfwGetWindowUserPointer(window));
-			if (action == GLFW_PRESS) {
-				win->m_InputManager.OnKeyDown(static_cast<Keyboard::Key>(key));
-			}
-			else if (action == GLFW_RELEASE) {
-				win->m_InputManager.OnKeyUp(static_cast<Keyboard::Key>(key));
-			}
-			});
+		// Keys pressed
+		{
+			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+				auto* win = static_cast<WindowGLFW*>(glfwGetWindowUserPointer(window));
+				if (action == GLFW_PRESS) {
+					win->m_InputManager.OnKeyDown(static_cast<Keyboard::Key>(key));
+				}
+				else if (action == GLFW_RELEASE) {
+					win->m_InputManager.OnKeyUp(static_cast<Keyboard::Key>(key));
+				}
+				});
+		}
+
+		// Mouse buttons pressed
+		{
+			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
+				auto* win = static_cast<WindowGLFW*>(glfwGetWindowUserPointer(window));
+				if (action == GLFW_PRESS) {
+					win->m_InputManager.OnMouseDown(static_cast<Mouse::Button>(button));
+				}
+				else if (action == GLFW_RELEASE) {
+					win->m_InputManager.OnMouseUp(static_cast<Mouse::Button>(button));
+				}
+				});
+		}
+
+		// Mouse position
+		{
+			glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
+				auto* win = static_cast<WindowGLFW*>(glfwGetWindowUserPointer(window));
+				win->m_InputManager.SetMousePosition({ xpos, ypos });
+				});
+		}
 	}
 
 	WindowGLFW::~WindowGLFW()
