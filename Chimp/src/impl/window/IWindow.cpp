@@ -6,6 +6,16 @@ namespace Chimp {
 		m_InputManager.UpdateEnd();
 	}
 
+	bool IWindow::HasResized()
+	{
+		const auto size = GetSize();
+		if (size != m_OutdatedSize)
+		{
+			m_OutdatedSize = size;
+			return true;
+		}
+	}
+
 	WindowStatus IWindow::GetStatus() const
 	{
 		return m_Status;

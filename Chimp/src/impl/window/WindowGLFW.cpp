@@ -85,6 +85,33 @@ namespace Chimp {
 
 	void WindowGLFW::SwapBuffers()
 	{
+		if (m_Status == WindowStatus::FAILED_INITIALIZATION) [[unlikely]] {
+			return;
+			}
+		glfwSwapBuffers(m_Window);
+
+	}
+
+	Vector2f WindowGLFW::GetSize() const
+	{
+		Vector2i size{};
+		glfwGetWindowSize(m_Window, &size.x, &size.y);
+		return size;
+	}
+
+	void WindowGLFW::SetSize(const Vector2f& size)
+	{
+		glfwSetWindowSize(m_Window, size.x, size.y);
+	}
+
+	void WindowGLFW::SetTitle(const std::string& title)
+	{
+		glfwSetWindowTitle(m_Window, title.c_str());
+	}
+
+	void WindowGLFW::SetResizable(bool resizable)
+	{
+		glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, resizable);
 	}
 
 	bool WindowGLFW::GLFWInitialized = false;

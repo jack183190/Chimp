@@ -30,6 +30,22 @@ namespace Chimp {
 		virtual void SwapBuffers() = 0;
 
 	public:
+		// Returns the size of the window.
+		[[nodiscard]] virtual Vector2f GetSize() const = 0;
+
+		// Sets the size of the window.
+		virtual void SetSize(const Vector2f& size) = 0;
+
+		// Sets the title of the window.
+		virtual void SetTitle(const std::string& title) = 0;
+
+		// Set if the window is resizable.
+		virtual void SetResizable(bool resizable) = 0;
+
+		// Returns true if the window has been resized since this method was last called.
+		// Note that this method will return true on the first call. (opening the window counts as a resize)
+		[[nodiscard]] bool HasResized();
+
 		// Returns the current state of the window
 		[[nodiscard]] WindowStatus GetStatus() const;
 
@@ -39,5 +55,6 @@ namespace Chimp {
 	protected:
 		WindowStatus m_Status = WindowStatus::FAILED_INITIALIZATION;
 		InputManager m_InputManager;
+		Vector2f m_OutdatedSize{};
 	};
 }

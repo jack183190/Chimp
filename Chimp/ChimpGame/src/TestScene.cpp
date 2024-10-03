@@ -3,7 +3,9 @@
 TestScene::TestScene(Chimp::Engine& engine)
 	: m_Engine(engine)
 {
-
+	m_Engine.GetWindow().SetTitle("Test Scene");
+	m_Engine.GetWindow().SetSize({ 1280, 720 });
+	m_Engine.GetWindow().SetResizable(true);
 }
 
 TestScene::~TestScene()
