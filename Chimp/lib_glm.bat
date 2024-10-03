@@ -8,6 +8,9 @@ if "%~1"=="" (
 
 set TAG=%~1
 
+if not exist "vendor" (
+    mkdir vendor
+)
 cd vendor
 git clone https://github.com/g-truc/glm.git glm
 cd glm || exit /b 1
