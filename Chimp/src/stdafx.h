@@ -52,3 +52,6 @@
 #ifdef CHIMP_GLFW
 #include <GLFW/glfw3.h>
 #endif
+
+// Preprocessor
+#include "preprocessor/CopyAndMove.h"
