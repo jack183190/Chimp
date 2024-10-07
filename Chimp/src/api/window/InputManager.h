@@ -7,9 +7,8 @@ namespace Chimp {
 	class WindowGLFW;
 	class InputManager {
 		friend class IWindow;
-
-
 		friend class WindowGLFW;
+		DISABLE_COPY_AND_MOVE(InputManager)
 	private:
 		InputManager();
 
