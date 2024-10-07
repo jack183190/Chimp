@@ -25,4 +25,10 @@ namespace Chimp {
 			return Access == Access::WRITE || Access == Access::READ_WRITE;
 		}
 	};
+
+	constexpr static int NUMBERS_OF_BIND_TARGETS = 2;
+	enum class BindTarget {
+		VERTEX_BUFFER,
+		INDEX_BUFFER
+	};
 }

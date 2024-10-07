@@ -13,6 +13,6 @@ namespace Chimp {
 		~IRenderingManager() = default;
 
 	public:
-		virtual std::unique_ptr<IBuffer> CreateBuffer(const Usage& usage) = 0;
+		[[nodiscard]] virtual std::unique_ptr<IBuffer> CreateBuffer(const Usage& usage, const BindTarget target) = 0;
 	};
 }
