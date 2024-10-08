@@ -12,7 +12,7 @@ namespace Chimp::GL {
 
 		void SetBindTarget(const BindTarget target) override;
 
-		void SetDataBindless(const void* data, const size_t size) override;
+		void SetDataBindless(const RawArray& data) override;
 
 		void SetSubDataBindless(const void* data, const size_t size, const size_t offset) override;
 

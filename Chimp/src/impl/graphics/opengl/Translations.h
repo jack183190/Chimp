@@ -1,6 +1,7 @@
 #pragma once
 
 #include "api/graphics/buffers/Usage.h"
+#include "api/graphics/GraphicsType.h"
 #include "stdafx.h"
 
 namespace Chimp::GL {
@@ -13,6 +14,16 @@ namespace Chimp::GL {
 		default:
 			__assume(false);
 		}
+	}
+
+	[[nodiscard]] static GLenum TypeTranslation(const GraphicsType& type) {
+		if (type == GraphicsType::FLOAT) {
+			return GL_FLOAT;
+		}
+		else if (type == GraphicsType::UNSIGNED_INT) {
+			return GL_UNSIGNED_INT;
+		}
+		__assume(false);
 	}
 
 	[[nodiscard]] static constexpr GLenum UsageTranslation(const Usage& usage) {
