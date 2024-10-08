@@ -17,7 +17,7 @@ namespace Chimp::GL {
 		void SetSubDataBindless(const void* data, const size_t size, const size_t offset) override;
 
 	private:
-		GLuint m_Id;
+		GLuint m_Id{ 0 };
 		const Usage m_Usage;
 		const GLenum m_GLUsageHint;
 		GLenum m_BindTarget;

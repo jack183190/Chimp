@@ -27,7 +27,7 @@ namespace Chimp::GL {
 	}
 
 	[[nodiscard]] static constexpr GLenum UsageTranslation(const Usage& usage) {
-		if (usage.Access == Usage::Access::READ) {
+		if (usage.Access == Usage::Access::CPU_READ) {
 			if (usage.UpdateFrequency == Usage::UpdateFrequency::VERY_OCCASIONAL) {
 				return GL_STATIC_READ;
 			}
@@ -38,7 +38,7 @@ namespace Chimp::GL {
 				return GL_STREAM_READ;
 			}
 		}
-		else if (usage.Access == Usage::Access::WRITE) {
+		else if (usage.Access == Usage::Access::CPU_WRITE) {
 			if (usage.UpdateFrequency == Usage::UpdateFrequency::VERY_OCCASIONAL) {
 				return GL_STATIC_DRAW;
 			}

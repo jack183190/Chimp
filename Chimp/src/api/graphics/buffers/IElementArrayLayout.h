@@ -8,8 +8,8 @@ namespace Chimp {
 	// this could be position, uv coordinates, etc
 	// multiple of these will make up a vertex
 	struct ElementComponentLayout {
-		unsigned int Count; // number of elements
 		GraphicsType Type; // type of elements
+		unsigned int Count; // number of elements
 		bool Normalized; // normalize the data (map unsigned integers to floats in range 0 to 1) (ints mapped to -1 to 1)
 	};
 

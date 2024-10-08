@@ -9,20 +9,20 @@ namespace Chimp {
 		};
 
 		enum class Access {
-			READ,
-			WRITE,
-			READ_WRITE
+			CPU_READ,
+			CPU_WRITE,
+			CPU_READ_WRITE
 		};
 
 		UpdateFrequency UpdateFrequency;
 		Access Access;
 
 		bool CanRead() const {
-			return Access == Access::READ || Access == Access::READ_WRITE;
+			return Access == Access::CPU_READ || Access == Access::CPU_READ_WRITE;
 		}
 
 		bool CanWrite() const {
-			return Access == Access::WRITE || Access == Access::READ_WRITE;
+			return Access == Access::CPU_WRITE || Access == Access::CPU_READ_WRITE;
 		}
 	};
 
