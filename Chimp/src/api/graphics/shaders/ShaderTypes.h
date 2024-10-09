@@ -9,19 +9,14 @@ namespace Chimp {
 		FRAGMENT
 	};
 
-	struct ShaderSources {
-		std::string vertexSource;
-		std::string fragmentSource;
-	};
-
 	struct ShaderFilePaths {
-		std::string vertexPath;
-		std::string fragmentPath;
+		std::string Vertex;
+		std::string Fragment;
 
-		ShaderSources GetSources() const {
+		std::unordered_map<ShaderType, std::string> AsMap() const {
 			return {
-				FileReader::Read(vertexPath),
-				FileReader::Read(fragmentPath)
+				{ ShaderType::VERTEX, Vertex },
+				{ ShaderType::FRAGMENT, Fragment }
 			};
 		}
 	};

@@ -13,12 +13,16 @@ namespace Chimp::GL {
 		std::unique_ptr<IBuffer> CreateBuffer(const Usage& usage, const BindTarget target) override;
 
 		std::unique_ptr<IElementArrayLayout> CreateElementArrayLayout(
-			const std::vector<ElementComponentLayout>& layouts) override;
+			const std::vector<ElementComponentLayout>& layouts
+		) override;
 
 		std::unique_ptr<IElementArray> CreateElementArray(
 			std::unique_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
-			std::unique_ptr<IElementArrayLayout> layout) override;
+			std::unique_ptr<IElementArrayLayout> layout
+		) override;
+
+		std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) override;
 
 	private:
 		NotNullHack<ShaderCompiler> m_ShaderCompiler;

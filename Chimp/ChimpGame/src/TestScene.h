@@ -18,4 +18,5 @@ protected:
 private:
 	Chimp::Engine& m_Engine;
 	std::unique_ptr<Chimp::IElementArray> m_ElementArray;
+	std::unique_ptr<Chimp::IShader> m_Shader;
 };

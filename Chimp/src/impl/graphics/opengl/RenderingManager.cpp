@@ -2,6 +2,7 @@
 #include "buffers/Buffer.h"
 #include "buffers/ElementArray.h"
 #include "buffers/ElementArrayLayout.h"
+#include "shaders/Shader.h"
 
 namespace Chimp::GL {
 	RenderingManager::RenderingManager() {
@@ -39,6 +40,14 @@ namespace Chimp::GL {
 			std::move(vertexBuffer),
 			std::move(indexBuffer),
 			std::move(layout)
+		);
+	}
+
+	std::unique_ptr<IShader> RenderingManager::CompileShader(const ShaderFilePaths& shaderFilePaths)
+	{
+		return std::make_unique<GL::Shader>(
+			shaderFilePaths,
+			*m_ShaderCompiler
 		);
 	}
 }

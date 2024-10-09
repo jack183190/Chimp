@@ -5,6 +5,8 @@
 #include "buffers/IBuffer.h"
 #include "buffers/IElementArrayLayout.h"
 #include "buffers/IElementArray.h"
+#include "shaders/IShader.h"
+#include "shaders/ShaderTypes.h"
 
 namespace Chimp {
 	class IRenderingManager {
@@ -33,5 +35,10 @@ namespace Chimp {
 			std::unique_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
 			std::unique_ptr<IElementArrayLayout> layout) = 0;
+
+		// Compile a shader from source code
+		// In chimp, a "shader" represents all the shaders in the pipeline (vertex, fragment, etc.)
+		// Check Shader::IsValid() to see if the shader was compiled successfully
+		[[nodiscard]] virtual std::unique_ptr<IShader> CompileShader(const ShaderFilePaths &shaderFilePaths) = 0;
 	};
 }

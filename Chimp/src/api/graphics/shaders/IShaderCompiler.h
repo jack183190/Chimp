@@ -18,6 +18,6 @@ namespace Chimp
 			bool Success;
 			GraphicsID Id;
 		};
-		virtual Result Compile(const ShaderType type, const std::string &source) = 0;
+		virtual Result Compile(const ShaderType type, const std::string &source) const = 0;
 	};
 }

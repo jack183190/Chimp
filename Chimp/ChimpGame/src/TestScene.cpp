@@ -53,6 +53,20 @@ TestScene::TestScene(Chimp::Engine& engine)
 			}
 		)
 		);
+
+	// shader
+	Chimp::ShaderFilePaths shaderFilePaths = {};
+	{
+		shaderFilePaths.Vertex = "C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/shaders/default.vert";
+		shaderFilePaths.Fragment = "C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/shaders/default.frag";
+	}
+	m_Shader = renderingManager.CompileShader(shaderFilePaths);
+
+	if (!m_Shader->IsValid())
+	{
+		std::cerr << "Failed to compile shader" << std::endl;
+		exit(-1);
+	}
 }
 
 TestScene::~TestScene()
@@ -94,5 +108,6 @@ void TestScene::OnUpdate()
 
 void TestScene::OnRender()
 {
-
+	m_Shader->Bind();
+	m_ElementArray->Bind();
 }

@@ -8,6 +8,6 @@ namespace Chimp::GL {
 		ShaderCompiler() = default;
 		~ShaderCompiler() = default;
 
-		Result Compile(const ShaderType type, const std::string& source) override;
+		Result Compile(const ShaderType type, const std::string& source) const override;
 	};
 }
