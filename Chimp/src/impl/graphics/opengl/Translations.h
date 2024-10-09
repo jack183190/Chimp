@@ -2,6 +2,7 @@
 
 #include "api/graphics/buffers/Usage.h"
 #include "api/graphics/GraphicsType.h"
+#include "api/graphics/shaders/ShaderTypes.h"
 #include "stdafx.h"
 
 namespace Chimp::GL {
@@ -11,6 +12,17 @@ namespace Chimp::GL {
 			return GL_ARRAY_BUFFER;
 		case BindTarget::INDEX_BUFFER:
 			return GL_ELEMENT_ARRAY_BUFFER;
+		default:
+			__assume(false);
+		}
+	}
+
+	[[nodiscard]] static constexpr GLenum ShaderTypeTranslation(const ShaderType shaderType) {
+		switch (shaderType) {
+		case ShaderType::VERTEX:
+			return GL_VERTEX_SHADER;
+		case ShaderType::FRAGMENT:
+			return GL_FRAGMENT_SHADER;
 		default:
 			__assume(false);
 		}

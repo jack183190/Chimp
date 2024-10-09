@@ -1,8 +1,10 @@
 #pragma once
 
 #include "api/graphics/IRenderingManager.h"
+#include "shaders/ShaderCompiler.h"
+#include "impl/utils/NotNullHack.h"
 
-namespace Chimp {
+namespace Chimp::GL {
 	class RenderingManager : public IRenderingManager {
 	public:
 		RenderingManager();
@@ -17,5 +19,8 @@ namespace Chimp {
 			std::unique_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
 			std::unique_ptr<IElementArrayLayout> layout) override;
+
+	private:
+		NotNullHack<ShaderCompiler> m_ShaderCompiler;
 	};
 }

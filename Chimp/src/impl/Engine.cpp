@@ -43,7 +43,7 @@ namespace Chimp {
 	std::unique_ptr<IRenderingManager> Engine::CreateRenderingManager() const
 	{
 #ifdef CHIMP_OPENGL
-		return std::make_unique<RenderingManager>();
+		return std::make_unique<GL::RenderingManager>();
 #endif
 		std::cerr << "No rendering manager implementation available." << std::endl;
 		return nullptr;

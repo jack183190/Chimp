@@ -3,8 +3,9 @@
 #include "buffers/ElementArray.h"
 #include "buffers/ElementArrayLayout.h"
 
-namespace Chimp {
+namespace Chimp::GL {
 	RenderingManager::RenderingManager() {
+		// Initialise OpenGL
 		GLenum err = glewInit();
 		if (err != GLEW_OK) {
 			std::cerr << "GLEW Error: " << glewGetErrorString(err) << std::endl;
@@ -14,6 +15,9 @@ namespace Chimp {
 
 		std::cout << "Initialised OpenGL Renderer:" << std::endl;
 		std::cout << " OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+
+		// Shader compiler
+		m_ShaderCompiler = std::make_unique<ShaderCompiler>();
 	}
 
 	RenderingManager::~RenderingManager() {
