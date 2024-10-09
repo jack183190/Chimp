@@ -10,7 +10,8 @@ namespace Chimp::GL {
 	{
 		// Compile the shaders
 		const auto pathsMap = paths.AsMap();
-		std::vector<GLuint> shaderIds(pathsMap.size());
+		std::vector<GLuint> shaderIds;
+		shaderIds.reserve(pathsMap.size());
 
 		for (const auto& [type, path] : pathsMap)
 		{

@@ -26,6 +26,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		},
 		Chimp::BindTarget::VERTEX_BUFFER
 	);
+	vertexBuffer->SetData(vertexData);
 
 	// index buffer
 	Chimp::RawArray indexData;
@@ -42,6 +43,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		},
 		Chimp::BindTarget::INDEX_BUFFER
 	);
+	indexBuffer->SetData(indexData);
 
 	// element array
 	m_ElementArray = renderingManager.CreateElementArray(
@@ -67,6 +69,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		std::cerr << "Failed to compile shader" << std::endl;
 		exit(-1);
 	}
+	std::cout << "Shader compiled successfully" << std::endl;
 }
 
 TestScene::~TestScene()
