@@ -18,4 +18,5 @@ protected:
 private:
 	Chimp::Engine& m_Engine;
 	std::unique_ptr<Chimp::Mesh> m_Mesh;
+	std::shared_ptr<Chimp::IBuffer> m_CameraBuffer;
 };

@@ -13,6 +13,8 @@ namespace Chimp::GL {
 			return GL_ARRAY_BUFFER;
 		case BindTarget::INDEX_BUFFER:
 			return GL_ELEMENT_ARRAY_BUFFER;
+		case BindTarget::SHADER_BUFFER:
+			return GL_UNIFORM_BUFFER;
 		default:
 			__assume(false);
 		}

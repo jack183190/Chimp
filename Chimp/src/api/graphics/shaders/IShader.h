@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "IShaderBuffers.h"
 
 namespace Chimp {
 	// Represents all the shaders in a pipeline
@@ -22,5 +23,12 @@ namespace Chimp {
 
 		// Check if the shader is valid (all shaders compiled successfully)
 		virtual bool IsValid() const = 0;
+
+		// Get the shader buffers
+		virtual [[nodiscard]] IShaderBuffers& GetShaderBuffers() = 0;
+
+		// Bind the buffers to the shader
+		// this must be called whenever the data (or subdata) in the IBuffer has changed
+		virtual void UpdateShaderBuffer(IShaderBuffers::Id id) const = 0;
 	};
 }

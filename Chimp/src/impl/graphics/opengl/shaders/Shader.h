@@ -3,6 +3,7 @@
 #include "api/graphics/shaders/IShader.h"
 #include "api/graphics/shaders/ShaderTypes.h"
 #include "impl/graphics/opengl/shaders/ShaderCompiler.h"
+#include "impl/graphics/opengl/shaders/ShaderBuffers.h"
 
 namespace Chimp::GL {
 	class Shader : public IShader {
@@ -16,11 +17,15 @@ namespace Chimp::GL {
 
 		bool IsValid() const override;
 
+		IShaderBuffers& GetShaderBuffers() override;
+		void UpdateShaderBuffer(IShaderBuffers::Id id) const override;
+
 	private:
 		// Delete shaders by id and clear the vector
 		void DeleteShaders(std::vector<GLuint>& shaderIds);
 
 	private:
+		ShaderBuffers m_ShaderBuffers;
 		GLuint m_ProgramID;
 		bool m_IsValid;
 	};

@@ -4,6 +4,7 @@
 #include "api/utils/RawArray.h"
 #include "Usage.h"
 #include "api/graphics/GraphicsType.h"
+#include "api/graphics/shaders/IShaderBuffers.h"
 
 namespace Chimp {
 	class IBuffer {
@@ -61,6 +62,9 @@ namespace Chimp {
 		[[nodiscard]] GraphicsType GetDataType() const {
 			return m_DataType;
 		}
+
+		// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
+		virtual void BindBufferBase(const size_t index) const = 0;
 
 	protected:
 		void Resize(size_t size, size_t numberElements) {

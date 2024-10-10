@@ -76,6 +76,24 @@ TestScene::TestScene(Chimp::Engine& engine)
 	}
 	std::cout << "Shader compiled successfully" << std::endl;
 
+	// Camera
+	m_CameraBuffer = renderingManager.CreateBuffer(
+		{
+			Chimp::Usage::UpdateFrequency::OCCASIONAL,
+			Chimp::Usage::Access::CPU_WRITE
+		},
+		Chimp::BindTarget::SHADER_BUFFER
+	);
+	Chimp::Matrix cameraMatrix = Chimp::CreateTranslationMatrix({ 0.0f, 1.0f, 0.0f });
+	Chimp::RawArray cameraArray;
+	cameraArray.NumberElements = 1;
+	cameraArray.Size = sizeof(Chimp::Matrix);
+	cameraArray.Data = memcpy(new Chimp::Matrix[cameraArray.NumberElements], &cameraMatrix, cameraArray.Size);
+	m_CameraBuffer->SetData(Chimp::GraphicsType::FLOAT,
+		cameraArray);
+	const auto cameraId = m_Shader->GetShaderBuffers().AddBuffer({ m_CameraBuffer, "Camera" });
+	m_Shader->UpdateShaderBuffer(cameraId);
+
 	// Mesh
 	m_Mesh = Chimp::Mesh::Builder()
 		.AddSection(

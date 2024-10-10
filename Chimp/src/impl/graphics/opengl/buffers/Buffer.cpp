@@ -38,5 +38,10 @@ namespace Chimp::GL {
 		glBufferSubData(m_BindTarget, offset, size, data);
 	}
 
+	void Buffer::BindBufferBase(const size_t index) const
+	{
+		glBindBufferBase(m_BindTarget, index, m_Id);
+	}
+
 	
 }

@@ -1,9 +1,27 @@
 #include "api/graphics/IRenderer.h"
 
-void Chimp::IRenderer::Draw(const Mesh& mesh) const
+namespace Chimp
 {
-	for (const auto& section : mesh)
+	const Camera& IRenderer::GetDefaultCamera()
 	{
-		Draw(section);
+		return *m_DefaultCamera;
+	}
+
+	void IRenderer::SetCamera(std::shared_ptr<ICamera> camera)
+	{
+		m_Camera = camera;
+	}
+
+	void IRenderer::Draw(const Mesh& mesh) const
+	{
+		for (const auto& section : mesh)
+		{
+			Draw(section);
+		}
+	}
+
+	const CameraMatrices& IRenderer::GetCameraMatrices() const
+	{
+		return m_Camera->GetCameraMatrices();
 	}
 }

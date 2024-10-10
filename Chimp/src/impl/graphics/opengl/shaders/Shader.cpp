@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Shader.h"
+#include "api/graphics/buffers/IBuffer.h"
 
 namespace Chimp::GL {
 	Shader::Shader(const ShaderFilePaths& paths,
 		const ShaderCompiler& compiler)
 		: m_ProgramID(0),
-		m_IsValid(false)
+		m_IsValid(false),
+		m_ShaderBuffers(*this)
 	{
 		// Compile the shaders
 		const auto pathsMap = paths.AsMap();
@@ -71,6 +73,20 @@ namespace Chimp::GL {
 	bool Shader::IsValid() const
 	{
 		return m_IsValid;
+	}
+
+	IShaderBuffers& Shader::GetShaderBuffers()
+	{
+		return m_ShaderBuffers;
+	}
+
+	void Shader::UpdateShaderBuffer(IShaderBuffers::Id id) const
+	{
+		// TODO i'm not entirely sure if we can use buffer.Index both times
+		const auto& buffer = m_ShaderBuffers.GetBuffer(id);
+		GLuint blockIndex = glGetUniformBlockIndex(m_ProgramID, buffer.Name.c_str()); // TODO: could we put this in the shader buffer struct?
+		glUniformBlockBinding(m_ProgramID, blockIndex, static_cast<GLuint>(buffer.Index));
+		buffer.Buffer->BindBufferBase(buffer.Index);
 	}
 
 	void Shader::DeleteShaders(std::vector<GLuint>& shaderIds)
