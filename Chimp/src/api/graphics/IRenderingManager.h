@@ -39,9 +39,9 @@ namespace Chimp {
 		// indexBuffer - the buffer which contains the index data
 		// layout - describes the layout of the vertex data
 		[[nodiscard]] virtual std::unique_ptr<IElementArray> CreateElementArray(
-			std::unique_ptr<IBuffer> vertexBuffer,
+			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
-			std::unique_ptr<IElementArrayLayout> layout) = 0;
+			std::shared_ptr<IElementArrayLayout> layout) = 0;
 
 		// Compile a shader from source code
 		// In chimp, a "shader" represents all the shaders in the pipeline (vertex, fragment, etc.)

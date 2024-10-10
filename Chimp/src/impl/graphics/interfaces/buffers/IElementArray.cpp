@@ -1,9 +1,9 @@
 #include "api/graphics/buffers/IElementArray.h"
 
 namespace Chimp {
-	IElementArray::IElementArray(std::unique_ptr<IBuffer> vertexBuffer,
+	IElementArray::IElementArray(std::shared_ptr<IBuffer> vertexBuffer,
 		std::unique_ptr<IBuffer> indexBuffer,
-		std::unique_ptr<IElementArrayLayout> layout) :
+		std::shared_ptr<IElementArrayLayout> layout) :
 		m_VertexBuffer(std::move(vertexBuffer)),
 		m_IndexBuffer(std::move(indexBuffer)),
 		m_Layout(std::move(layout))
@@ -25,7 +25,7 @@ namespace Chimp {
 		return *m_Layout;
 	}
 
-	void IElementArray::SetLayout(std::unique_ptr<IElementArrayLayout> layout)
+	void IElementArray::SetLayout(std::shared_ptr<IElementArrayLayout> layout)
 	{
 		m_Layout = std::move(layout);
 	}

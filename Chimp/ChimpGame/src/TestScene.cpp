@@ -20,7 +20,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 			0.0f, 0.5f, 0.0f
 		};
 
-	auto vertexBuffer = renderingManager.CreateBuffer(
+	std::shared_ptr<Chimp::IBuffer> vertexBuffer = renderingManager.CreateBuffer(
 		{
 			Chimp::Usage::UpdateFrequency::VERY_OCCASIONAL,
 			Chimp::Usage::Access::CPU_WRITE
@@ -48,15 +48,17 @@ TestScene::TestScene(Chimp::Engine& engine)
 	indexBuffer->SetData(INDEX_TYPE, indexData);
 
 	// element array
+	std::shared_ptr<Chimp::IElementArrayLayout> elementLayout = renderingManager.CreateElementArrayLayout(
+		Chimp::PrimitiveType::TRIANGLES,
+		{
+			{ Chimp::GraphicsType::FLOAT, 3, false }
+		}
+	);
+
 	m_ElementArray = renderingManager.CreateElementArray(
-		std::move(vertexBuffer),
+		vertexBuffer,
 		std::move(indexBuffer),
-		renderingManager.CreateElementArrayLayout(
-			Chimp::PrimitiveType::TRIANGLES,
-			{
-				{ Chimp::GraphicsType::FLOAT, 3, false }
-			}
-		)
+		elementLayout
 	);
 
 	// shader

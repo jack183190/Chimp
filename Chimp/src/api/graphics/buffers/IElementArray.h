@@ -6,9 +6,9 @@
 namespace Chimp {
 	class IElementArray {
 	protected:
-		IElementArray(std::unique_ptr<IBuffer> vertexBuffer,
+		IElementArray(std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
-			std::unique_ptr<IElementArrayLayout> layout);
+			std::shared_ptr<IElementArrayLayout> layout);
 	public:
 		~IElementArray() = default;
 
@@ -22,7 +22,7 @@ namespace Chimp {
 		IBuffer& GetVertexBuffer();
 		IBuffer& GetIndexBuffer();
 		const IElementArrayLayout& GetElementLayout() const;
-		void SetLayout(std::unique_ptr<IElementArrayLayout> layout);
+		void SetLayout(std::shared_ptr<IElementArrayLayout> layout);
 
 		// Get the number of indices in the element array
 		[[nodiscard]] unsigned int GetIndexCount() const;
@@ -34,8 +34,8 @@ namespace Chimp {
 		[[nodiscard]] PrimitiveType GetPrimitiveType() const;
 
 	private:
-		std::unique_ptr<IBuffer> m_VertexBuffer;
+		std::shared_ptr<IBuffer> m_VertexBuffer;
 		std::unique_ptr<IBuffer> m_IndexBuffer;
-		std::unique_ptr<IElementArrayLayout> m_Layout;
+		std::shared_ptr<IElementArrayLayout> m_Layout;
 	};
 }

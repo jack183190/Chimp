@@ -21,9 +21,9 @@ namespace Chimp::GL {
 		) override;
 
 		std::unique_ptr<IElementArray> CreateElementArray(
-			std::unique_ptr<IBuffer> vertexBuffer,
+			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
-			std::unique_ptr<IElementArrayLayout> layout
+			std::shared_ptr<IElementArrayLayout> layout
 		) override;
 
 		std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) override;

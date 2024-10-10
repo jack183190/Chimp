@@ -1,9 +1,9 @@
 #include "ElementArray.h"
 
 namespace Chimp::GL {
-	ElementArray::ElementArray(std::unique_ptr<IBuffer> vertexBuffer,
+	ElementArray::ElementArray(std::shared_ptr<IBuffer> vertexBuffer,
 		std::unique_ptr<IBuffer> indexBuffer,
-		std::unique_ptr<IElementArrayLayout> layout) :
+		std::shared_ptr<IElementArrayLayout> layout) :
 		IElementArray(std::move(vertexBuffer),
 			std::move(indexBuffer),
 			std::move(layout))

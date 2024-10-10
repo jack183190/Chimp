@@ -80,7 +80,9 @@ namespace Chimp::GL {
 		return std::make_unique<GL::ElementArrayLayout>(primitivesType, layouts);
 	}
 
-	std::unique_ptr<IElementArray> RenderingManager::CreateElementArray(std::unique_ptr<IBuffer> vertexBuffer, std::unique_ptr<IBuffer> indexBuffer, std::unique_ptr<IElementArrayLayout> layout)
+	std::unique_ptr<IElementArray> RenderingManager::CreateElementArray(
+		std::shared_ptr<IBuffer> vertexBuffer, std::unique_ptr<IBuffer> indexBuffer,
+		std::shared_ptr<IElementArrayLayout> layout)
 	{
 		return std::make_unique<GL::ElementArray>(
 			std::move(vertexBuffer),
