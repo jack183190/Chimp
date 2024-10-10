@@ -9,6 +9,6 @@ namespace Chimp::GL {
 		Renderer() = default;
 		~Renderer() override = default;
 
-		void Draw(const IElementArray& elementArray, const IShader& shader) const override;
+		void Draw(const Mesh::Section& meshSection) const override;
 	};
 }

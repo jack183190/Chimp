@@ -2,6 +2,7 @@
 
 #include "buffers/IElementArray.h"
 #include "shaders/IShader.h"
+#include "Mesh.h"
 
 namespace Chimp
 {
@@ -12,6 +13,7 @@ namespace Chimp
 	public:
 		virtual ~IRenderer() = default;
 
-		virtual void Draw(const IElementArray& elementArray, const IShader& shader) const = 0;
+		void Draw(const Mesh& mesh) const;
+		virtual void Draw(const Mesh::Section &meshSection) const = 0;
 	};
 }

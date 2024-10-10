@@ -4,21 +4,21 @@
 #include "Translations.h"
 
 namespace Chimp::GL {
-	void Renderer::Draw(const IElementArray& elementArray, const IShader& shader) const
-	{
-		shader.Bind();
-		elementArray.Bind();
+	constexpr void* INDICES_BOUND_IN_VAO = nullptr;
 
-		constexpr void* INDICES_BOUND_IN_VAO = nullptr;
+	void Renderer::Draw(const Mesh::Section& meshSection) const
+	{
+		meshSection.Shader->Bind();
+		meshSection.ElementArray->Bind();
 
 		glDrawElements(
-			PrimitiveTypeTranslation(elementArray.GetPrimitiveType()),
-			elementArray.GetIndexCount(),
-			TypeTranslation(elementArray.GetIndexType()),
+			PrimitiveTypeTranslation(meshSection.ElementArray->GetPrimitiveType()),
+			meshSection.ElementArray->GetIndexCount(),
+			TypeTranslation(meshSection.ElementArray->GetIndexType()),
 			INDICES_BOUND_IN_VAO
 		);
 
-		elementArray.Unbind();
-		shader.Unbind();
+		meshSection.ElementArray->Unbind();
+		meshSection.Shader->Unbind();
 	}
 }

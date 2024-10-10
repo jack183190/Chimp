@@ -55,7 +55,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		}
 	);
 
-	m_ElementArray = renderingManager.CreateElementArray(
+	auto m_ElementArray = renderingManager.CreateElementArray(
 		vertexBuffer,
 		std::move(indexBuffer),
 		elementLayout
@@ -67,7 +67,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		shaderFilePaths.Vertex = "C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/shaders/default.vert";
 		shaderFilePaths.Fragment = "C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/shaders/default.frag";
 	}
-	m_Shader = renderingManager.CompileShader(shaderFilePaths);
+	auto m_Shader = renderingManager.CompileShader(shaderFilePaths);
 
 	if (!m_Shader->IsValid())
 	{
@@ -75,6 +75,14 @@ TestScene::TestScene(Chimp::Engine& engine)
 		exit(-1);
 	}
 	std::cout << "Shader compiled successfully" << std::endl;
+
+	// Mesh
+	m_Mesh = Chimp::Mesh::Builder()
+		.AddSection(
+			std::move(m_ElementArray),
+			std::move(m_Shader)
+		)
+		.Build();
 }
 
 TestScene::~TestScene()
@@ -116,5 +124,5 @@ void TestScene::OnUpdate()
 
 void TestScene::OnRender()
 {
-	m_Engine.GetRenderingManager().GetRenderer().Draw(*m_ElementArray, *m_Shader);
+	m_Engine.GetRenderingManager().GetRenderer().Draw(*m_Mesh);
 }
