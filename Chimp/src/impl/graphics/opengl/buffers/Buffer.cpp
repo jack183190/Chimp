@@ -23,10 +23,11 @@ namespace Chimp::GL {
 		m_BindTarget = BindTargetTranslation(target);
 	}
 
-	void Buffer::SetDataBindless(const RawArray& data)
+	void Buffer::SetDataBindless(const GraphicsType dataType, const RawArray& data)
 	{
 		assert(data.Data != nullptr);
 		Resize(data.Size, data.NumberElements);
+		m_DataType = dataType;
 		glBufferData(m_BindTarget, data.Size, data.Data, m_GLUsageHint);
 	}
 

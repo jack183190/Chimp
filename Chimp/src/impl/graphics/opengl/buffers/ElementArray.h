@@ -11,9 +11,9 @@ namespace Chimp::GL {
 			std::unique_ptr<IElementArrayLayout> layout);
 		~ElementArray() = default;
 
-		void Bind() override;
+		void Bind() const override;
 
-		void Unbind() override;
+		void Unbind() const override;
 
 	private:
 		GLuint m_Id;

@@ -63,6 +63,11 @@ namespace Chimp::GL {
 		glUseProgram(m_ProgramID);
 	}
 
+	void Shader::Unbind() const
+	{
+		glUseProgram(0);
+	}
+
 	bool Shader::IsValid() const
 	{
 		return m_IsValid;

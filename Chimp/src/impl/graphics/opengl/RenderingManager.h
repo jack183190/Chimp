@@ -3,6 +3,7 @@
 #include "api/graphics/IRenderingManager.h"
 #include "shaders/ShaderCompiler.h"
 #include "impl/utils/NotNullHack.h"
+#include "Renderer.h"
 
 namespace Chimp::GL {
 	class RenderingManager : public IRenderingManager {
@@ -10,9 +11,12 @@ namespace Chimp::GL {
 		RenderingManager();
 		~RenderingManager();
 
+		IRenderer& GetRenderer() override;
+
 		std::unique_ptr<IBuffer> CreateBuffer(const Usage& usage, const BindTarget target) override;
 
 		std::unique_ptr<IElementArrayLayout> CreateElementArrayLayout(
+			const PrimitiveType primitivesType,
 			const std::vector<ElementComponentLayout>& layouts
 		) override;
 
@@ -25,6 +29,10 @@ namespace Chimp::GL {
 		std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) override;
 
 	private:
+		void InitOpenGL();
+
+	private:
 		NotNullHack<ShaderCompiler> m_ShaderCompiler;
+		NotNullHack<Renderer> m_Renderer;
 	};
 }

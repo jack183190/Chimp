@@ -4,6 +4,7 @@
 #include "api/graphics/GraphicsType.h"
 #include "api/graphics/shaders/ShaderTypes.h"
 #include "stdafx.h"
+#include "api/graphics/PrimitiveType.h"
 
 namespace Chimp::GL {
 	[[nodiscard]] static constexpr GLenum BindTargetTranslation(const BindTarget target) {
@@ -15,6 +16,25 @@ namespace Chimp::GL {
 		default:
 			__assume(false);
 		}
+	}
+
+	[[nodiscard]] static GLenum PrimitiveTypeTranslation(const PrimitiveType primitiveType) {
+		if (primitiveType == PrimitiveType::POINTS) {
+			return GL_POINTS;
+		}
+		else if (primitiveType == PrimitiveType::LINES) {
+			return GL_LINES;
+		}
+		else if (primitiveType == PrimitiveType::LINE_STRIP) {
+			return GL_LINE_STRIP;
+		}
+		else if (primitiveType == PrimitiveType::TRIANGLES) {
+			return GL_TRIANGLES;
+		}
+		else if (primitiveType == PrimitiveType::TRIANGLE_STRIP) {
+			return GL_TRIANGLE_STRIP;
+		}
+		__assume(false);
 	}
 
 	[[nodiscard]] static constexpr GLenum ShaderTypeTranslation(const ShaderType shaderType) {

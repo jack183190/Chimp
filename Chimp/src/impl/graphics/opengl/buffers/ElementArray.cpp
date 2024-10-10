@@ -18,12 +18,12 @@ namespace Chimp::GL {
 		Unbind();
 	}
 
-	void ElementArray::Bind()
+	void ElementArray::Bind() const
 	{
 		glBindVertexArray(m_Id);
 	}
 
-	void ElementArray::Unbind()
+	void ElementArray::Unbind() const
 	{
 		glBindVertexArray(0);
 	}

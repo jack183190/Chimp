@@ -12,6 +12,7 @@ namespace Chimp::GL {
 		~Shader() override;
 
 		void Bind() const override;
+		void Unbind() const override;
 
 		bool IsValid() const override;
 

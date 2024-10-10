@@ -10,9 +10,10 @@ TestScene::TestScene(Chimp::Engine& engine)
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
 	// vertex buffer
+	const Chimp::GraphicsType VERTEX_TYPE = Chimp::GraphicsType::FLOAT;
 	Chimp::RawArray vertexData;
 	vertexData.NumberElements = 9;
-	vertexData.Size = sizeof(float) * vertexData.NumberElements;
+	vertexData.Size = VERTEX_TYPE.Size * vertexData.NumberElements;
 	vertexData.Data = new float[vertexData.NumberElements] {
 		-0.5f, -0.5f, 0.0f,
 			0.5f, -0.5f, 0.0f,
@@ -26,12 +27,13 @@ TestScene::TestScene(Chimp::Engine& engine)
 		},
 		Chimp::BindTarget::VERTEX_BUFFER
 	);
-	vertexBuffer->SetData(vertexData);
+	vertexBuffer->SetData(VERTEX_TYPE, vertexData);
 
 	// index buffer
+	const Chimp::GraphicsType INDEX_TYPE = Chimp::GraphicsType::UNSIGNED_INT;
 	Chimp::RawArray indexData;
 	indexData.NumberElements = 3;
-	indexData.Size = sizeof(uint32_t) * indexData.NumberElements;
+	indexData.Size = INDEX_TYPE.Size * indexData.NumberElements;
 	indexData.Data = new uint32_t[indexData.NumberElements]{
 		0, 1, 2
 	};
@@ -43,18 +45,19 @@ TestScene::TestScene(Chimp::Engine& engine)
 		},
 		Chimp::BindTarget::INDEX_BUFFER
 	);
-	indexBuffer->SetData(indexData);
+	indexBuffer->SetData(INDEX_TYPE, indexData);
 
 	// element array
 	m_ElementArray = renderingManager.CreateElementArray(
 		std::move(vertexBuffer),
 		std::move(indexBuffer),
 		renderingManager.CreateElementArrayLayout(
+			Chimp::PrimitiveType::TRIANGLES,
 			{
 				{ Chimp::GraphicsType::FLOAT, 3, false }
 			}
 		)
-		);
+	);
 
 	// shader
 	Chimp::ShaderFilePaths shaderFilePaths = {};
@@ -111,6 +114,5 @@ void TestScene::OnUpdate()
 
 void TestScene::OnRender()
 {
-	m_Shader->Bind();
-	m_ElementArray->Bind();
+	m_Engine.GetRenderingManager().GetRenderer().Draw(*m_ElementArray, *m_Shader);
 }

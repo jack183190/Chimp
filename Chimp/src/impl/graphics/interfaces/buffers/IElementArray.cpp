@@ -29,4 +29,18 @@ namespace Chimp {
 	{
 		m_Layout = std::move(layout);
 	}
+
+	unsigned int IElementArray::GetIndexCount() const
+	{
+		return static_cast<unsigned int>(m_IndexBuffer->GetNumberElements());
+	}
+
+	GraphicsType IElementArray::GetIndexType() const
+	{
+		return m_IndexBuffer->GetDataType();
+	}
+	PrimitiveType IElementArray::GetPrimitiveType() const
+	{
+		return m_Layout->GetPrimitiveType();
+	}
 }

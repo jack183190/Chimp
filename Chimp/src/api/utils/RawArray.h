@@ -10,8 +10,8 @@ namespace Chimp {
 		RawArray& operator=(RawArray&& toMove) noexcept;
 		~RawArray();
 
-		size_t Size;
-		size_t NumberElements;
-		void* Data;
+		size_t Size; // Size in bytes of the whole array
+		size_t NumberElements; // Number of elements in the array
+		void* Data; // Pointer to the data, this is owned by the RawArray
 	};
 }

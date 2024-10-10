@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "api/graphics/GraphicsType.h"
+#include "api/graphics/PrimitiveType.h"
 
 namespace Chimp {
 	// Represents a single component of a vertex
@@ -13,20 +14,27 @@ namespace Chimp {
 		bool Normalized; // normalize the data (map unsigned integers to floats in range 0 to 1) (ints mapped to -1 to 1)
 	};
 
+	// Represents the layout of the vertices in an element array
 	class IElementArrayLayout {
 	protected:
-		IElementArrayLayout(const std::vector<ElementComponentLayout>& layouts);
+		IElementArrayLayout(const PrimitiveType primitiveType, 
+			const std::vector<ElementComponentLayout>& layouts);
 
 	public:
 		virtual ~IElementArrayLayout() = default;
 
+		// Bind the layout
 		virtual void Bind() const = 0;
+
+		// Get the primitive type
+		[[nodiscard]] virtual const PrimitiveType GetPrimitiveType() const;
 
 	private:
 		static unsigned int CalculateStride(const std::vector<ElementComponentLayout>& layouts);
 
 	protected:
-		const std::vector<ElementComponentLayout> Layouts;
-		const unsigned int Stride;
+		const PrimitiveType m_PrimitiveType;
+		const std::vector<ElementComponentLayout> m_Layouts;
+		const unsigned int m_Stride;
 	};
 }

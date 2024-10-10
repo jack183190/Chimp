@@ -50,26 +50,22 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 namespace Chimp::GL {
 	RenderingManager::RenderingManager() {
 		// Initialise OpenGL
-		GLenum err = glewInit();
-		if (err != GLEW_OK) {
-			std::cerr << "GLEW Error: " << glewGetErrorString(err) << std::endl;
-			std::cerr << "Failed to initialise GLEW." << std::endl;
-			exit(-1);
-		}
-
-#ifndef NDEBUG
-		glEnable(GL_DEBUG_OUTPUT);
-		glDebugMessageCallback(glDebugOutput, nullptr);
-#endif
-
-		std::cout << "Initialised OpenGL Renderer:" << std::endl;
-		std::cout << " OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+		InitOpenGL();
 
 		// Shader compiler
 		m_ShaderCompiler = std::make_unique<ShaderCompiler>();
+
+		// Renderer
+		m_Renderer = std::make_unique<GL::Renderer>();
 	}
 
 	RenderingManager::~RenderingManager() {
+
+	}
+
+	IRenderer& RenderingManager::GetRenderer()
+	{
+		return *m_Renderer;
 	}
 
 	std::unique_ptr<IBuffer> RenderingManager::CreateBuffer(const Usage& usage, const BindTarget target)
@@ -77,9 +73,11 @@ namespace Chimp::GL {
 		return std::make_unique<GL::Buffer>(usage, target);
 	}
 
-	std::unique_ptr<IElementArrayLayout> RenderingManager::CreateElementArrayLayout(const std::vector<ElementComponentLayout>& layouts)
+	std::unique_ptr<IElementArrayLayout> RenderingManager::CreateElementArrayLayout(
+		const PrimitiveType primitivesType, 
+		const std::vector<ElementComponentLayout>& layouts)
 	{
-		return std::make_unique<GL::ElementArrayLayout>(layouts);
+		return std::make_unique<GL::ElementArrayLayout>(primitivesType, layouts);
 	}
 
 	std::unique_ptr<IElementArray> RenderingManager::CreateElementArray(std::unique_ptr<IBuffer> vertexBuffer, std::unique_ptr<IBuffer> indexBuffer, std::unique_ptr<IElementArrayLayout> layout)
@@ -97,5 +95,23 @@ namespace Chimp::GL {
 			shaderFilePaths,
 			*m_ShaderCompiler
 		);
+	}
+
+	void RenderingManager::InitOpenGL()
+	{
+		GLenum err = glewInit();
+		if (err != GLEW_OK) {
+			std::cerr << "GLEW Error: " << glewGetErrorString(err) << std::endl;
+			std::cerr << "Failed to initialise GLEW." << std::endl;
+			exit(-1);
+		}
+
+#ifndef NDEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(glDebugOutput, nullptr);
+#endif
+
+		std::cout << "Initialised OpenGL Renderer:" << std::endl;
+		std::cout << " OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 	}
 }

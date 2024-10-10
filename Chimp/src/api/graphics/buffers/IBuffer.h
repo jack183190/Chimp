@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "api/utils/RawArray.h"
 #include "Usage.h"
+#include "api/graphics/GraphicsType.h"
 
 namespace Chimp {
 	class IBuffer {
@@ -21,13 +22,15 @@ namespace Chimp {
 		virtual void SetBindTarget(BindTarget target) = 0;
 
 		// Set the data of the buffer, this will call Bind()
-		void SetData(const RawArray &data) {
+		// dataTypes is the type of data in the RawArray
+		// data is the data to set
+		void SetData(const GraphicsType dataType, const RawArray &data) {
 			Bind();
-			SetDataBindless(data);
+			SetDataBindless(dataType, data);
 		}
 
 		// Set the data of the buffer, this will not call Bind()
-		virtual void SetDataBindless(const RawArray& data) = 0;
+		virtual void SetDataBindless(const GraphicsType dataType, const RawArray& data) = 0;
 
 		// Set the sub data of the buffer, this will call Bind()
 		void SetSubData(const void* data, const size_t size, size_t offset) {
@@ -54,11 +57,19 @@ namespace Chimp {
 			return m_NumberElements;
 		}
 
+		// Get the data type of the buffer
+		[[nodiscard]] GraphicsType GetDataType() const {
+			return m_DataType;
+		}
+
 	protected:
 		void Resize(size_t size, size_t numberElements) {
 			m_Size = size;
 			m_NumberElements = numberElements;
 		}
+
+	protected:
+		GraphicsType m_DataType{ GraphicsType::FLOAT };
 
 	private:
 		size_t m_NumberElements{ 0 };

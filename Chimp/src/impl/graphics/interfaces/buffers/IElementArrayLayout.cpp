@@ -1,9 +1,18 @@
 #include "api/graphics/buffers/IElementArrayLayout.h"
 
 namespace Chimp {
-	IElementArrayLayout::IElementArrayLayout(const std::vector<ElementComponentLayout>& layouts) :
-		Layouts(layouts), Stride(CalculateStride(layouts))
+	IElementArrayLayout::IElementArrayLayout(
+		const PrimitiveType primitiveType,
+		const std::vector<ElementComponentLayout>& layouts) :
+		m_PrimitiveType(primitiveType),
+		m_Layouts(layouts), 
+		m_Stride(CalculateStride(layouts))
 	{
+	}
+
+	const PrimitiveType IElementArrayLayout::GetPrimitiveType() const
+	{
+		return m_PrimitiveType;
 	}
 
 	unsigned int Chimp::IElementArrayLayout::CalculateStride(const std::vector<ElementComponentLayout>& layouts)
