@@ -11,6 +11,8 @@ add_library (ChimpGame STATIC "src/GameMain.cpp" "src/TestScene.h" "src/TestScen
 
 target_include_directories(ChimpGame PUBLIC "../src/") # Chimp engine include directory
 
+add_compile_definitions(GAME_SRC="${CMAKE_CURRENT_SOURCE_DIR}")
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ChimpGame PROPERTY CXX_STANDARD 20)
 endif()

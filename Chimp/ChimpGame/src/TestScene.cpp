@@ -64,8 +64,8 @@ TestScene::TestScene(Chimp::Engine& engine)
 	// shader
 	Chimp::ShaderFilePaths shaderFilePaths = {};
 	{
-		shaderFilePaths.Vertex = "C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/shaders/default.vert";
-		shaderFilePaths.Fragment = "C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/shaders/default.frag";
+		shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
+		shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
 	}
 	auto m_Shader = renderingManager.CompileShader(shaderFilePaths);
 
