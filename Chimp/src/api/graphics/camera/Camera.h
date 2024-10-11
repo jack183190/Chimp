@@ -4,12 +4,13 @@
 #include "ICamera.h"
 
 namespace Chimp {
-	// Represents a camera in 3D space
-	// if this is too high level, see CameraMatrices
+	// Represents an orthographic camera in 3D space
+	// if this is too high level or you need a perspective camera, see CameraMatrices
 	// Updating any property of the camera will automatically update the view / projection matrix
 	class Camera : public ICamera {
 	public:
-		// Create a camera positioned at (0, 0, 0) where +z is forward and +y is up
+		// Create a camera positioned at (0, 0, 0) where +z is forward and +y is up.
+		// The view will be a 1280x720 viewport positioned at (0, 0) with a clipping plane of 0.0 to 1000.0
 		Camera();
 		~Camera() = default;
 
@@ -21,6 +22,17 @@ namespace Chimp {
 
 		// Set the forward vector of the camera, this will normalise (a copy of) the input vector and recalculate the right vector
 		void SetForwardVector(const Vector3f& forward);
+
+		// Set the top left of the view in screen space
+		// This generally will be (0, 0). (unless split screen!!)
+		void SetViewTopLeft(const Vector2f& topLeft);
+
+		// Set the size of the viewport in screen space
+		void SetViewSize(const Vector2f& size);
+
+		// Set the clipping plane of the view.
+		// This is the minimum and maximum z coordinates where objects will be visible. (zNear, zFar)
+		void SetViewClippingPlane(const Vector2f& clippingPlane);
 
 		// Get the position of the camera
 		[[nodiscard]] const Vector3f& GetPosition() const;
@@ -37,12 +49,28 @@ namespace Chimp {
 		// Get the right vector of the camera
 		[[nodiscard]] const Vector3f& GetRightVector() const;
 
+		// Get the top left of the view in screen space
+		[[nodiscard]] const Vector2f& GetViewTopLeft() const;
+
+		// Get the bottom right of the view in screen space
+		[[nodiscard]] const Vector2f& GetViewBottomRight() const;
+
+		// Get the size of the viewport in screen space
+		[[nodiscard]] const Vector2f GetViewSize() const;
+
+		// Get the clipping plane of the view.
+		// This is the minimum and maximum z coordinates where objects will be visible. (zNear, zFar)
+		[[nodiscard]] const Vector2f& GetViewClippingPlane() const;
+
 		// Get the camera matrices
 		[[nodiscard]] const CameraMatrices& GetCameraMatrices() const override;
 
 	private:
 		// Update the view matrix based on the current camera properties
 		void UpdateViewMatrix();
+
+		// Update the projection matrix based on the current camera properties
+		void UpdateProjectionMatrix();
 
 	private:
 		CameraMatrices m_CameraMatrices;
@@ -51,5 +79,9 @@ namespace Chimp {
 		Vector3f m_UpVector;
 		Vector3f m_ForwardVector;
 		Vector3f m_RightVector;
+
+		Vector2f m_ViewTopLeft;
+		Vector2f m_ViewBottomRight;
+		Vector2f m_ViewClippingPlane;
 	};
 }

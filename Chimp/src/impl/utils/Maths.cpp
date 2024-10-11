@@ -25,4 +25,9 @@ namespace Chimp {
 	{
 		return glm::lookAt(position, target, up);
 	}
+
+	Matrix CreateOrthographicProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar)
+	{
+		return glm::ortho(left, right, bottom, top, zNear, zFar);
+	}
 }

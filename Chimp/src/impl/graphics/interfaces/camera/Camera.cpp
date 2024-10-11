@@ -5,9 +5,13 @@ namespace Chimp {
 		m_Position(0.0f, 0.0f, 0.0f),
 		m_UpVector(0.0f, 1.0f, 0.0f),
 		m_ForwardVector(0.0f, 0.0f, 1.0f),
-		m_RightVector()
+		m_RightVector(),
+		m_ViewTopLeft(0.0f, 0.0f),
+		m_ViewBottomRight(1280.0f, 720.0f),
+		m_ViewClippingPlane(0.0f, 1000.0f)
 	{
 		UpdateViewMatrix();
+		UpdateProjectionMatrix();
 	}
 
 	void Camera::SetPosition(const Vector3f& position)
@@ -28,6 +32,26 @@ namespace Chimp {
 		m_ForwardVector = VectorNormalized(forward);
 		m_RightVector = VectorNormalized(VectorCrossProduct(m_ForwardVector, m_UpVector));
 		UpdateViewMatrix();
+	}
+
+	void Camera::SetViewTopLeft(const Vector2f& topLeft)
+	{
+		m_ViewTopLeft = topLeft;
+		UpdateProjectionMatrix();
+	}
+
+	void Camera::SetViewSize(const Vector2f& size)
+	{
+		assert(size.x > 0 && size.y > 0);
+		m_ViewBottomRight = m_ViewTopLeft + size;
+		UpdateProjectionMatrix();
+	}
+
+	void Camera::SetViewClippingPlane(const Vector2f& clippingPlane)
+	{
+		assert(clippingPlane.x < clippingPlane.y);
+		m_ViewClippingPlane = clippingPlane;
+		UpdateProjectionMatrix();
 	}
 
 	const Vector3f& Camera::GetPosition() const
@@ -55,6 +79,26 @@ namespace Chimp {
 		return m_RightVector;
 	}
 
+	const Vector2f& Camera::GetViewTopLeft() const
+	{
+		return m_ViewTopLeft;
+	}
+
+	const Vector2f& Camera::GetViewBottomRight() const
+	{
+		return m_ViewBottomRight;
+	}
+
+	const Vector2f Camera::GetViewSize() const
+	{
+		return m_ViewBottomRight - m_ViewTopLeft;
+	}
+
+	const Vector2f& Camera::GetViewClippingPlane() const
+	{
+		return m_ViewClippingPlane;
+	}
+
 	const CameraMatrices& Camera::GetCameraMatrices() const
 	{
 		return m_CameraMatrices;
@@ -63,5 +107,17 @@ namespace Chimp {
 	void Camera::UpdateViewMatrix()
 	{
 		m_CameraMatrices.SetViewMatrix(CreateViewMatrix(m_Position, m_Position + m_ForwardVector, m_UpVector));
+	}
+
+	void Camera::UpdateProjectionMatrix()
+	{
+		m_CameraMatrices.SetProjectionMatrix(CreateOrthographicProjectionMatrix(
+			m_ViewTopLeft.x,
+			m_ViewBottomRight.x,
+			m_ViewBottomRight.y,
+			m_ViewTopLeft.y,
+			m_ViewClippingPlane.x,
+			m_ViewClippingPlane.y
+		));
 	}
 }

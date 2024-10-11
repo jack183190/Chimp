@@ -15,9 +15,9 @@ TestScene::TestScene(Chimp::Engine& engine)
 	vertexData.NumberElements = 9;
 	vertexData.Size = VERTEX_TYPE.Size * vertexData.NumberElements;
 	vertexData.Data = new float[vertexData.NumberElements] {
-		-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f
+		-0.5f * 1280.0f, -0.5f * 720.0f, 0.0f,
+			0.5f * 1280.0f, -0.5f * 720.0f, 0.0f,
+			0.0f * 1280.0f, 0.5f * 720.0f, 0.0f
 		};
 
 	std::shared_ptr<Chimp::IBuffer> vertexBuffer = renderingManager.CreateBuffer(
@@ -84,15 +84,36 @@ TestScene::TestScene(Chimp::Engine& engine)
 		},
 		Chimp::BindTarget::SHADER_BUFFER
 	);
-	Chimp::Matrix cameraMatrix = Chimp::CreateTranslationMatrix({ 0.0f, 1.0f, 0.0f });
+	const auto& cameraMatrices = renderingManager.GetRenderer().GetDefaultCamera().GetCameraMatrices();
+	Chimp::Matrix cameraMatrix = cameraMatrices.GetProjectionMatrix() * cameraMatrices.GetViewMatrix();
 	Chimp::RawArray cameraArray;
 	cameraArray.NumberElements = 1;
 	cameraArray.Size = sizeof(Chimp::Matrix);
-	cameraArray.Data = memcpy(new Chimp::Matrix[cameraArray.NumberElements], &cameraMatrix, cameraArray.Size);
+	cameraArray.Data = memcpy(new Chimp::Matrix[cameraArray.NumberElements],
+		&cameraMatrix,
+		cameraArray.Size);
 	m_CameraBuffer->SetData(Chimp::GraphicsType::FLOAT,
 		cameraArray);
 	const auto cameraId = m_Shader->GetShaderBuffers().AddBuffer({ m_CameraBuffer, "Camera" });
 	m_Shader->UpdateShaderBuffer(cameraId);
+
+	// Model buffer
+	m_ModelBuffer = renderingManager.CreateBuffer(
+		{
+			Chimp::Usage::UpdateFrequency::OFTEN,
+			Chimp::Usage::Access::CPU_WRITE
+		},
+		Chimp::BindTarget::SHADER_BUFFER
+	);
+	Chimp::Matrix modelMatrix = Chimp::CreateTranslationMatrix({ -1280.0f / 2.0f, 720.0f / 2.0f, 1.0f });
+	Chimp::RawArray modelArray;
+	modelArray.NumberElements = 1;
+	modelArray.Size = sizeof(Chimp::Matrix);
+	modelArray.Data = memcpy(new Chimp::Matrix[modelArray.NumberElements], &modelMatrix, modelArray.Size);
+	m_ModelBuffer->SetData(Chimp::GraphicsType::FLOAT,
+		modelArray);
+	const auto modelId = m_Shader->GetShaderBuffers().AddBuffer({ m_ModelBuffer, "Model" });
+	m_Shader->UpdateShaderBuffer(modelId);
 
 	// Mesh
 	m_Mesh = Chimp::Mesh::Builder()

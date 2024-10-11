@@ -5,7 +5,12 @@ layout(std140) uniform Camera {
     mat4 viewProjection;
 };
 
+layout (std140) uniform Model {
+	mat4 model;
+};
+
 void main()
 {
-    gl_Position = viewProjection * vec4(aPos, 1.0);
+	mat4 mat = viewProjection * model;
+    gl_Position = mat * vec4(aPos, 1.0);
 }
