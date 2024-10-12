@@ -54,5 +54,10 @@
 #include <GLFW/glfw3.h>
 #endif
 
+// STB
+#ifdef CHIMP_STB
+#include <../vendor/stb/stb_image.h>
+#endif
+
 // Preprocessor
 #include "preprocessor/CopyAndMove.h"

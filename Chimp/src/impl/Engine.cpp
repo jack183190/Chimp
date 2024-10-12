@@ -9,9 +9,14 @@
 #include "impl/graphics/opengl/RenderingManager.h"
 #endif
 
+#ifdef CHIMP_STB
+#include "impl/graphics/images/stb/ImageLoader.h"
+#endif
+
 namespace Chimp {
 	Engine::Engine() :
 		m_Window(CreateWindow()),
+		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager())
 	{
 	}
@@ -42,10 +47,20 @@ namespace Chimp {
 
 	std::unique_ptr<IRenderingManager> Engine::CreateRenderingManager() const
 	{
+		assert(m_ImageLoader);
 #ifdef CHIMP_OPENGL
-		return std::make_unique<GL::RenderingManager>();
+		return std::make_unique<GL::RenderingManager>(*m_ImageLoader);
 #endif
 		std::cerr << "No rendering manager implementation available." << std::endl;
+		return nullptr;
+	}
+
+	std::unique_ptr<IImageLoader> Engine::CreateImageLoader() const
+	{
+#ifdef CHIMP_STB
+		return std::make_unique<STB::ImageLoader>();
+#endif
+		std::cerr << "No image loader implementation available." << std::endl;
 		return nullptr;
 	}
 }

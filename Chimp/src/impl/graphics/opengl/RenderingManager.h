@@ -8,7 +8,7 @@
 namespace Chimp::GL {
 	class RenderingManager : public IRenderingManager {
 	public:
-		RenderingManager();
+		RenderingManager(IImageLoader& imageLoader);
 		~RenderingManager();
 
 		IRenderer& GetRenderer() override;
@@ -27,6 +27,11 @@ namespace Chimp::GL {
 		) override;
 
 		std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) override;
+
+		std::unique_ptr<ITexture> CreateTexture(
+			const TextureSlot slot,
+			const TextureProperties& properties,
+			const void* initialData) override;
 
 	private:
 		void InitOpenGL();

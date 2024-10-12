@@ -9,16 +9,22 @@
 #include "shaders/ShaderTypes.h"
 #include "PrimitiveType.h"
 #include "IRenderer.h"
+#include "api/graphics/images/IImageLoader.h"
+#include "api/graphics/textures/ITexture.h"
 
 namespace Chimp {
 	class IRenderingManager {
 	protected:
-		IRenderingManager() = default;
+		IRenderingManager(IImageLoader& imageLoader);
 
 	public:
 		~IRenderingManager() = default;
 
 	public:
+		static constexpr TextureSlot CHIMP_TEXTURE_SLOT = 0;
+
+	public:
+
 		// Get the renderer
 		[[nodiscard]] virtual IRenderer& GetRenderer() = 0;
 
@@ -46,6 +52,43 @@ namespace Chimp {
 		// Compile a shader from source code
 		// In chimp, a "shader" represents all the shaders in the pipeline (vertex, fragment, etc.)
 		// Check Shader::IsValid() to see if the shader was compiled successfully
-		[[nodiscard]] virtual std::unique_ptr<IShader> CompileShader(const ShaderFilePaths &shaderFilePaths) = 0;
+		[[nodiscard]] virtual std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) = 0;
+
+		// Load an image from a file
+		[[nodiscard]] virtual std::unique_ptr<IImageLoader::LoadedImage> LoadImage(const std::string& filePath);
+
+		// Create a texture
+		// The texture will be bound when it is constructed.
+		// slot - the slot the texture is bound to
+		// properties - the properties of the texture
+		// initialData - the initial data to fill the texture with. This isn't owned by the texture, but it can be deleted after the constructor is called.
+		[[nodiscard]] virtual std::unique_ptr<ITexture> CreateTexture(
+			const TextureSlot slot,
+			const TextureProperties& properties,
+			const void* initialData) = 0;
+
+		// Create a texture from an image. Most use cases can use CreateTextureFromImage instead.
+		// The image can be destroyed after this function call, for example by moving a unique ptr into this function.
+		// slot - the slot the texture is bound to
+		// properties - the properties of the texture, you should ensure properties like width, height, and number of channels match the image
+		// image - the image to create the texture from (make sure it is valid!)
+		[[nodiscard]] virtual std::unique_ptr<ITexture> CreateCustomisedTextureFromImage(
+			const TextureSlot slot,
+			const TextureProperties& properties,
+			const std::shared_ptr<IImageLoader::LoadedImage> image);
+
+		// Create a texture from an image.
+		// The texture will be bound to CHIMP_TEXTURE_SLOT.
+		// Relevant properties will be extracted from the image, however some texture properties like filtering must be set by you (or use default values).
+		// This function will return a nullptr if the image is not loaded successfully.
+		// filePath - the path to the image file
+		// properties - the properties of the texture
+		[[nodiscard]] virtual std::unique_ptr<ITexture> CreateTextureFromImage(
+			const std::string& filePath,
+			const TextureProperties& properties = {}
+		);
+
+	protected:
+		IImageLoader& m_ImageLoader;
 	};
 }

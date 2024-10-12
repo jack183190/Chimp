@@ -122,6 +122,12 @@ TestScene::TestScene(Chimp::Engine& engine)
 			std::move(m_Shader)
 		)
 		.Build();
+
+	// Texture
+	m_Texture = renderingManager.CreateTextureFromImage(
+		GAME_SRC + std::string("/textures/tex.png")
+	);
+	assert(m_Texture != nullptr);
 }
 
 TestScene::~TestScene()

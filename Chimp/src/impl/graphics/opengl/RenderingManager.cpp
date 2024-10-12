@@ -3,6 +3,7 @@
 #include "buffers/ElementArray.h"
 #include "buffers/ElementArrayLayout.h"
 #include "shaders/Shader.h"
+#include "textures/Texture.h"
 
 // thank u chatgpt
 void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -48,7 +49,9 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 }
 
 namespace Chimp::GL {
-	RenderingManager::RenderingManager() {
+	RenderingManager::RenderingManager(IImageLoader& imageLoader) : 
+		IRenderingManager(imageLoader)
+	{
 		// Initialise OpenGL
 		InitOpenGL();
 
@@ -74,7 +77,7 @@ namespace Chimp::GL {
 	}
 
 	std::unique_ptr<IElementArrayLayout> RenderingManager::CreateElementArrayLayout(
-		const PrimitiveType primitivesType, 
+		const PrimitiveType primitivesType,
 		const std::vector<ElementComponentLayout>& layouts)
 	{
 		return std::make_unique<GL::ElementArrayLayout>(primitivesType, layouts);
@@ -97,6 +100,11 @@ namespace Chimp::GL {
 			shaderFilePaths,
 			*m_ShaderCompiler
 		);
+	}
+
+	std::unique_ptr<ITexture> RenderingManager::CreateTexture(const TextureSlot slot, const TextureProperties& properties, const void* initialData)
+	{
+		return std::make_unique<GL::Texture>(slot, properties, initialData);
 	}
 
 	void RenderingManager::InitOpenGL()

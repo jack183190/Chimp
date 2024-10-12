@@ -16,6 +16,23 @@ namespace Chimp::GL {
 		case BindTarget::SHADER_BUFFER:
 			return GL_UNIFORM_BUFFER;
 		default:
+			assert(false);
+			__assume(false);
+		}
+	}
+
+	[[nodiscard]] static constexpr GLenum NumberTextureChannelsTranslation(const unsigned int numberTextureChannels) {
+		switch (numberTextureChannels) {
+		case 1:
+			return GL_RED;
+		case 2:
+			return GL_RG;
+		case 3:
+			return GL_RGB;
+		case 4:
+			return GL_RGBA;
+		default:
+			assert(false);
 			__assume(false);
 		}
 	}
@@ -36,6 +53,7 @@ namespace Chimp::GL {
 		else if (primitiveType == PrimitiveType::TRIANGLE_STRIP) {
 			return GL_TRIANGLE_STRIP;
 		}
+		assert(false);
 		__assume(false);
 	}
 
@@ -46,6 +64,7 @@ namespace Chimp::GL {
 		case ShaderType::FRAGMENT:
 			return GL_FRAGMENT_SHADER;
 		default:
+			assert(false);
 			__assume(false);
 		}
 	}
@@ -57,6 +76,7 @@ namespace Chimp::GL {
 		else if (type == GraphicsType::UNSIGNED_INT) {
 			return GL_UNSIGNED_INT;
 		}
+		assert(false);
 		__assume(false);
 	}
 
@@ -94,5 +114,7 @@ namespace Chimp::GL {
 				return GL_STREAM_COPY;
 			}
 		}
+		assert(false);
+		__assume(false);
 	}
 }

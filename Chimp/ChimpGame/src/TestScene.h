@@ -20,4 +20,5 @@ private:
 	std::unique_ptr<Chimp::Mesh> m_Mesh;
 	std::shared_ptr<Chimp::IBuffer> m_CameraBuffer;
 	std::shared_ptr<Chimp::IBuffer> m_ModelBuffer;
+	std::unique_ptr<Chimp::ITexture> m_Texture;
 };

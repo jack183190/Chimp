@@ -18,4 +18,4 @@ Simply use visual studio to run the "Chimp.exe" target.
 You may need to generate the build configurations prior to this, which can be done by reloading both CMakeLists.txt files.
 
 If CMake fails to execute clone_libs.bat, you will need to manually clone the git repos of header-only libraries into the vendor folder.
-See the contents of clone_libs.bat for the git repositories and where they should be cloned to.
+See CMakeLists.txt for Chimp (engine) for the git repositories and where they should be cloned to.
