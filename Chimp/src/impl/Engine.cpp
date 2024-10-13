@@ -48,11 +48,18 @@ namespace Chimp {
 	std::unique_ptr<IRenderingManager> Engine::CreateRenderingManager() const
 	{
 		assert(m_ImageLoader);
+		std::unique_ptr<IRenderingManager> renderingManager = nullptr;
 #ifdef CHIMP_OPENGL
-		return std::make_unique<GL::RenderingManager>(*m_ImageLoader);
+		renderingManager= std::make_unique<GL::RenderingManager>(*m_ImageLoader);
 #endif
-		std::cerr << "No rendering manager implementation available." << std::endl;
-		return nullptr;
+
+		if (!renderingManager) {
+			std::cerr << "No rendering manager implementation available." << std::endl;
+			return nullptr;
+		}
+
+		renderingManager->GetRenderer().SetClearColor(0.0f, 0.0f, 0.0f);
+		return renderingManager;
 	}
 
 	std::unique_ptr<IImageLoader> Engine::CreateImageLoader() const

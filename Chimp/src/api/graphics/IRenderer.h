@@ -7,15 +7,18 @@
 
 namespace Chimp
 {
+	class MainLoop;
+
 	class IRenderer
 	{
+		friend class MainLoop;
 	protected:
 		IRenderer() = default;
 	public:
 		virtual ~IRenderer() = default;
 
 		// Get the default camera
-		[[nodiscard]] const Camera& GetDefaultCamera();
+		[[nodiscard]] Camera& GetDefaultCamera();
 
 		// Set the camera
 		void SetCamera(std::shared_ptr<ICamera> camera);
@@ -26,9 +29,16 @@ namespace Chimp
 		// Draw a mesh section
 		virtual void Draw(const Mesh::Section& meshSection) const = 0;
 
+		// Set the clear color
+		virtual void SetClearColor(float r, float g, float b) = 0;
+
 	protected:
 		// Get the camera matrices
 		[[nodiscard]] const CameraMatrices& GetCameraMatrices() const;
+
+		// Prepare the renderer for drawing
+		// clear color buffer, etc
+		virtual void StartDrawing() const = 0;
 
 	private:
 		std::shared_ptr<Camera> m_DefaultCamera = std::make_shared<Camera>();

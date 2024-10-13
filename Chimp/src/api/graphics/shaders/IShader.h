@@ -31,7 +31,7 @@ namespace Chimp {
 
 		// Bind the buffers to the shader
 		// this must be called whenever the data (or subdata) in the IBuffer has changed
-		virtual void UpdateShaderBuffer(IShaderBuffers::Id id) const = 0;
+		virtual void UpdateShaderBuffer(IShaderBuffers::Index id) const = 0;
 
 		// Set a texture sampler in the shader
 		// This function will bind both the shader and the texture.

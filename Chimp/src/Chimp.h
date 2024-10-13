@@ -5,3 +5,4 @@
 #include "api/window/IWindow.h"
 #include "api/graphics/IRenderingManager.h"
 #include "api/graphics/meshes/TexturedQuad.h"
+#include "api/graphics/camera/controllers/DebugCameraController.h"

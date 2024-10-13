@@ -15,7 +15,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
 		shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
 	}
-	std::shared_ptr<Chimp::IShader> m_Shader = renderingManager.CompileShader(shaderFilePaths);
+	m_Shader = renderingManager.CompileShader(shaderFilePaths);
 
 	if (!m_Shader->IsValid())
 	{
@@ -42,8 +42,14 @@ TestScene::TestScene(Chimp::Engine& engine)
 		cameraArray.Size);
 	m_CameraBuffer->SetData(Chimp::GraphicsType::FLOAT,
 		cameraArray);
-	const auto cameraId = m_Shader->GetShaderBuffers().AddBuffer({ m_CameraBuffer, "Camera" });
-	m_Shader->UpdateShaderBuffer(cameraId);
+	m_CameraBufferId = m_Shader->GetShaderBuffers().AddBuffer({ m_CameraBuffer, "Camera" });
+	m_Shader->UpdateShaderBuffer(m_CameraBufferId);
+
+	// Controller
+	m_CameraController = std::make_unique<Chimp::DebugCameraController>(
+		renderingManager.GetRenderer().GetDefaultCamera(),
+		m_Engine.GetWindow().GetInputManager()
+	);
 
 	// Model buffer
 	m_ModelBuffer = renderingManager.CreateBuffer(
@@ -90,15 +96,16 @@ void TestScene::OnDeactivate()
 
 void TestScene::OnUpdate()
 {
+	// Test input
 	{
 		if (m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::SPACE))
 		{
 			std::cout << "Space key is pressed" << std::endl;
 		}
 
-		if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::A))
+		if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::B))
 		{
-			std::cout << "A key is pressed" << std::endl;
+			std::cout << "B key is pressed" << std::endl;
 		}
 
 		if (m_Engine.GetWindow().GetInputManager().IsMouseButtonDown(Chimp::Mouse::LEFT))
@@ -112,6 +119,22 @@ void TestScene::OnUpdate()
 		{
 			std::cout << "Right mouse button is pressed" << std::endl;
 		}
+	}
+
+	// Update camera
+	m_CameraController->OnUpdate(m_Engine.GetTimeManager().GetDeltaTime());
+	{
+		const auto& cameraMatrices = m_Engine.GetRenderingManager().GetRenderer().GetDefaultCamera().GetCameraMatrices();
+		Chimp::Matrix cameraMatrix = cameraMatrices.GetProjectionMatrix() * cameraMatrices.GetViewMatrix();
+		Chimp::RawArray cameraArray;
+		cameraArray.NumberElements = 1;
+		cameraArray.Size = sizeof(Chimp::Matrix);
+		cameraArray.Data = memcpy(new Chimp::Matrix[cameraArray.NumberElements],
+			&cameraMatrix,
+			cameraArray.Size);
+		m_CameraBuffer->SetData(Chimp::GraphicsType::FLOAT,
+			cameraArray);
+		m_Shader->UpdateShaderBuffer(m_CameraBufferId);
 	}
 }
 

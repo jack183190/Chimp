@@ -2,7 +2,7 @@
 #include "api/graphics/shaders/IShader.h"
 
 namespace Chimp {
-	IShaderBuffers::Id IShaderBuffers::AddBuffer(ShaderBuffer buffer)
+	IShaderBuffers::Index IShaderBuffers::AddBuffer(ShaderBuffer buffer)
 	{
 		assert(m_Buffers.size() < GetMaximumBufferCount());
 		assert(buffer.Buffer != nullptr);
@@ -16,7 +16,7 @@ namespace Chimp {
 	// maybe setting to nullptr instead of removing from the vector?
 	// and do some fancy stuff to reuse nullptr values in AddBuffer? (this would require changing the assert too)
 
-	const ShaderBuffer& IShaderBuffers::GetBuffer(Id id) const
+	const ShaderBuffer& IShaderBuffers::GetBuffer(Index id) const
 	{
 		auto& buffer = m_Buffers[id];
 		assert(buffer.Buffer != nullptr);

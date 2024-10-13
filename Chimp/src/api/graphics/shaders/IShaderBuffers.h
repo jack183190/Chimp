@@ -25,18 +25,18 @@ namespace Chimp {
 
 	public:
 		// A shader-specific identifier for a buffer
-		typedef const size_t Id;
+		typedef size_t Index;
 
 		// Add a bufffer to the shader
 		// Returns a shader-specific identifier for the buffer
 		// This identifier is required for actions such as updating the buffer
-		Id AddBuffer(ShaderBuffer buffer);
+		Index AddBuffer(ShaderBuffer buffer);
 
 		// Get a buffer by its identifier
-		[[nodiscard]] const ShaderBuffer& GetBuffer(Id id) const;
+		[[nodiscard]] const ShaderBuffer& GetBuffer(Index id) const;
 	protected:
 		// Get the maximum number of buffers that can be bound to a shader
-		[[nodiscard]] virtual Id GetMaximumBufferCount() const = 0;
+		[[nodiscard]] virtual Index GetMaximumBufferCount() const = 0;
 
 	private:
 		IShader& m_Shader;

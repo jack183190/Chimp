@@ -81,7 +81,7 @@ namespace Chimp::GL {
 		return m_ShaderBuffers;
 	}
 
-	void Shader::UpdateShaderBuffer(IShaderBuffers::Id id) const
+	void Shader::UpdateShaderBuffer(IShaderBuffers::Index id) const
 	{
 		// TODO i'm not entirely sure if we can use buffer.Index both times
 		const auto& buffer = m_ShaderBuffers.GetBuffer(id);

@@ -5,7 +5,7 @@ namespace Chimp {
 		m_Position(0.0f, 0.0f, 0.0f),
 		m_UpVector(0.0f, 1.0f, 0.0f),
 		m_ForwardVector(0.0f, 0.0f, 1.0f),
-		m_RightVector(),
+		m_RightVector(1.0f, 0.0f, 0.0f),
 		m_ViewTopLeft(0.0f, 0.0f),
 		m_ViewBottomRight(1280.0f, 720.0f),
 		m_ViewClippingPlane(0.0f, 1000.0f)
@@ -23,15 +23,32 @@ namespace Chimp {
 	void Camera::SetUpVector(const Vector3f& up)
 	{
 		m_UpVector = VectorNormalized(up);
-		m_RightVector = VectorNormalized(VectorCrossProduct(m_ForwardVector, m_UpVector));
 		UpdateViewMatrix();
 	}
 
 	void Camera::SetForwardVector(const Vector3f& forward)
 	{
 		m_ForwardVector = VectorNormalized(forward);
-		m_RightVector = VectorNormalized(VectorCrossProduct(m_ForwardVector, m_UpVector));
 		UpdateViewMatrix();
+	}
+
+	void Camera::SetRightVector(const Vector3f& right)
+	{
+		m_RightVector = VectorNormalized(right);
+		UpdateViewMatrix();
+	}
+
+	void Camera::SetNormalizedVectors(const Vector3f& forward, const Vector3f& up, const Vector3f& right)
+	{
+		m_ForwardVector = forward;
+		m_UpVector = up;
+		m_RightVector = right;
+		UpdateViewMatrix();
+	}
+
+	void Camera::SetNormalizedVectors(const std::array<Vector3f, 3> forwardUpRight)
+	{
+		SetNormalizedVectors(forwardUpRight[0], forwardUpRight[1], forwardUpRight[2]);
 	}
 
 	void Camera::SetViewTopLeft(const Vector2f& topLeft)

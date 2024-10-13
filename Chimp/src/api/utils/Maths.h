@@ -1,8 +1,10 @@
 #pragma once
 
+#include "stdafx.h"
 #include <../vendor/glm/glm/glm.hpp>
 #include <../vendor/glm/glm/gtc/matrix_transform.hpp>
 #include <../vendor/glm/glm/gtc/type_ptr.hpp>
+#include <../vendor/glm/glm/gtc/constants.hpp>
 
 // Done so glm can be swapped out by just changing this file rather than the whole project
 
@@ -16,6 +18,8 @@ namespace Chimp {
 	typedef glm::vec<4, int> Vector4i;
 
 	typedef glm::mat4x4 Matrix;
+
+	constexpr float PI = glm::pi<float>();
 
 	// Cross product of two vectors
 	[[nodiscard]] Vector3f VectorCrossProduct(const Vector3f& a, const Vector3f& b);
@@ -33,6 +37,9 @@ namespace Chimp {
 	// Create a scale matrix
 	// scale - The scale vector
 	[[nodiscard]] Matrix CreateScaleMatrix(Vector3f scale);
+
+	// Get the forward, up and right vectors from a yaw, pitch and roll (in radians)
+	[[nodiscard]] std::array<Vector3f, 3> GetForwardUpRightVectors(const Vector3f yawPitchRoll);
 
 	// Create a view matrix
 	// position - The position of the camera

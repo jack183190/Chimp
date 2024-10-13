@@ -18,7 +18,7 @@ namespace Chimp::GL {
 		bool IsValid() const override;
 
 		IShaderBuffers& GetShaderBuffers() override;
-		void UpdateShaderBuffer(IShaderBuffers::Id id) const override;
+		void UpdateShaderBuffer(IShaderBuffers::Index id) const override;
 
 		void SetTextureSampler(const std::string& name, const ITexture& texture) const override;
 

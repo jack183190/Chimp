@@ -9,7 +9,7 @@ namespace Chimp {
 	// Updating any property of the camera will automatically update the view / projection matrix
 	class Camera : public ICamera {
 	public:
-		// Create a camera positioned at (0, 0, 0) where +z is forward and +y is up.
+		// Create a camera positioned at (0, 0, 0) where +z is forward and +y is up and +x is right
 		// The view will be a 1280x720 viewport positioned at (0, 0) with a clipping plane of 0.0 to 1000.0
 		Camera();
 		~Camera() = default;
@@ -17,11 +17,18 @@ namespace Chimp {
 		// Set the position of the camera
 		void SetPosition(const Vector3f& position);
 
-		// Set the up vector of the camera, this will normalise (a copy of) the input vector and recalculate the right vector
+		// Set the up vector of the camera, this will normalise (a copy of) the input vector
 		void SetUpVector(const Vector3f& up);
 
-		// Set the forward vector of the camera, this will normalise (a copy of) the input vector and recalculate the right vector
+		// Set the forward vector of the camera, this will normalise (a copy of) the input vector
 		void SetForwardVector(const Vector3f& forward);
+
+		// Set the right vector of the camera, this will normalise (a copy of) the input vector
+		void SetRightVector(const Vector3f& right);
+
+		// Set forward, up, right vectors of the camera all at once, they must already be normalised
+		void SetNormalizedVectors(const Vector3f& forward, const Vector3f& up, const Vector3f& right);
+		void SetNormalizedVectors(const std::array<Vector3f, 3> forwardUpRight);
 
 		// Set the top left of the view in screen space
 		// This generally will be (0, 0). (unless split screen!!)
