@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "api/graphics/buffers/IBuffer.h"
+#include "impl/graphics/opengl/textures/Texture.h"
 
 namespace Chimp::GL {
 	Shader::Shader(const ShaderFilePaths& paths,
@@ -21,7 +22,7 @@ namespace Chimp::GL {
 			if (!result.Success)
 			{
 				assert(false);
-				DeleteShaders(shaderIds);
+				HelperDeleteShaders(shaderIds);
 				return;
 			}
 			shaderIds.push_back(result.Id);
@@ -46,13 +47,13 @@ namespace Chimp::GL {
 		{
 			std::cerr << "Failed to link shader program " << m_ProgramID << std::endl;
 			assert(false);
-			DeleteShaders(shaderIds);
+			HelperDeleteShaders(shaderIds);
 			m_ProgramID = 0;
 			return;
 		}
 
 		// Delete the shaders, the program contains all required data
-		DeleteShaders(shaderIds);
+		HelperDeleteShaders(shaderIds);
 	}
 
 	Shader::~Shader()
@@ -89,7 +90,17 @@ namespace Chimp::GL {
 		buffer.Buffer->BindBufferBase(buffer.Index);
 	}
 
-	void Shader::DeleteShaders(std::vector<GLuint>& shaderIds)
+	void Shader::SetTextureSampler(const std::string& name, const ITexture& texture) const
+	{
+		Bind();
+		texture.Bind();
+
+		const auto location = glGetUniformLocation(m_ProgramID, name.c_str()); // todo cache this maybe?
+		assert(location != -1); // invalid uniform
+		glUniform1i(location, texture.GetSlot());
+	}
+
+	void Shader::HelperDeleteShaders(std::vector<GLuint>& shaderIds)
 	{
 		for (const auto shaderId : shaderIds)
 		{

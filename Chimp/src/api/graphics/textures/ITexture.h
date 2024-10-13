@@ -24,10 +24,10 @@ namespace Chimp {
 		// Switch the slot the texture is bound to, if you call this, assume the texture is no longer bound.
 		void SetSlot(const TextureSlot slot);
 
-	protected:
 		// Get the slot the texture is bound to
 		[[nodiscard]] TextureSlot GetSlot() const;
 
+	protected:
 		// Get the properties of the texture
 		[[nodiscard]] const TextureProperties& GetProperties() const;
 

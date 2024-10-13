@@ -20,6 +20,14 @@ namespace Chimp::STB {
 		{
 			std::cerr << "Failed to load image: " << path << std::endl;
 		}
+		else {
+			std::cout << "--------------------------" << std::endl;
+			std::cout << "Loaded image: " << path << std::endl;
+			std::cout << "Width: " << image->Width << std::endl;
+			std::cout << "Height: " << image->Height << std::endl;
+			std::cout << "Number of channels: " << image->NumberChannels << std::endl;
+			std::cout << "--------------------------" << std::endl;
+		}
 #endif
 
 		return image;

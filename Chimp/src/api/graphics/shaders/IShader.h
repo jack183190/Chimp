@@ -4,6 +4,8 @@
 #include "IShaderBuffers.h"
 
 namespace Chimp {
+	class ITexture;
+
 	// Represents all the shaders in a pipeline
 	// Vertex, fragment, etc
 	class IShader {
@@ -30,5 +32,11 @@ namespace Chimp {
 		// Bind the buffers to the shader
 		// this must be called whenever the data (or subdata) in the IBuffer has changed
 		virtual void UpdateShaderBuffer(IShaderBuffers::Id id) const = 0;
+
+		// Set a texture sampler in the shader
+		// This function will bind both the shader and the texture.
+		// name - the name of the sampler uniform in the shader
+		// texture - the texture to send
+		virtual void SetTextureSampler(const std::string& name, const ITexture& texture) const = 0;
 	};
 }

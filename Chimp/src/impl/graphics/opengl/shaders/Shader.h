@@ -20,9 +20,11 @@ namespace Chimp::GL {
 		IShaderBuffers& GetShaderBuffers() override;
 		void UpdateShaderBuffer(IShaderBuffers::Id id) const override;
 
+		void SetTextureSampler(const std::string& name, const ITexture& texture) const override;
+
 	private:
 		// Delete shaders by id and clear the vector
-		void DeleteShaders(std::vector<GLuint>& shaderIds);
+		void HelperDeleteShaders(std::vector<GLuint>& shaderIds);
 
 	private:
 		ShaderBuffers m_ShaderBuffers;
