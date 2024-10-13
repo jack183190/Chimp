@@ -9,58 +9,6 @@ TestScene::TestScene(Chimp::Engine& engine)
 
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
-	// vertex buffer
-	const Chimp::GraphicsType VERTEX_TYPE = Chimp::GraphicsType::FLOAT;
-	Chimp::RawArray vertexData;
-	vertexData.NumberElements = 9;
-	vertexData.Size = VERTEX_TYPE.Size * vertexData.NumberElements;
-	vertexData.Data = new float[vertexData.NumberElements] {
-		-0.5f * 1280.0f, -0.5f * 720.0f, 0.0f,
-			0.5f * 1280.0f, -0.5f * 720.0f, 0.0f,
-			0.0f * 1280.0f, 0.5f * 720.0f, 0.0f
-		};
-
-	std::shared_ptr<Chimp::IBuffer> vertexBuffer = renderingManager.CreateBuffer(
-		{
-			Chimp::Usage::UpdateFrequency::VERY_OCCASIONAL,
-			Chimp::Usage::Access::CPU_WRITE
-		},
-		Chimp::BindTarget::VERTEX_BUFFER
-	);
-	vertexBuffer->SetData(VERTEX_TYPE, vertexData);
-
-	// index buffer
-	const Chimp::GraphicsType INDEX_TYPE = Chimp::GraphicsType::UNSIGNED_INT;
-	Chimp::RawArray indexData;
-	indexData.NumberElements = 3;
-	indexData.Size = INDEX_TYPE.Size * indexData.NumberElements;
-	indexData.Data = new uint32_t[indexData.NumberElements]{
-		0, 1, 2
-	};
-
-	auto indexBuffer = renderingManager.CreateBuffer(
-		{
-			Chimp::Usage::UpdateFrequency::VERY_OCCASIONAL,
-			Chimp::Usage::Access::CPU_WRITE
-		},
-		Chimp::BindTarget::INDEX_BUFFER
-	);
-	indexBuffer->SetData(INDEX_TYPE, indexData);
-
-	// element array
-	std::shared_ptr<Chimp::IElementArrayLayout> elementLayout = renderingManager.CreateElementArrayLayout(
-		Chimp::PrimitiveType::TRIANGLES,
-		{
-			{ Chimp::GraphicsType::FLOAT, 3, false }
-		}
-	);
-
-	auto m_ElementArray = renderingManager.CreateElementArray(
-		vertexBuffer,
-		std::move(indexBuffer),
-		elementLayout
-	);
-
 	// shader
 	Chimp::ShaderFilePaths shaderFilePaths = {};
 	{
@@ -105,7 +53,9 @@ TestScene::TestScene(Chimp::Engine& engine)
 		},
 		Chimp::BindTarget::SHADER_BUFFER
 	);
-	Chimp::Matrix modelMatrix = Chimp::CreateTranslationMatrix({ -1280.0f / 2.0f, 720.0f / 2.0f, 1.0f });
+	const auto windowSize = m_Engine.GetWindow().GetSize();
+	Chimp::Matrix modelMatrix = Chimp::CreateScaleMatrix({ windowSize.x / 2.0f, windowSize.y / 2.0f, 1.0f });
+	modelMatrix *= Chimp::CreateTranslationMatrix({ -0.5f, 0.5f, 1.0f });
 	Chimp::RawArray modelArray;
 	modelArray.NumberElements = 1;
 	modelArray.Size = sizeof(Chimp::Matrix);
@@ -116,12 +66,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 	m_Shader->UpdateShaderBuffer(modelId);
 
 	// Mesh
-	m_Mesh = Chimp::Mesh::Builder()
-		.AddSection(
-			std::move(m_ElementArray),
-			m_Shader
-		)
-		.Build();
+	m_Mesh = Chimp::TexturedQuad::Create(renderingManager, m_Shader);
 
 	// Texture
 	m_Texture = renderingManager.CreateTextureFromImage(

@@ -24,7 +24,7 @@ namespace Chimp {
 
 		// Set the data of the buffer, this will call Bind()
 		// dataTypes is the type of data in the RawArray
-		// data is the data to set
+		// data is the data to set, this can be deleted after this function is called
 		void SetData(const GraphicsType dataType, const RawArray &data) {
 			Bind();
 			SetDataBindless(dataType, data);

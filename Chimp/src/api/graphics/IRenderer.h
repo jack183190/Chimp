@@ -2,7 +2,7 @@
 
 #include "buffers/IElementArray.h"
 #include "shaders/IShader.h"
-#include "Mesh.h"
+#include "meshes/Mesh.h"
 #include "camera/Camera.h"
 
 namespace Chimp

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "shaders/IShader.h"
-#include "buffers/IElementArray.h"
+#include "../shaders/IShader.h"
+#include "../buffers/IElementArray.h"
 
 namespace Chimp {
 	// A mesh consists of several Mesh::Section objects, each with an element array and a shader.
@@ -34,6 +34,7 @@ namespace Chimp {
 			bool m_IsBuilt = false;
 		};
 		friend class Builder;
+
 	private:
 		Mesh(Builder& builder);
 

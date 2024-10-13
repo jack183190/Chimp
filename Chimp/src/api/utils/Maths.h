@@ -30,6 +30,10 @@ namespace Chimp {
 	// translation - The translation vector
 	[[nodiscard]] Matrix CreateTranslationMatrix(Vector3f translation);
 
+	// Create a scale matrix
+	// scale - The scale vector
+	[[nodiscard]] Matrix CreateScaleMatrix(Vector3f scale);
+
 	// Create a view matrix
 	// position - The position of the camera
 	// target - The point the camera is looking at

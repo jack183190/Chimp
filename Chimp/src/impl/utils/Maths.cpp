@@ -21,6 +21,11 @@ namespace Chimp {
 		return glm::translate(CreateIdentityMatrix(), translation);
 	}
 
+	Matrix CreateScaleMatrix(Vector3f scale)
+	{
+		return glm::scale(CreateIdentityMatrix(), scale);
+	}
+
 	Matrix CreateViewMatrix(Vector3f position, Vector3f target, Vector3f up)
 	{
 		return glm::lookAt(position, target, up);

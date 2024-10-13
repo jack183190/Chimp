@@ -1,4 +1,4 @@
-#include "api/graphics/Mesh.h"
+#include "api/graphics/meshes/Mesh.h"
 
 namespace Chimp {
 	// Mesh::Builder
