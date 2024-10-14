@@ -71,7 +71,9 @@ namespace Chimp::GL {
 		return *m_Renderer;
 	}
 
-	std::unique_ptr<IBuffer> RenderingManager::CreateBuffer(const Usage& usage, const BindTarget target)
+	std::unique_ptr<IBuffer> RenderingManager::CreateBuffer(
+		const Usage& usage,
+		const BindTarget target)
 	{
 		return std::make_unique<GL::Buffer>(usage, target);
 	}

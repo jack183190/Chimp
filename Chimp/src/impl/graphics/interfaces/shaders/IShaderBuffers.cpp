@@ -22,4 +22,11 @@ namespace Chimp {
 		assert(buffer.Buffer != nullptr);
 		return buffer;
 	}
+
+	ShaderBuffer& IShaderBuffers::GetBuffer(Index id)
+	{
+		auto& buffer = m_Buffers[id];
+		assert(buffer.Buffer != nullptr);
+		return buffer;
+	}
 }

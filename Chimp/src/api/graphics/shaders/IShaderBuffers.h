@@ -34,6 +34,7 @@ namespace Chimp {
 
 		// Get a buffer by its identifier
 		[[nodiscard]] const ShaderBuffer& GetBuffer(Index id) const;
+		[[nodiscard]] ShaderBuffer& GetBuffer(Index id);
 	protected:
 		// Get the maximum number of buffers that can be bound to a shader
 		[[nodiscard]] virtual Index GetMaximumBufferCount() const = 0;

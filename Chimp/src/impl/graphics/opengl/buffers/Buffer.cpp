@@ -2,11 +2,14 @@
 #include "impl/graphics/opengl/Translations.h"
 
 namespace Chimp::GL {
-	Buffer::Buffer(const Usage& usage,
-		const BindTarget target) :
+	Buffer::Buffer(
+		const Usage& usage,
+		const BindTarget target
+	) :
 		m_Usage(usage),
 		m_GLUsageHint(UsageTranslation(usage)),
-	m_BindTarget(BindTargetTranslation(target)) {
+		m_BindTarget(BindTargetTranslation(target))
+	{
 		glGenBuffers(1, &m_Id);
 	}
 
@@ -43,5 +46,5 @@ namespace Chimp::GL {
 		glBindBufferBase(m_BindTarget, index, m_Id);
 	}
 
-	
+
 }

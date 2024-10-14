@@ -25,25 +25,20 @@ TestScene::TestScene(Chimp::Engine& engine)
 	std::cout << "Shader compiled successfully" << std::endl;
 
 	// Camera
-	m_CameraBuffer = renderingManager.CreateBuffer(
+	std::shared_ptr<Chimp::IBuffer> m_CameraBuffer = renderingManager.CreateBuffer(
+		Chimp::GraphicsType::FLOAT,
+		sizeof(Chimp::Matrix),
+		1,
 		{
 			Chimp::Usage::UpdateFrequency::OCCASIONAL,
 			Chimp::Usage::Access::CPU_WRITE
 		},
 		Chimp::BindTarget::SHADER_BUFFER
 	);
+
 	const auto& cameraMatrices = renderingManager.GetRenderer().GetDefaultCamera().GetCameraMatrices();
 	Chimp::Matrix cameraMatrix = cameraMatrices.GetProjectionMatrix() * cameraMatrices.GetViewMatrix();
-	Chimp::RawArray cameraArray;
-	cameraArray.NumberElements = 1;
-	cameraArray.Size = sizeof(Chimp::Matrix);
-	cameraArray.Data = memcpy(new Chimp::Matrix[cameraArray.NumberElements],
-		&cameraMatrix,
-		cameraArray.Size);
-	m_CameraBuffer->SetData(Chimp::GraphicsType::FLOAT,
-		cameraArray);
 	m_CameraBufferId = m_Shader->GetShaderBuffers().AddBuffer({ m_CameraBuffer, "Camera" });
-	m_Shader->UpdateShaderBuffer(m_CameraBufferId);
 
 	// Controller
 	m_CameraController = std::make_unique<Chimp::DebugCameraController>(
@@ -125,16 +120,8 @@ void TestScene::OnUpdate()
 	m_CameraController->OnUpdate(m_Engine.GetTimeManager().GetDeltaTime());
 	{
 		const auto& cameraMatrices = m_Engine.GetRenderingManager().GetRenderer().GetDefaultCamera().GetCameraMatrices();
-		Chimp::Matrix cameraMatrix = cameraMatrices.GetProjectionMatrix() * cameraMatrices.GetViewMatrix();
-		Chimp::RawArray cameraArray;
-		cameraArray.NumberElements = 1;
-		cameraArray.Size = sizeof(Chimp::Matrix);
-		cameraArray.Data = memcpy(new Chimp::Matrix[cameraArray.NumberElements],
-			&cameraMatrix,
-			cameraArray.Size);
-		m_CameraBuffer->SetData(Chimp::GraphicsType::FLOAT,
-			cameraArray);
-		m_Shader->UpdateShaderBuffer(m_CameraBufferId);
+		const Chimp::Matrix cameraMatrix = cameraMatrices.GetProjectionMatrix() * cameraMatrices.GetViewMatrix();
+		m_Shader->SetShaderBufferSubData(m_CameraBufferId, &cameraMatrix, sizeof(Chimp::Matrix));
 	}
 }
 

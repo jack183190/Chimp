@@ -39,6 +39,7 @@ namespace Chimp {
 	{
 		return m_IndexBuffer->GetDataType();
 	}
+
 	PrimitiveType IElementArray::GetPrimitiveType() const
 	{
 		return m_Layout->GetPrimitiveType();

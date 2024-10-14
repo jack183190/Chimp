@@ -83,7 +83,6 @@ namespace Chimp::GL {
 
 	void Shader::UpdateShaderBuffer(IShaderBuffers::Index id) const
 	{
-		// TODO i'm not entirely sure if we can use buffer.Index both times
 		const auto& buffer = m_ShaderBuffers.GetBuffer(id);
 		GLuint blockIndex = glGetUniformBlockIndex(m_ProgramID, buffer.Name.c_str()); // TODO: could we put this in the shader buffer struct?
 		glUniformBlockBinding(m_ProgramID, blockIndex, static_cast<GLuint>(buffer.Index));

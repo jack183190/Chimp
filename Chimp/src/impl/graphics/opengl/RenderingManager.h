@@ -13,7 +13,10 @@ namespace Chimp::GL {
 
 		IRenderer& GetRenderer() override;
 
-		std::unique_ptr<IBuffer> CreateBuffer(const Usage& usage, const BindTarget target) override;
+		std::unique_ptr<IBuffer> CreateBuffer(
+			const Usage& usage,
+			const BindTarget target
+			) override;
 
 		std::unique_ptr<IElementArrayLayout> CreateElementArrayLayout(
 			const PrimitiveType primitivesType,

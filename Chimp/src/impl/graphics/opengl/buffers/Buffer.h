@@ -5,7 +5,9 @@
 namespace Chimp::GL {
 	class Buffer : public IBuffer {
 	public:
-		Buffer(const Usage& usage, const BindTarget target);
+		Buffer(
+			const Usage& usage, 
+			const BindTarget target);
 		~Buffer();
 
 		void Bind() override;

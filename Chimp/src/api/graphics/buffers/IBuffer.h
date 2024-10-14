@@ -25,55 +25,35 @@ namespace Chimp {
 		// Set the data of the buffer, this will call Bind()
 		// dataTypes is the type of data in the RawArray
 		// data is the data to set, this can be deleted after this function is called
-		void SetData(const GraphicsType dataType, const RawArray &data) {
-			Bind();
-			SetDataBindless(dataType, data);
-		}
+		void SetData(const GraphicsType dataType, const RawArray& data);
 
 		// Set the data of the buffer, this will not call Bind()
 		virtual void SetDataBindless(const GraphicsType dataType, const RawArray& data) = 0;
 
 		// Set the sub data of the buffer, this will call Bind()
-		void SetSubData(const void* data, const size_t size, size_t offset) {
-			Bind();
-			SetSubDataBindless(data, size, offset);
-		}
-		void SetSubData(const RawArray& data, size_t offset) {
-			SetSubData(data.Data, data.Size, offset);
-		}
+		void SetSubData(const void* data, const size_t size, size_t offset);
+		void SetSubData(const RawArray& data, size_t offset);
 
 		// Set the sub data of the buffer, this will not call Bind()
 		virtual void SetSubDataBindless(const void* data, const size_t size, size_t offset) = 0;
-		void SetSubDataBindless(const RawArray& data, size_t offset) {
-			SetSubDataBindless(data.Data, data.Size, offset);
-		}
+		void SetSubDataBindless(const RawArray& data, size_t offset);
 
 		// Get the size (number of bytes) of the buffer
-		[[nodiscard]] size_t GetSize() const {
-			return m_Size;
-		}
+		[[nodiscard]] size_t GetSize() const;
 
 		// Get the number of elements in the buffer
-		[[nodiscard]] size_t GetNumberElements() const {
-			return m_NumberElements;
-		}
+		[[nodiscard]] size_t GetNumberElements() const;
 
 		// Get the data type of the buffer
-		[[nodiscard]] GraphicsType GetDataType() const {
-			return m_DataType;
-		}
+		[[nodiscard]] GraphicsType GetDataType() const;
 
 		// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
 		virtual void BindBufferBase(const size_t index) const = 0;
 
 	protected:
-		void Resize(size_t size, size_t numberElements) {
-			m_Size = size;
-			m_NumberElements = numberElements;
-		}
-
+		void Resize(size_t size, size_t numberElements);
 	protected:
-		GraphicsType m_DataType{ GraphicsType::FLOAT };
+		GraphicsType m_DataType{ GraphicsType::FLOAT }; // this is just for how the data is interpreted
 
 	private:
 		size_t m_NumberElements{ 0 };

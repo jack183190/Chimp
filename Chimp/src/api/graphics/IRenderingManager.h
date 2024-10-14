@@ -28,10 +28,24 @@ namespace Chimp {
 		// Get the renderer
 		[[nodiscard]] virtual IRenderer& GetRenderer() = 0;
 
-		// Create a buffer which holds data on the GPU
+		// Create a buffer which holds data on the GPU.
+		// dataType, size, numElements can be left empty and will be updated once data is set.
+		// dataType - the type of data in the buffer (e.g. float, int, etc.) (default float)
+		// size - the size of the buffer in bytes (default 0)
+		// numElements - the number of elements in the buffer (default 0)
 		// usage - defines if the buffer can be updated and how often it will be updated (hint for optimization)
 		// target - defines how the buffer will be used (e.g. vertex buffer, index buffer, etc.)
-		[[nodiscard]] virtual std::unique_ptr<IBuffer> CreateBuffer(const Usage& usage, const BindTarget target) = 0;
+		[[nodiscard]] virtual std::unique_ptr<IBuffer> CreateBuffer(
+			const GraphicsType dataType,
+			const size_t size,
+			const size_t numElements,
+			const Usage& usage,
+			const BindTarget target
+		);
+		[[nodiscard]] virtual std::unique_ptr<IBuffer> CreateBuffer(
+			const Usage& usage,
+			const BindTarget target
+		) = 0;
 
 		// Create an element array layout which defines how the data in an ElementArray is structured
 		// primitivesType - the type of primitives in the ElementArray

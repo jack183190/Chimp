@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "IShaderBuffers.h"
+#include "api/utils/RawArray.h"
 
 namespace Chimp {
 	class ITexture;
@@ -32,6 +33,22 @@ namespace Chimp {
 		// Bind the buffers to the shader
 		// this must be called whenever the data (or subdata) in the IBuffer has changed
 		virtual void UpdateShaderBuffer(IShaderBuffers::Index id) const = 0;
+
+		// Set the subdata inside and then update a shader buffer
+		// id - the index of the buffer
+		// data - the data to set, this can be deleted after the function returns
+		// size - the size of the data in bytes
+		// offset - the offset to start writing the data (Default 0)
+		virtual void SetShaderBufferSubData(
+			IShaderBuffers::Index id, 
+			const void* data,
+			const size_t size, 
+			const size_t offset = 0);
+		// rawArray - the data to set, this can be deleted after the function returns
+		virtual void SetShaderBufferSubData(
+			IShaderBuffers::Index id,
+			const RawArray& rawArray,
+			const size_t offset = 0);
 
 		// Set a texture sampler in the shader
 		// This function will bind both the shader and the texture.
