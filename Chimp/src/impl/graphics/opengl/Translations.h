@@ -76,6 +76,12 @@ namespace Chimp::GL {
 		else if (type == GraphicsType::UNSIGNED_INT) {
 			return GL_UNSIGNED_INT;
 		}
+		else if (type == GraphicsType::UNSIGNED_SHORT) {
+			return GL_UNSIGNED_SHORT;
+		}
+		else if (type == GraphicsType::UNSIGNED_BYTE) {
+			return GL_UNSIGNED_BYTE;
+		}
 		assert(false);
 		__assume(false);
 	}

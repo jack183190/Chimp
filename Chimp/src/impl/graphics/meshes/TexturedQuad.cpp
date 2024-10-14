@@ -6,10 +6,9 @@ namespace Chimp {
 		std::shared_ptr<IShader> shader
 	) {
 		// Vertex buffer
-		const GraphicsType VERTEX_TYPE = GraphicsType::FLOAT;
 		RawArray vertexData;
 		vertexData.NumberElements = (3 + 2) * 4;
-		vertexData.Size = VERTEX_TYPE.Size * vertexData.NumberElements;
+		vertexData.Size = sizeof(float) * vertexData.NumberElements;
 		vertexData.Data = new float[vertexData.NumberElements] {
 			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 				0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -24,7 +23,7 @@ namespace Chimp {
 			},
 			BindTarget::VERTEX_BUFFER
 		);
-		vertexBuffer->SetData(VERTEX_TYPE, vertexData);
+		vertexBuffer->SetData(vertexData);
 
 		// Index buffer
 		const GraphicsType INDEX_TYPE = GraphicsType::UNSIGNED_INT;
@@ -43,7 +42,7 @@ namespace Chimp {
 			},
 			BindTarget::INDEX_BUFFER
 		);
-		indexBuffer->SetData(INDEX_TYPE, indexData);
+		indexBuffer->SetData(indexData);
 
 		// Element array
 		std::unique_ptr<IElementArrayLayout> elementLayout = renderingManager.CreateElementArrayLayout(
@@ -57,6 +56,7 @@ namespace Chimp {
 		auto elementArray = renderingManager.CreateElementArray(
 			vertexBuffer,
 			std::move(indexBuffer),
+			INDEX_TYPE,
 			std::move(elementLayout)
 		);
 

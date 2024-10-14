@@ -8,7 +8,9 @@ namespace Chimp::GL {
 		ElementArray(
 			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
-			std::shared_ptr<IElementArrayLayout> layout);
+			GraphicsType indexType,
+			std::shared_ptr<IElementArrayLayout> layout
+		);
 		~ElementArray() = default;
 
 		void Bind() const override;

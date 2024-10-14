@@ -1,10 +1,10 @@
 #include "api/graphics/buffers/IBuffer.h"
 
 namespace Chimp {
-	void IBuffer::SetData(const GraphicsType dataType, const RawArray& data)
+	void IBuffer::SetData(const RawArray& data)
 	{
 		Bind();
-		SetDataBindless(dataType, data);
+		SetDataBindless(data);
 	}
 
 	void IBuffer::SetSubData(const void* data, const size_t size, size_t offset)
@@ -32,11 +32,6 @@ namespace Chimp {
 	size_t IBuffer::GetNumberElements() const
 	{
 		return m_NumberElements;
-	}
-
-	GraphicsType IBuffer::GetDataType() const
-	{
-		return m_DataType;
 	}
 
 	void IBuffer::Resize(size_t size, size_t numberElements)

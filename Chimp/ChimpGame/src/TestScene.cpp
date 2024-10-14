@@ -26,7 +26,6 @@ TestScene::TestScene(Chimp::Engine& engine)
 
 	// Camera
 	std::shared_ptr<Chimp::IBuffer> m_CameraBuffer = renderingManager.CreateBuffer(
-		Chimp::GraphicsType::FLOAT,
 		sizeof(Chimp::Matrix),
 		1,
 		{
@@ -61,8 +60,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 	modelArray.NumberElements = 1;
 	modelArray.Size = sizeof(Chimp::Matrix);
 	modelArray.Data = memcpy(new Chimp::Matrix[modelArray.NumberElements], &modelMatrix, modelArray.Size);
-	m_ModelBuffer->SetData(Chimp::GraphicsType::FLOAT,
-		modelArray);
+	m_ModelBuffer->SetData(modelArray);
 	const auto modelId = m_Shader->GetShaderBuffers().AddBuffer({ m_ModelBuffer, "Model" });
 	m_Shader->UpdateShaderBuffer(modelId);
 

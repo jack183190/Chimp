@@ -27,6 +27,8 @@ namespace Chimp {
 	public:
 		static const GraphicsType FLOAT;
 		static const GraphicsType UNSIGNED_INT;
+		static const GraphicsType UNSIGNED_SHORT;
+		static const GraphicsType UNSIGNED_BYTE;
 
 	private:
 		static unsigned int NumberTypes;

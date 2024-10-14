@@ -26,6 +26,7 @@ namespace Chimp::GL {
 		std::unique_ptr<IElementArray> CreateElementArray(
 			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
+			GraphicsType indexType,
 			std::shared_ptr<IElementArrayLayout> layout
 		) override;
 

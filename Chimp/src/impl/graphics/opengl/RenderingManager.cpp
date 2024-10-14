@@ -86,12 +86,15 @@ namespace Chimp::GL {
 	}
 
 	std::unique_ptr<IElementArray> RenderingManager::CreateElementArray(
-		std::shared_ptr<IBuffer> vertexBuffer, std::unique_ptr<IBuffer> indexBuffer,
+		std::shared_ptr<IBuffer> vertexBuffer,
+		std::unique_ptr<IBuffer> indexBuffer,
+		GraphicsType indexType,
 		std::shared_ptr<IElementArrayLayout> layout)
 	{
 		return std::make_unique<GL::ElementArray>(
 			std::move(vertexBuffer),
 			std::move(indexBuffer),
+			indexType,
 			std::move(layout)
 		);
 	}

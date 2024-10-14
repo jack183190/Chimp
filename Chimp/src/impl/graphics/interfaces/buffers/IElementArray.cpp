@@ -3,9 +3,12 @@
 namespace Chimp {
 	IElementArray::IElementArray(std::shared_ptr<IBuffer> vertexBuffer,
 		std::unique_ptr<IBuffer> indexBuffer,
-		std::shared_ptr<IElementArrayLayout> layout) :
+		GraphicsType indexType,
+		std::shared_ptr<IElementArrayLayout> layout
+	) :
 		m_VertexBuffer(std::move(vertexBuffer)),
 		m_IndexBuffer(std::move(indexBuffer)),
+		m_IndexType(indexType),
 		m_Layout(std::move(layout))
 	{
 	}
@@ -37,7 +40,7 @@ namespace Chimp {
 
 	GraphicsType IElementArray::GetIndexType() const
 	{
-		return m_IndexBuffer->GetDataType();
+		return m_IndexType;
 	}
 
 	PrimitiveType IElementArray::GetPrimitiveType() const

@@ -6,8 +6,10 @@
 namespace Chimp {
 	class IElementArray {
 	protected:
-		IElementArray(std::shared_ptr<IBuffer> vertexBuffer,
+		IElementArray(
+			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
+			GraphicsType indexType,
 			std::shared_ptr<IElementArrayLayout> layout);
 	public:
 		~IElementArray() = default;
@@ -37,5 +39,6 @@ namespace Chimp {
 		std::shared_ptr<IBuffer> m_VertexBuffer;
 		std::unique_ptr<IBuffer> m_IndexBuffer;
 		std::shared_ptr<IElementArrayLayout> m_Layout;
+		GraphicsType m_IndexType;
 	};
 }

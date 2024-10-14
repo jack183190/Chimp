@@ -6,14 +6,14 @@ namespace Chimp {
 	{
 	}
 
-	std::unique_ptr<IBuffer> IRenderingManager::CreateBuffer(const GraphicsType dataType, const size_t size, const size_t numElements, const Usage& usage, const BindTarget target)
+	std::unique_ptr<IBuffer> IRenderingManager::CreateBuffer(const size_t size, const size_t numElements, const Usage& usage, const BindTarget target)
 	{
 		auto buffer = CreateBuffer(usage, target);
 		RawArray data;
 		data.Data = new char[size];
 		data.Size = size;
 		data.NumberElements = numElements;
-		buffer->SetData(dataType, data);
+		buffer->SetData(data);
 		return std::move(buffer);
 	}
 
