@@ -14,6 +14,7 @@ namespace Chimp {
 			m_OutdatedSize = size;
 			return true;
 		}
+		return false;
 	}
 
 	WindowStatus IWindow::GetStatus() const

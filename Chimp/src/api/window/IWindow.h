@@ -11,6 +11,7 @@ namespace Chimp {
 	class MainLoop;
 	class IWindow {
 		friend class MainLoop;
+		DISABLE_COPY(IWindow);
 	protected:
 		IWindow() = default;
 

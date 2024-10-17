@@ -25,7 +25,7 @@ include(FetchContent)
 add_subdirectory("ChimpGame")
 
 # Sources
-add_executable (Chimp "src/main.cpp" "src/Chimp.h"  "src/api/scenes/Scene.h" "src/stdafx.h" "src/api/scenes/SceneManager.h" "src/impl/scenes/SceneManager.cpp" "src/impl/MainLoop.h" "src/impl/MainLoop.cpp" "src/api/Engine.h" "src/impl/time/TimeManager.cpp" "src/impl/Engine.cpp" "src/api/window/IWindow.h" "src/api/window/InputManager.h" "src/api/window/Keys.h" "src/impl/window/InputManager.cpp" "src/impl/window/WindowGLFW.h" "src/impl/window/IWindow.cpp" "src/impl/window/WindowGLFW.cpp" "src/api/Maths.h")
+add_executable (Chimp "src/Main.cpp" "src/Chimp.h"  "src/api/scenes/Scene.h" "src/stdafx.h" "src/api/scenes/SceneManager.h" "src/impl/scenes/SceneManager.cpp" "src/impl/MainLoop.h" "src/impl/MainLoop.cpp" "src/api/Engine.h" "src/impl/time/TimeManager.cpp" "src/impl/Engine.cpp" "src/api/window/IWindow.h" "src/api/window/InputManager.h" "src/api/window/Keys.h" "src/impl/window/InputManager.cpp" "src/impl/window/WindowGLFW.h" "src/impl/window/IWindow.cpp" "src/impl/window/WindowGLFW.cpp" "src/api/utils/Maths.h"  "src/api/graphics/buffers/IBuffer.h" "src/api/graphics/IRenderingManager.h" "src/api/graphics/buffers/Usage.h" "src/preprocessor/CopyAndMove.h" "src/impl/graphics/opengl/RenderingManager.h" "src/impl/graphics/opengl/RenderingManager.cpp" "src/impl/graphics/opengl/buffers/Buffer.h" "src/impl/graphics/opengl/buffers/Buffer.cpp" "src/impl/graphics/opengl/Translations.h"  "src/api/graphics/buffers/IElementArray.h"  "src/api/utils/RawArray.h" "src/impl/utils/RawArray.cpp" "src/impl/graphics/interfaces/buffers/IElementArray.cpp" "src/impl/graphics/opengl/buffers/ElementArray.h" "src/impl/graphics/opengl/buffers/ElementArray.cpp" "src/api/graphics/buffers/IElementArrayLayout.h" "src/impl/graphics/interfaces/buffers/IElementArrayLayout.cpp" "src/api/graphics/GraphicsType.h" "src/impl/graphics/opengl/buffers/ElementArrayLayout.cpp" "src/impl/graphics/interfaces/GraphicsType.cpp" "src/api/utils/FileReader.h" "src/impl/utils/FileReader.cpp"  "src/api/graphics/shaders/IShader.h" "src/api/graphics/shaders/IShaderCompiler.h" "src/api/graphics/shaders/ShaderTypes.h" "src/impl/utils/NotNullHack.h" "src/impl/graphics/opengl/shaders/ShaderCompiler.h" "src/impl/graphics/opengl/shaders/ShaderCompiler.cpp" "src/impl/graphics/opengl/shaders/Shader.h" "src/impl/graphics/opengl/shaders/Shader.cpp"   "src/api/graphics/IRenderer.h" "src/impl/graphics/opengl/Renderer.h" "src/impl/graphics/opengl/Renderer.cpp" "src/api/graphics/PrimitiveType.h" "src/impl/graphics/interfaces/PrimitiveType.cpp" "src/api/graphics/meshes/Mesh.h" "src/impl/graphics/meshes/Mesh.cpp" "src/impl/graphics/interfaces/IRenderer.cpp" "src/api/graphics/camera/CameraMatrices.h" "src/impl/utils/Maths.cpp" "src/impl/graphics/camera/CameraMatrices.cpp" "src/api/graphics/camera/Camera.h" "src/impl/graphics/camera/Camera.cpp" "src/api/graphics/camera/ICamera.h" "src/api/graphics/shaders/IShaderBuffers.h" "src/impl/graphics/interfaces/shaders/IShaderBuffers.cpp" "src/impl/graphics/opengl/shaders/ShaderBuffers.h" "src/api/graphics/images/IImageLoader.h" "src/impl/graphics/images/interfaces/IImageLoader.cpp" "src/impl/graphics/images/stb/ImageLoader.h" "src/impl/graphics/images/stb/ImageLoader.cpp"  "src/api/graphics/textures/ITexture.h" "src/api/graphics/textures/TextureSlot.h" "src/impl/graphics/interfaces/textures/ITexture.cpp" "src/impl/graphics/opengl/textures/Texture.h" "src/impl/graphics/opengl/textures/Texture.cpp" "src/api/graphics/textures/TextureProperties.h" "src/impl/graphics/interfaces/IRenderingManager.cpp" "src/impl/graphics/images/stb/STBInit.cpp" "src/api/graphics/meshes/TexturedQuad.h" "src/impl/graphics/meshes/TexturedQuad.cpp" "src/api/graphics/camera/controllers/DebugCameraController.h" "src/impl/graphics/camera/controllers/DebugCameraController.cpp" "src/impl/graphics/interfaces/shaders/IShader.cpp" "src/impl/graphics/interfaces/buffers/IBuffer.cpp" )
 
 # Include directories
 target_include_directories(Chimp PRIVATE "src/")
@@ -35,10 +35,17 @@ target_include_directories(Chimp PRIVATE "src/impl/")
 target_link_libraries(Chimp PRIVATE ChimpGame)
 
 # GLM
-set(GLM_VERSION 1.0.1)
 # TODO convert to a shell script to support other platforms, or maybe as a git submodule
+add_compile_definitions(CHIMP_GLM=1)
 execute_process(
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/lib_glm.bat ${GLM_VERSION}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat glm https://github.com/g-truc/glm.git 1.0.1
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# STB
+add_compile_definitions(CHIMP_STB=1)
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat stb https://github.com/nothings/stb.git master
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -52,6 +59,21 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glfw)
 target_link_libraries(Chimp PRIVATE glfw)
+endif()
+
+# OpenGL
+if (CHIMP_PLATFORM EQUAL CHIMP_PLATFORM_WINDOWS)
+add_compile_definitions(CHIMP_OPENGL=1)
+find_package(OpenGL REQUIRED)
+target_link_libraries(Chimp PRIVATE OpenGL::GL)
+# GLEW (OpenGL Extension Wrangler Library)
+FetchContent_Declare(
+  glew
+  GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
+  GIT_TAG glew-cmake-2.2.0
+)
+FetchContent_MakeAvailable(glew)
+target_link_libraries(Chimp PRIVATE libglew_static)
 endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

@@ -12,7 +12,12 @@ namespace Chimp {
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+#ifdef CHIMP_OPENGL
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifndef NDEBUG
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+#endif
 
 		m_Window = glfwCreateWindow(1280, 720, "", nullptr, nullptr);
 		if (!m_Window)
@@ -101,7 +106,7 @@ namespace Chimp {
 
 	void WindowGLFW::SetSize(const Vector2f& size)
 	{
-		glfwSetWindowSize(m_Window, size.x, size.y);
+		glfwSetWindowSize(m_Window, static_cast<int>(size.x), static_cast<int>(size.y));
 	}
 
 	void WindowGLFW::SetTitle(const std::string& title)
