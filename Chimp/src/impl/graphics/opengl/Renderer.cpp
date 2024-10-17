@@ -22,7 +22,7 @@ namespace Chimp::GL {
 		meshSection.Shader->Unbind();
 	}
 
-	void Renderer::SetClearColor(float r, float g, float b)
+	void Renderer::SetClearColor(float r, float g, float b) const
 	{
 		glClearColor(r, g, b, 1.0f);
 	}

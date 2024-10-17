@@ -11,7 +11,7 @@ namespace Chimp::GL {
 
 		void Draw(const Mesh::Section& meshSection) const override;
 
-		void SetClearColor(float r, float g, float b) override;
+		void SetClearColor(float r, float g, float b) const override;
 
 	protected:
 		void StartDrawing() const override;

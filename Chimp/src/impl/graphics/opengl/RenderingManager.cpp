@@ -66,21 +66,21 @@ namespace Chimp::GL {
 
 	}
 
-	IRenderer& RenderingManager::GetRenderer()
+	IRenderer& RenderingManager::GetRenderer() const
 	{
 		return *m_Renderer;
 	}
 
 	std::unique_ptr<IBuffer> RenderingManager::CreateBuffer(
 		const Usage& usage,
-		const BindTarget target)
+		const BindTarget target) const
 	{
 		return std::make_unique<GL::Buffer>(usage, target);
 	}
 
 	std::unique_ptr<IElementArrayLayout> RenderingManager::CreateElementArrayLayout(
 		const PrimitiveType primitivesType,
-		const std::vector<ElementComponentLayout>& layouts)
+		const std::vector<ElementComponentLayout>& layouts) const
 	{
 		return std::make_unique<GL::ElementArrayLayout>(primitivesType, layouts);
 	}
@@ -89,7 +89,7 @@ namespace Chimp::GL {
 		std::shared_ptr<IBuffer> vertexBuffer,
 		std::unique_ptr<IBuffer> indexBuffer,
 		GraphicsType indexType,
-		std::shared_ptr<IElementArrayLayout> layout)
+		std::shared_ptr<IElementArrayLayout> layout) const
 	{
 		return std::make_unique<GL::ElementArray>(
 			std::move(vertexBuffer),
@@ -99,7 +99,7 @@ namespace Chimp::GL {
 		);
 	}
 
-	std::unique_ptr<IShader> RenderingManager::CompileShader(const ShaderFilePaths& shaderFilePaths)
+	std::unique_ptr<IShader> RenderingManager::CompileShader(const ShaderFilePaths& shaderFilePaths) const
 	{
 		return std::make_unique<GL::Shader>(
 			shaderFilePaths,
@@ -107,7 +107,7 @@ namespace Chimp::GL {
 		);
 	}
 
-	std::unique_ptr<ITexture> RenderingManager::CreateTexture(const TextureSlot slot, const TextureProperties& properties, const void* initialData)
+	std::unique_ptr<ITexture> RenderingManager::CreateTexture(const TextureSlot slot, const TextureProperties& properties, const void* initialData) const
 	{
 		return std::make_unique<GL::Texture>(slot, properties, initialData);
 	}

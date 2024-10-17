@@ -11,31 +11,31 @@ namespace Chimp::GL {
 		RenderingManager(IImageLoader& imageLoader);
 		~RenderingManager();
 
-		IRenderer& GetRenderer() override;
+		IRenderer& GetRenderer() const override;
 
 		std::unique_ptr<IBuffer> CreateBuffer(
 			const Usage& usage,
 			const BindTarget target
-			) override;
+			) const override;
 
 		std::unique_ptr<IElementArrayLayout> CreateElementArrayLayout(
 			const PrimitiveType primitivesType,
 			const std::vector<ElementComponentLayout>& layouts
-		) override;
+		) const override;
 
 		std::unique_ptr<IElementArray> CreateElementArray(
 			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
 			GraphicsType indexType,
 			std::shared_ptr<IElementArrayLayout> layout
-		) override;
+		) const override;
 
-		std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) override;
+		std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) const override;
 
 		std::unique_ptr<ITexture> CreateTexture(
 			const TextureSlot slot,
 			const TextureProperties& properties,
-			const void* initialData) override;
+			const void* initialData) const override;
 
 	private:
 		void InitOpenGL();

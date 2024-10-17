@@ -30,7 +30,7 @@ namespace Chimp
 		virtual void Draw(const Mesh::Section& meshSection) const = 0;
 
 		// Set the clear color
-		virtual void SetClearColor(float r, float g, float b) = 0;
+		virtual void SetClearColor(float r, float g, float b) const = 0;
 
 	protected:
 		// Get the camera matrices

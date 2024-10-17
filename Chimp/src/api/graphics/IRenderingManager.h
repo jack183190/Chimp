@@ -26,7 +26,7 @@ namespace Chimp {
 	public:
 
 		// Get the renderer
-		[[nodiscard]] virtual IRenderer& GetRenderer() = 0;
+		[[nodiscard]] virtual IRenderer& GetRenderer() const = 0;
 
 		// Create a buffer which holds data on the GPU.
 		// size, numElements can be left empty and will be updated once data is set.
@@ -39,18 +39,18 @@ namespace Chimp {
 			const size_t numElements,
 			const Usage& usage,
 			const BindTarget target
-		);
+		) const;
 		[[nodiscard]] virtual std::unique_ptr<IBuffer> CreateBuffer(
 			const Usage& usage,
 			const BindTarget target
-		) = 0;
+		) const = 0;
 
 		// Create an element array layout which defines how the data in an ElementArray is structured
 		// primitivesType - the type of primitives in the ElementArray
 		// layouts - a vector of ElementComponentLayouts which define the layout of each component of data in the ElementArray
 		[[nodiscard]] virtual std::unique_ptr<IElementArrayLayout> CreateElementArrayLayout(
 			const PrimitiveType primitivesType,
-			const std::vector<ElementComponentLayout>& layouts) = 0;
+			const std::vector<ElementComponentLayout>& layouts) const = 0;
 
 		// Create an element array which contains a vertex and index buffer.
 		// vertexBuffer - the buffer which contains the vertex data
@@ -61,15 +61,19 @@ namespace Chimp {
 			std::shared_ptr<IBuffer> vertexBuffer,
 			std::unique_ptr<IBuffer> indexBuffer,
 			GraphicsType indexType,
-			std::shared_ptr<IElementArrayLayout> layout) = 0;
+			std::shared_ptr<IElementArrayLayout> layout) const = 0;
 
 		// Compile a shader from source code
 		// In chimp, a "shader" represents all the shaders in the pipeline (vertex, fragment, etc.)
 		// Check Shader::IsValid() to see if the shader was compiled successfully
-		[[nodiscard]] virtual std::unique_ptr<IShader> CompileShader(const ShaderFilePaths& shaderFilePaths) = 0;
+		[[nodiscard]] virtual std::unique_ptr<IShader> CompileShader(
+			const ShaderFilePaths& shaderFilePaths
+		) const = 0;
 
 		// Load an image from a file
-		[[nodiscard]] virtual std::unique_ptr<IImageLoader::LoadedImage> LoadImage(const std::string& filePath);
+		[[nodiscard]] virtual std::unique_ptr<IImageLoader::LoadedImage> LoadImage(
+			const std::string& filePath
+		) const;
 
 		// Create a texture
 		// The texture will be bound when it is constructed.
@@ -79,7 +83,7 @@ namespace Chimp {
 		[[nodiscard]] virtual std::unique_ptr<ITexture> CreateTexture(
 			const TextureSlot slot,
 			const TextureProperties& properties,
-			const void* initialData) = 0;
+			const void* initialData) const = 0;
 
 		// Create a texture from an image. Most use cases can use CreateTextureFromImage instead.
 		// The image can be destroyed after this function call, for example by moving a unique ptr into this function.
@@ -89,7 +93,7 @@ namespace Chimp {
 		[[nodiscard]] virtual std::unique_ptr<ITexture> CreateCustomisedTextureFromImage(
 			const TextureSlot slot,
 			const TextureProperties& properties,
-			const std::shared_ptr<IImageLoader::LoadedImage> image);
+			const std::shared_ptr<IImageLoader::LoadedImage> image) const;
 
 		// Create a texture from an image.
 		// The texture will be bound to CHIMP_TEXTURE_SLOT.
@@ -100,7 +104,7 @@ namespace Chimp {
 		[[nodiscard]] virtual std::unique_ptr<ITexture> CreateTextureFromImage(
 			const std::string& filePath,
 			const TextureProperties& properties = {}
-		);
+		) const;
 
 	protected:
 		IImageLoader& m_ImageLoader;
