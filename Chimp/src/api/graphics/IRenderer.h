@@ -43,5 +43,6 @@ namespace Chimp
 	private:
 		std::shared_ptr<Camera> m_DefaultCamera = std::make_shared<Camera>();
 		std::shared_ptr<ICamera> m_Camera = m_DefaultCamera;
+		std::shared_ptr<IBuffer> m_ModelBuffer;
 	};
 }

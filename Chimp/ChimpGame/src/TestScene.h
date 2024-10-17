@@ -1,4 +1,5 @@
 #include "Chimp.h"
+#include "GameRenderer.h"
 
 class TestScene : public Chimp::Scene {
 public:
@@ -16,11 +17,9 @@ protected:
 	void OnRender() override;
 
 private:
-	Chimp::Engine& m_Engine;
-	std::unique_ptr<Chimp::Mesh> m_Mesh;
-	Chimp::IShaderBuffers::Index m_CameraBufferId;
-	std::shared_ptr<Chimp::IBuffer> m_ModelBuffer;
-	std::unique_ptr<Chimp::ITexture> m_Texture;
-	std::shared_ptr<Chimp::IShader> m_Shader;
-	std::unique_ptr<Chimp::DebugCameraController> m_CameraController;
+	Engine& m_Engine;
+	std::unique_ptr<Mesh> m_Mesh;
+	std::unique_ptr<ITexture> m_Texture;
+	std::shared_ptr<IShader> m_Shader;
+	std::unique_ptr<GameRenderer> m_GameRenderer;
 };
