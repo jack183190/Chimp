@@ -21,11 +21,10 @@ TestScene::TestScene(Chimp::Engine& engine)
 	m_Mesh = Chimp::TexturedQuad::Create(renderingManager, shader);
 
 	// Texture
-	m_Texture = renderingManager.CreateTextureFromImage(
-		GAME_SRC + std::string("/textures/tex.png")
+	shader->SetTextureSampler(
+		"u_ActiveTexture",
+		m_Engine.GetAssetManager().LoadTexture(GAME_SRC + std::string("/textures/tex.png"))
 	);
-	assert(m_Texture != nullptr);
-	shader->SetTextureSampler("u_ActiveTexture", *m_Texture);
 
 	// Our renderer
 	m_GameRenderer = std::make_unique<GameRenderer>(m_Engine, shader);

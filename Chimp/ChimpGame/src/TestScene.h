@@ -19,6 +19,5 @@ protected:
 private:
 	Engine& m_Engine;
 	std::unique_ptr<Mesh> m_Mesh;
-	std::unique_ptr<ITexture> m_Texture;
 	std::unique_ptr<GameRenderer> m_GameRenderer;
 };
