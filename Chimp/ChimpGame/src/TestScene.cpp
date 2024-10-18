@@ -23,6 +23,20 @@ TestScene::TestScene(Chimp::Engine& engine)
 
 	// Our renderer
 	m_GameRenderer = std::make_unique<GameRenderer>(m_Engine, shader);
+
+	// ECS
+	struct a {
+		int da;
+	};
+	struct b {
+		int db;
+	};
+
+	ECS::ComponentsRefFunc<a, b> f = [&](a& p1, b& p2) {
+		p1.da = 2;
+		p2.db = 3;
+		};
+	m_ECS.CreateEntity<a, b>(f);
 }
 
 TestScene::~TestScene()
