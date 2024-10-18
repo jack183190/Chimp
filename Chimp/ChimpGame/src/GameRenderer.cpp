@@ -58,6 +58,16 @@ void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transfor
 	// Send transform
 	m_Shader->SetShaderBufferSubData(m_ModelBufferId, &transform, sizeof(Chimp::Matrix), 0);
 
-	// Render
-	m_Engine.GetRenderingManager().GetRenderer().Draw(mesh, *m_Shader);
+	for (const auto& section : mesh)
+	{
+		// Send the texture
+		assert(section.Texture != nullptr);
+		m_Shader->SetTextureSampler(
+			"u_ActiveTexture",
+			*section.Texture
+		);
+
+		// Draw the section
+		m_Engine.GetRenderingManager().GetRenderer().Draw(section, *m_Shader);
+	}
 }

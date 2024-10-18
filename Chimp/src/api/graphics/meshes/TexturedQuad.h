@@ -13,8 +13,10 @@ namespace Chimp {
 		// 1: Texture coordinates (2 floats)
 		// 
 		// renderingManager - The rendering manager
+		// texture - The texture to use
 		static std::unique_ptr<Mesh> Create(
-			IRenderingManager& renderingManager
+			IRenderingManager& renderingManager,
+			ITexture& texture
 		);
 	};
 }

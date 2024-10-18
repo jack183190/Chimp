@@ -18,13 +18,8 @@ TestScene::TestScene(Chimp::Engine& engine)
 	auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
 
 	// Mesh
-	m_Mesh = Chimp::TexturedQuad::Create(renderingManager);
-
-	// Texture
-	shader->SetTextureSampler(
-		"u_ActiveTexture",
-		m_Engine.GetAssetManager().LoadTexture(GAME_SRC + std::string("/textures/tex.png"))
-	);
+	auto& texture = m_Engine.GetAssetManager().LoadTexture(GAME_SRC + std::string("/textures/tex.png"));
+	m_Mesh = Chimp::TexturedQuad::Create(renderingManager, texture);
 
 	// Our renderer
 	m_GameRenderer = std::make_unique<GameRenderer>(m_Engine, shader);
