@@ -11,7 +11,7 @@ namespace Chimp {
 		// Section of a mesh
 		struct Section {
 			std::unique_ptr<IElementArray> ElementArray;
-			std::shared_ptr<IShader> Shader;
+			ITexture* Texture = nullptr;
 		};
 
 		// Builder
@@ -21,7 +21,10 @@ namespace Chimp {
 			Builder();
 
 			// Add a section to the mesh
-			Builder& AddSection(std::unique_ptr<IElementArray> elementArray, std::shared_ptr<IShader> shader);
+			Builder& AddSection(
+				std::unique_ptr<IElementArray> elementArray,
+				ITexture* texture
+			);
 			Builder& AddSection(std::unique_ptr<Section> section);
 
 			// Build the mesh, making the mesh builder unusable

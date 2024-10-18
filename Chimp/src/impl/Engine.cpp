@@ -15,6 +15,7 @@
 
 namespace Chimp {
 	Engine::Engine() :
+		m_AssetManager(*this),
 		m_Window(CreateWindow()),
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager())
@@ -34,6 +35,11 @@ namespace Chimp {
 	IRenderingManager& Engine::GetRenderingManager()
 	{
 		return *m_RenderingManager;
+	}
+
+	AssetManager& Engine::GetAssetManager()
+	{
+		return m_AssetManager;
 	}
 
 	std::unique_ptr<IWindow> Engine::CreateWindow() const

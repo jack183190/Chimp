@@ -15,27 +15,14 @@ TestScene::TestScene(Chimp::Engine& engine)
 		shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
 		shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
 	}
-	m_Shader = renderingManager.CompileShader(shaderFilePaths);
-
-	if (!m_Shader->IsValid())
-	{
-		std::cerr << "Failed to compile shader" << std::endl;
-		exit(-1);
-	}
-	std::cout << "Shader compiled successfully" << std::endl;
+	auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
 
 	// Mesh
-	m_Mesh = Chimp::TexturedQuad::Create(renderingManager, m_Shader);
-
-	// Texture
-	m_Texture = renderingManager.CreateTextureFromImage(
-		GAME_SRC + std::string("/textures/tex.png")
-	);
-	assert(m_Texture != nullptr);
-	m_Shader->SetTextureSampler("u_ActiveTexture", *m_Texture);
+	auto& texture = m_Engine.GetAssetManager().LoadTexture(GAME_SRC + std::string("/textures/tex.png"));
+	m_Mesh = Chimp::TexturedQuad::Create(renderingManager, texture);
 
 	// Our renderer
-	m_GameRenderer = std::make_unique<GameRenderer>(m_Engine, m_Shader);
+	m_GameRenderer = std::make_unique<GameRenderer>(m_Engine, shader);
 }
 
 TestScene::~TestScene()

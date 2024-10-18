@@ -12,11 +12,11 @@ namespace Chimp
 		m_Camera = camera;
 	}
 
-	void IRenderer::Draw(const Mesh& mesh) const
+	void IRenderer::Draw(const Mesh& mesh, const IShader& shader) const
 	{
 		for (const auto& section : mesh)
 		{
-			Draw(section);
+			Draw(section, shader);
 		}
 	}
 

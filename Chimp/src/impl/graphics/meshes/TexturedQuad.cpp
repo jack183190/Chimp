@@ -3,7 +3,7 @@
 namespace Chimp {
 	std::unique_ptr<Mesh> TexturedQuad::Create(
 		IRenderingManager& renderingManager,
-		std::shared_ptr<IShader> shader
+		ITexture& texture
 	) {
 		// Vertex buffer
 		RawArray vertexData;
@@ -61,7 +61,7 @@ namespace Chimp {
 		);
 
 		return Mesh::Builder()
-			.AddSection(std::move(elementArray), shader)
+			.AddSection(std::move(elementArray), &texture)
 			.Build();
 	}
 }

@@ -10,3 +10,5 @@ Student Number: 2202960
 [PLANS.md](PLANS.md) for the pre-development engine plans.
 
 [COMPILING.md](COMPILING.md) for information on Chimp's build system.
+
+[REFERENCES.md](REFERENCES.md) for a list of references.

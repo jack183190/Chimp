@@ -6,9 +6,15 @@ namespace Chimp {
 	{
 	}
 
-	Mesh::Builder& Mesh::Builder::AddSection(std::unique_ptr<IElementArray> elementArray, std::shared_ptr<IShader> shader)
+	Mesh::Builder& Mesh::Builder::AddSection(
+		std::unique_ptr<IElementArray> elementArray,
+		ITexture* texture
+	)
 	{
-		return AddSection(std::make_unique<Section>(Section{ std::move(elementArray), shader }));
+		return AddSection(std::make_unique<Section>(Section{
+			std::move(elementArray),
+			texture
+			}));
 	}
 
 	Mesh::Builder& Mesh::Builder::AddSection(std::unique_ptr<Section> section)
@@ -82,12 +88,12 @@ namespace Chimp {
 		return m_Iterator != other.m_Iterator;
 	}
 
-	Mesh::ConstIterator Mesh::begin() const 
+	Mesh::ConstIterator Mesh::begin() const
 	{
 		return ConstIterator(m_Sections.begin());
 	}
 
-	Mesh::ConstIterator Mesh::end() const 
+	Mesh::ConstIterator Mesh::end() const
 	{
 		return ConstIterator(m_Sections.end());
 	}

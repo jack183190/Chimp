@@ -24,10 +24,10 @@ namespace Chimp
 		void SetCamera(std::shared_ptr<ICamera> camera);
 
 		// Draw a mesh
-		void Draw(const Mesh& mesh) const;
+		void Draw(const Mesh& mesh, const IShader& shader) const;
 
 		// Draw a mesh section
-		virtual void Draw(const Mesh::Section& meshSection) const = 0;
+		virtual void Draw(const Mesh::Section& meshSection, const IShader& shader) const = 0;
 
 		// Set the clear color
 		virtual void SetClearColor(float r, float g, float b) const = 0;
