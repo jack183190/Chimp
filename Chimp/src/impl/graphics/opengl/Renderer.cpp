@@ -6,9 +6,9 @@
 namespace Chimp::GL {
 	constexpr void* INDICES_BOUND_IN_VAO = nullptr;
 
-	void Renderer::Draw(const Mesh::Section& meshSection) const
+	void Renderer::Draw(const Mesh::Section& meshSection, const IShader& shader) const
 	{
-		meshSection.Shader->Bind();
+		shader.Bind();
 		meshSection.ElementArray->Bind();
 
 		glDrawElements(
@@ -19,7 +19,7 @@ namespace Chimp::GL {
 		);
 
 		meshSection.ElementArray->Unbind();
-		meshSection.Shader->Unbind();
+		shader.Unbind();
 	}
 
 	void Renderer::SetClearColor(float r, float g, float b) const
