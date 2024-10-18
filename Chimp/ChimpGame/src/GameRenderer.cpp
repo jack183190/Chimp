@@ -59,5 +59,5 @@ void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transfor
 	m_Shader->SetShaderBufferSubData(m_ModelBufferId, &transform, sizeof(Chimp::Matrix), 0);
 
 	// Render
-	m_Engine.GetRenderingManager().GetRenderer().Draw(mesh);
+	m_Engine.GetRenderingManager().GetRenderer().Draw(mesh, *m_Shader);
 }

@@ -18,7 +18,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 	auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
 
 	// Mesh
-	m_Mesh = Chimp::TexturedQuad::Create(renderingManager, shader);
+	m_Mesh = Chimp::TexturedQuad::Create(renderingManager);
 
 	// Texture
 	shader->SetTextureSampler(

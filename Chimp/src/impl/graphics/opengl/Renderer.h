@@ -9,7 +9,7 @@ namespace Chimp::GL {
 		Renderer() = default;
 		~Renderer() override = default;
 
-		void Draw(const Mesh::Section& meshSection) const override;
+		void Draw(const Mesh::Section& meshSection, const IShader& shader) const override;
 
 		void SetClearColor(float r, float g, float b) const override;
 

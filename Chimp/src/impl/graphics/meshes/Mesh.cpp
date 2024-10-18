@@ -6,9 +6,9 @@ namespace Chimp {
 	{
 	}
 
-	Mesh::Builder& Mesh::Builder::AddSection(std::unique_ptr<IElementArray> elementArray, std::shared_ptr<IShader> shader)
+	Mesh::Builder& Mesh::Builder::AddSection(std::unique_ptr<IElementArray> elementArray)
 	{
-		return AddSection(std::make_unique<Section>(Section{ std::move(elementArray), shader }));
+		return AddSection(std::make_unique<Section>(Section{ std::move(elementArray) }));
 	}
 
 	Mesh::Builder& Mesh::Builder::AddSection(std::unique_ptr<Section> section)
