@@ -49,6 +49,16 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# FLECS
+add_compile_definitions(CHIMP_FLECS=1)
+FetchContent_Declare(
+    flecs
+    GIT_REPOSITORY https://github.com/SanderMertens/flecs.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(flecs)
+target_link_libraries(Chimp PRIVATE flecs::flecs_static)
+
 # GLFW
 if (CHIMP_PLATFORM EQUAL CHIMP_PLATFORM_WINDOWS)
 add_compile_definitions(CHIMP_GLFW=1)

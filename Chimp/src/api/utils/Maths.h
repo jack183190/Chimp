@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdafx.h"
+#include <array>
 #include <../vendor/glm/glm/glm.hpp>
 #include <../vendor/glm/glm/gtc/matrix_transform.hpp>
 #include <../vendor/glm/glm/gtc/type_ptr.hpp>
