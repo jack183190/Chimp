@@ -69,6 +69,8 @@ namespace Chimp {
 		// func - This function will be called once for every entity with all the specified components
 		template <typename... Components>
 		View<Components...> GetEntitiesWithComponents() {
+			// This is slower than if we just passed a lambda in instead of returning a view
+			// but it's only about 20-25% difference in release mode and imo the api is much nicer.
 			return View<Components...>(m_World);
 		}
 

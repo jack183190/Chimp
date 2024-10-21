@@ -55,10 +55,10 @@ TestScene::TestScene(Chimp::Engine& engine)
 			int num = 0;
 			auto now = std::chrono::high_resolution_clock::now();
 			auto view = m_ECS.GetEntitiesWithComponents<a, b, d, e>();
-			auto end = std::chrono::high_resolution_clock::now();
 			for (auto& [compA, compB, compD, compE] : view) {
 				num++;
 			}
+			auto end = std::chrono::high_resolution_clock::now();
 
 			std::cout << "Time to get entities: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << "ns" << std::endl;
 			std::cout << "Num entities: " << num << std::endl;
