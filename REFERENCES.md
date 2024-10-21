@@ -5,6 +5,7 @@ GLM (maths)
 STB (image loading)
 GLFW (window & input)
 OpenGL + GLEW (graphics)
+FLECS (entities)
 
 ## Code Snippets
 HashCombine.h
