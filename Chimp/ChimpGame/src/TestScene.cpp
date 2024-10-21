@@ -25,18 +25,45 @@ TestScene::TestScene(Chimp::Engine& engine)
 	m_GameRenderer = std::make_unique<GameRenderer>(m_Engine, shader);
 
 	// ECS
-	struct a {
-		int da;
-	};
-	struct b {
-		int db;
-	};
+	{
+		struct a { int da; };
+		struct b { int db; };
+		struct c { int dc; };
+		struct d { int dd; };
+		struct e { int de; };
 
-	ECS::ComponentsRefFunc<a, b> f = [&](a& p1, b& p2) {
-		p1.da = 2;
-		p2.db = 3;
-		};
-	m_ECS.CreateEntity<a, b>(f);
+		// testing adding setting comps
+		{
+			auto ent = m_ECS.CreateEntity();
+			m_ECS.SetComponent(ent, a{ 1 });
+			std::cout << "a: " << m_ECS.GetComponent<a>(ent)->da << std::endl;
+			m_ECS.GetMutableComponent<a>(ent)->da = 2;
+			std::cout << "a: " << m_ECS.GetComponent<a>(ent)->da << std::endl;
+			std::cout << "b ptr: " << m_ECS.GetComponent<b>(ent) << std::endl;
+		}
+		// timing get entities
+		{
+			for (int i = 0; i < 1000; ++i) {
+				auto ent = m_ECS.CreateEntity();
+				m_ECS.SetComponent(ent, a{ i });
+				m_ECS.SetComponent(ent, b{ i + 1 });
+				m_ECS.SetComponent(ent, c{ i + 2 }); // not in system
+				m_ECS.SetComponent(ent, d{ i + 3 });
+				if (rand() % 2 == 0)	m_ECS.SetComponent(ent, e{ i + 4 });
+			}
+
+			int num = 0;
+			auto now = std::chrono::high_resolution_clock::now();
+			auto view = m_ECS.GetEntitiesWithComponents<a, b, d, e>();
+			auto end = std::chrono::high_resolution_clock::now();
+			for (auto& [compA, compB, compD, compE] : view) {
+				num++;
+			}
+
+			std::cout << "Time to get entities: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << "ns" << std::endl;
+			std::cout << "Num entities: " << num << std::endl;
+		}
+	}
 }
 
 TestScene::~TestScene()
