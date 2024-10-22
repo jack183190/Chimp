@@ -59,6 +59,30 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(flecs)
 target_link_libraries(Chimp PRIVATE flecs::flecs_static)
 
+# ENET
+# Ended up having a lot of issues with linking ENET
+# This code basically clones the repo, builds it with cmake from a batch script, then links it
+# there is definitely a better way to do this, but it works
+# you do need cmake and git in your env path though
+# also it uses batch so thats windows only
+add_compile_definitions(CHIMP_ENET=1)
+set(ENET_BUILD_TYPE "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(ENET_BUILD_TYPE "Release")
+endif()
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat enet/enet-src https://github.com/lsalzman/enet.git master
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/enet_build.bat ${ENET_BUILD_TYPE}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor/enet
+)
+set(ENET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/enet")
+include_directories(${ENET_DIR}/enet-src/include)
+set(ENET_LIB "${ENET_DIR}/enet-build/${ENET_BUILD_TYPE}/enet.lib")
+target_link_libraries(Chimp PRIVATE ${ENET_LIB} winmm)
+
 # GLFW
 if (CHIMP_PLATFORM EQUAL CHIMP_PLATFORM_WINDOWS)
 add_compile_definitions(CHIMP_GLFW=1)
