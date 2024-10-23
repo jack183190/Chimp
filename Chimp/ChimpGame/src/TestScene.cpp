@@ -64,6 +64,38 @@ TestScene::TestScene(Chimp::Engine& engine)
 			std::cout << "Num entities: " << num << std::endl;
 		}
 	}
+
+	// Event handler
+	enum class EventType {
+		ONE, TWO
+	};
+	class Event {};
+	class OneEvent : public Event {
+	public:
+		int a;
+	};
+	class TwoEvent : public Event {
+	public:
+		int b;
+	};
+	auto pair = m_Engine.CreateEventHandler<EventType, Event>();
+	OneEvent eventOne;
+	eventOne.a = 1;
+	pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
+	auto listenerId = pair.Handler->Subscribe(EventType::ONE, [](const Event* event) {
+		auto oneEvent = static_cast<const OneEvent*>(event);
+		std::cout << "One event: " << oneEvent->a << std::endl;
+		});
+	pair.Handler->Subscribe(EventType::TWO, [](const Event* event) {
+		auto twoEvent = static_cast<const TwoEvent*>(event);
+		std::cout << "Two event: " << twoEvent->b << std::endl;
+		});
+	pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
+	pair.Handler->Unsubscribe(listenerId);
+	pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
+	TwoEvent eventTwo;
+	eventTwo.b = 2;
+	pair.Broadcaster->Broadcast(EventType::TWO, eventTwo);
 }
 
 TestScene::~TestScene()
