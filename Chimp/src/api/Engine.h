@@ -28,9 +28,7 @@ namespace Chimp {
 		// Event - struct representing event data, inheritance is supported
 		template <typename EventType, typename Event>
 		[[nodiscard]] EventHandlerAndBroadcaster<EventType, Event> CreateEventHandler() {
-			EventHandlerAndBroadcaster<EventType, Event> pair;
-			pair.Handler = std::make_unique<EventHandler<EventType, Event>>(pair.Broadcaster);
-			return pair;
+			return EventHandlerAndBroadcaster<EventType, Event>();
 		}
 
 	private:

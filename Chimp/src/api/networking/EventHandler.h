@@ -37,7 +37,7 @@ namespace Chimp {
 			m_UnusedBroadcaster->m_Handler = nullptr;
 		}
 	public:
-		// Subscribe to an event type
+		// Subscribe to an event type. Pointer to event used for casting.
 		// type - the type of event to subscribe to
 		// callback - the function to call when the event is broadcast
 		// returns a listener id which can be used to unsubscribe
@@ -72,6 +72,10 @@ namespace Chimp {
 
 	template <typename EventType, typename Event>
 	struct EventHandlerAndBroadcaster {
+		EventHandlerAndBroadcaster() {
+			Broadcaster = nullptr;
+			Handler = std::make_unique<EventHandler<EventType, Event>>(Broadcaster);
+		}
 		std::unique_ptr<EventHandler<EventType, Event>> Handler;
 		std::shared_ptr<typename EventHandler<EventType, Event>::Broadcaster> Broadcaster;
 	};

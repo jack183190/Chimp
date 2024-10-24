@@ -12,7 +12,8 @@ namespace Chimp {
 	public:
 		bool IsValid() const override;
 
-		void Update() override;
+	protected:
+		void PollEvents() override;
 
 	private:
 		bool m_IsValid = false;

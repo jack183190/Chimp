@@ -112,22 +112,23 @@ TestScene::TestScene(Chimp::Engine& engine)
 			serverInfo.MaxIncomingBandwidth = 0;
 			serverInfo.MaxOutgoingBandwidth = 0;
 			m_Server = m_Engine.ConnectOrHostServer(serverInfo);
+
+			m_Server->GetEventHandler().Subscribe(Chimp::NetworkEventType::CONNECTED, [](const Chimp::NetworkEvent* event) {
+				std::cout << "Server received connection event." << std::endl;
+				});
 		}
 
 		// Client 1
-		std::thread t1([this]() {
-			Chimp::ServerInfo serverInfo;
-			serverInfo.IsHost = false;
-			serverInfo.HostName = "localhost";
-			serverInfo.Port = 37478;
-			serverInfo.MaxClients = 1;
-			serverInfo.MaxChannels = 2;
-			serverInfo.MaxIncomingBandwidth = 0;
-			serverInfo.MaxOutgoingBandwidth = 0;
-			serverInfo.ConnectionTimeoutMs = 500;
-			m_Client1 = m_Engine.ConnectOrHostServer(serverInfo);
-			});
-		t1.detach();
+		Chimp::ServerInfo serverInfo;
+		serverInfo.IsHost = false;
+		serverInfo.HostName = "localhost";
+		serverInfo.Port = 37478;
+		serverInfo.MaxClients = 1;
+		serverInfo.MaxChannels = 2;
+		serverInfo.MaxIncomingBandwidth = 0;
+		serverInfo.MaxOutgoingBandwidth = 0;
+		serverInfo.ConnectionTimeoutMs = 500;
+		m_Client1 = m_Engine.ConnectOrHostServer(serverInfo);
 	}
 }
 
@@ -146,9 +147,8 @@ void TestScene::OnDeactivate()
 void TestScene::OnUpdate()
 {
 	// Networking
-	{
-		m_Server->Update();
-	}
+	m_Server->Update();
+	//m_Client1->Update();
 }
 
 void TestScene::OnRender()

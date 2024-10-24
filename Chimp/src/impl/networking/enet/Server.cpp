@@ -72,21 +72,26 @@ namespace Chimp {
 		return m_IsValid;
 	}
 
-	void Server::Update()
+	void Server::PollEvents()
 	{
+		if (!IsValid()) {
+			return;
+		}
+
 		ENetEvent event;
 		while (enet_host_service(&m_Server, &event, 0) > 0)
 		{
+			std::cout << "call\n";
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_CONNECT:
 				ConnectionEvent connectionEvent;
-				m_Broadcaster->Broadcast(NetworkEventType::CONNECTED, connectionEvent);
+				m_EventQueue.Push(std::make_tuple(NetworkEventType::CONNECTED, connectionEvent));
 				std::cout << "client connected, port: " << event.peer->address.port << std::endl;
 				break;
 			case ENET_EVENT_TYPE_RECEIVE:
 				NetworkEvent receiveEvent;
-				m_Broadcaster->Broadcast(NetworkEventType::MESSAGE, receiveEvent);
+				m_EventQueue.Push(std::make_tuple(NetworkEventType::MESSAGE, receiveEvent));
 				std::cout << "received packet with data: ";
 				for (size_t i = 0; i < event.packet->dataLength; ++i) {
 					std::cout << event.packet->data[i];
@@ -96,7 +101,7 @@ namespace Chimp {
 				break;
 			case ENET_EVENT_TYPE_DISCONNECT:
 				ConnectionEvent disconnectionEvent;
-				m_Broadcaster->Broadcast(NetworkEventType::DISCONNECTED, disconnectionEvent);
+				m_EventQueue.Push(std::make_tuple(NetworkEventType::DISCONNECTED, disconnectionEvent));
 				std::cout << "client disconnected, port: " << event.peer->address.port << std::endl;
 				break;
 			default:
