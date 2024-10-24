@@ -13,6 +13,10 @@
 #include "impl/graphics/images/stb/ImageLoader.h"
 #endif
 
+#ifdef CHIMP_ENET
+#include "impl/networking/enet/ServerFactory.h"
+#endif
+
 namespace Chimp {
 	Engine::Engine() :
 		m_AssetManager(*this),
@@ -40,6 +44,28 @@ namespace Chimp {
 	AssetManager& Engine::GetAssetManager()
 	{
 		return m_AssetManager;
+	}
+
+	std::unique_ptr<IServer> Engine::ConnectOrHostServer(const ServerInfo& serverInfo)
+	{
+		if (!serverInfo.IsValid()) {
+			std::cerr << "Server info is invalid." << std::endl;
+			return nullptr;
+		}
+
+		std::unique_ptr<IServer> server = nullptr;
+#ifdef CHIMP_ENET
+		server = ENetServerFactory::CreateServer(serverInfo);
+#endif
+		if (server == nullptr) {
+			std::cerr << "No server implementation available." << std::endl;
+			return nullptr;
+		}
+		if (!server->IsValid()) {
+			std::cerr << "Server is invalid, this means hosting or connecting failed." << std::endl;
+			return nullptr;
+		}
+		return std::move(server);
 	}
 
 	std::unique_ptr<IWindow> Engine::CreateWindow() const

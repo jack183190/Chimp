@@ -27,7 +27,7 @@ namespace Chimp {
 		friend class Broadcaster;
 	public:
 		// Create an event handler, can be used to broadcast events and sub/unsub listeners
-		// broadcaster - empty unique_ptr which will be filled with a broadcaster for this event handler
+		// broadcaster - empty shared ptr which will be filled with a broadcaster for this event handler
 		EventHandler(std::shared_ptr<Broadcaster> &broadcaster) {
 			broadcaster = std::shared_ptr<Broadcaster>(new Broadcaster(this));
 			m_UnusedBroadcaster = broadcaster;

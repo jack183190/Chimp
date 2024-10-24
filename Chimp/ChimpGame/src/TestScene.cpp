@@ -66,36 +66,69 @@ TestScene::TestScene(Chimp::Engine& engine)
 	}
 
 	// Event handler
-	enum class EventType {
-		ONE, TWO
-	};
-	class Event {};
-	class OneEvent : public Event {
-	public:
-		int a;
-	};
-	class TwoEvent : public Event {
-	public:
-		int b;
-	};
-	auto pair = m_Engine.CreateEventHandler<EventType, Event>();
-	OneEvent eventOne;
-	eventOne.a = 1;
-	pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
-	auto listenerId = pair.Handler->Subscribe(EventType::ONE, [](const Event* event) {
-		auto oneEvent = static_cast<const OneEvent*>(event);
-		std::cout << "One event: " << oneEvent->a << std::endl;
-		});
-	pair.Handler->Subscribe(EventType::TWO, [](const Event* event) {
-		auto twoEvent = static_cast<const TwoEvent*>(event);
-		std::cout << "Two event: " << twoEvent->b << std::endl;
-		});
-	pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
-	pair.Handler->Unsubscribe(listenerId);
-	pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
-	TwoEvent eventTwo;
-	eventTwo.b = 2;
-	pair.Broadcaster->Broadcast(EventType::TWO, eventTwo);
+	{
+		enum class EventType {
+			ONE, TWO
+		};
+		class Event {};
+		class OneEvent : public Event {
+		public:
+			int a;
+		};
+		class TwoEvent : public Event {
+		public:
+			int b;
+		};
+		auto pair = m_Engine.CreateEventHandler<EventType, Event>();
+		OneEvent eventOne;
+		eventOne.a = 1;
+		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
+		auto listenerId = pair.Handler->Subscribe(EventType::ONE, [](const Event* event) {
+			auto oneEvent = static_cast<const OneEvent*>(event);
+			std::cout << "One event: " << oneEvent->a << std::endl;
+			});
+		pair.Handler->Subscribe(EventType::TWO, [](const Event* event) {
+			auto twoEvent = static_cast<const TwoEvent*>(event);
+			std::cout << "Two event: " << twoEvent->b << std::endl;
+			});
+		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
+		pair.Handler->Unsubscribe(listenerId);
+		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
+		TwoEvent eventTwo;
+		eventTwo.b = 2;
+		pair.Broadcaster->Broadcast(EventType::TWO, eventTwo);
+	}
+
+	// Networking
+	{
+		// Server
+		{
+			Chimp::ServerInfo serverInfo;
+			serverInfo.IsHost = true;
+			serverInfo.HostName = "localhost";
+			serverInfo.Port = 37478;
+			serverInfo.MaxClients = 32;
+			serverInfo.MaxChannels = 2;
+			serverInfo.MaxIncomingBandwidth = 0;
+			serverInfo.MaxOutgoingBandwidth = 0;
+			m_Server = m_Engine.ConnectOrHostServer(serverInfo);
+		}
+
+		// Client 1
+		std::thread t1([this]() {
+			Chimp::ServerInfo serverInfo;
+			serverInfo.IsHost = false;
+			serverInfo.HostName = "localhost";
+			serverInfo.Port = 37478;
+			serverInfo.MaxClients = 1;
+			serverInfo.MaxChannels = 2;
+			serverInfo.MaxIncomingBandwidth = 0;
+			serverInfo.MaxOutgoingBandwidth = 0;
+			serverInfo.ConnectionTimeoutMs = 500;
+			m_Client1 = m_Engine.ConnectOrHostServer(serverInfo);
+			});
+		t1.detach();
+	}
 }
 
 TestScene::~TestScene()
@@ -112,7 +145,10 @@ void TestScene::OnDeactivate()
 
 void TestScene::OnUpdate()
 {
-
+	// Networking
+	{
+		m_Server->Update();
+	}
 }
 
 void TestScene::OnRender()
