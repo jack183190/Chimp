@@ -93,9 +93,22 @@ TestScene::TestScene(Chimp::Engine& engine)
 			});
 		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
 		pair.Handler->Unsubscribe(listenerId);
+	auto bothListenerId =	pair.Handler->Subscribe({ EventType::ONE, EventType::TWO }, [](const EventType type, const Event* event) {
+			if (type == EventType::ONE) {
+				auto oneEvent = static_cast<const OneEvent*>(event);
+				std::cout << "Both event: " << oneEvent->a << std::endl;
+			}
+			else if (type == EventType::TWO) {
+				auto twoEvent = static_cast<const TwoEvent*>(event);
+				std::cout << "Both event: " << twoEvent->b << std::endl;
+			}
+			});
 		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
 		TwoEvent eventTwo;
 		eventTwo.b = 2;
+		pair.Broadcaster->Broadcast(EventType::TWO, eventTwo);
+		pair.Handler->Unsubscribe(bothListenerId);
+		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
 		pair.Broadcaster->Broadcast(EventType::TWO, eventTwo);
 	}
 
@@ -113,8 +126,12 @@ TestScene::TestScene(Chimp::Engine& engine)
 			serverInfo.MaxOutgoingBandwidth = 0;
 			m_Server = m_Engine.ConnectOrHostServer(serverInfo);
 
-			m_Server->GetEventHandler().Subscribe(Chimp::NetworkEventType::CONNECTED, [](const Chimp::NetworkEvent* event) {
-				std::cout << "Server received connection event." << std::endl;
+			m_Server->GetEventHandler().Subscribe(
+				{
+					NetworkEventType::CONNECTED, NetworkEventType::DISCONNECTED, NetworkEventType::MESSAGE
+				},
+				[](const NetworkEventType type, const NetworkEvent* event) {
+					std::cout << "Server event: " << static_cast<int>(type) << std::endl;
 				});
 		}
 

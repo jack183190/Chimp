@@ -28,7 +28,7 @@ namespace Chimp {
 	public:
 		// Create an event handler, can be used to broadcast events and sub/unsub listeners
 		// broadcaster - empty shared ptr which will be filled with a broadcaster for this event handler
-		EventHandler(std::shared_ptr<Broadcaster> &broadcaster) {
+		EventHandler(std::shared_ptr<Broadcaster>& broadcaster) {
 			broadcaster = std::shared_ptr<Broadcaster>(new Broadcaster(this));
 			m_UnusedBroadcaster = broadcaster;
 		}
@@ -41,13 +41,27 @@ namespace Chimp {
 		// type - the type of event to subscribe to
 		// callback - the function to call when the event is broadcast
 		// returns a listener id which can be used to unsubscribe
-		EventListener Subscribe(EventType type, const std::function<void(const Event*)> &callback) {
+		EventListener Subscribe(EventType type, const std::function<void(const Event*)>& callback) {
 			m_LastListenerId++;
 			m_Subscribers[type][m_LastListenerId] = callback;
 			return m_LastListenerId;
 		}
 
-		// Unsubscribe from an event type
+		// Subcribe to multiple event types at once
+		EventListener Subscribe(
+			const std::vector<EventType>& types, 
+			const std::function<void(const EventType, const Event*)>& callback
+		) {
+			m_LastListenerId++;
+			for (auto type : types) {
+				m_Subscribers[type][m_LastListenerId] = [type, callback](const Event* event) {
+					callback(type, event);
+				};
+			}
+			return m_LastListenerId;
+		}
+
+		// Unsubscribe a listener
 		// listener - the listener id to unsubscribe
 		void Unsubscribe(EventListener listener) {
 			for (auto& [type, subscribers] : m_Subscribers) {
