@@ -87,18 +87,18 @@ namespace Chimp {
 	{
 		assert(event.type == ENET_EVENT_TYPE_RECEIVE);
 		// Get packet type
-		NetworkEventType type = *reinterpret_cast<NetworkEventType*>(event.packet->data);
+		NetworkPacketType type = *reinterpret_cast<NetworkPacketType*>(event.packet->data);
 
 		// Set id
 		if (m_ConnectionId == INVALID_ID) {
-			assert(type == NetworkEventType::CLIENT_SET_ID);
-			IdPacket* idPacket = reinterpret_cast<IdPacket*>(event.packet->data);
-			m_ConnectionId = idPacket->Id;
+			assert(type == NetworkPacketType::CLIENT_SET_ID);
+			ToClientSetClientIdPacket* idPacket = reinterpret_cast<ToClientSetClientIdPacket*>(event.packet->data);
+			m_ConnectionId = idPacket->NewClientId;
 		}
 		else {
 			// Broadcast event
-			NetworkEvent receiveEvent;
-			m_EventQueue.Push(std::make_tuple(NetworkEventType::MESSAGE, receiveEvent));
+			NetworkPacket receiveEvent;
+			//m_EventQueue.Push(std::make_tuple(receiveEvent, receiveEvent));
 		}
 
 		// Destroy packet

@@ -21,7 +21,7 @@ namespace Chimp {
 
 	void IServer::Update()
 	{
-		m_EventQueue.PopAll([this](const std::tuple<NetworkEventType, NetworkEvent>& event) {
+		m_EventQueue.PopAll([this](const std::tuple<NetworkPacketType, NetworkPacket>& event) {
 			m_EventHandlerAndBroadcaster.Broadcaster->Broadcast(std::get<0>(event), std::get<1>(event));
 			});
 	}

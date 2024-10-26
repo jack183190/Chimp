@@ -54,7 +54,6 @@ namespace Chimp {
 		ENetEvent event;
 		while (enet_host_service(&m_Server, &event, 0) > 0)
 		{
-			std::cout << "received server event\n";
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_CONNECT:
@@ -77,21 +76,13 @@ namespace Chimp {
 		assert(event.type == ENET_EVENT_TYPE_CONNECT);
 
 		// Give the client an id
-		int thisClientId = m_NextClientId++;
-		m_ClientIds[event.peer] = thisClientId;
+		ToClientSetClientIdPacket idPacket;
+		idPacket.PacketType = NetworkPacketType::CLIENT_SET_ID;
+		idPacket.NewClientId = m_NextClientId++;
+		m_ClientIds[event.peer] = idPacket.NewClientId;
 
-
-		IdPacket idPacket;
-		idPacket.Id = thisClientId;
-
-		ENetPacket* packet = enet_packet_create(&idPacket, sizeof(IdPacket), ENET_PACKET_FLAG_RELIABLE);
+		ENetPacket* packet = enet_packet_create(&idPacket, sizeof(ToClientSetClientIdPacket), ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(event.peer, 0, packet);
-
-		// Broadcast the event
-		ConnectionEvent connectionEvent;
-		m_EventQueue.Push(std::make_tuple(NetworkEventType::CONNECTED, connectionEvent));
-		std::cout << "client connected, port: " << event.peer->address.port <<
-			", assigned id: " << thisClientId << std::endl;
 	}
 
 	void Server::HandleDisconnectionEvent(const ENetEvent& event)
@@ -100,11 +91,6 @@ namespace Chimp {
 
 		// Remove the client id
 		m_ClientIds.erase(event.peer);
-
-		// Broadcast the event
-		ConnectionEvent disconnectionEvent;
-		m_EventQueue.Push(std::make_tuple(NetworkEventType::DISCONNECTED, disconnectionEvent));
-		std::cout << "client disconnected, port: " << event.peer->address.port << std::endl;
 	}
 
 	void Server::HandleReceiveEvent(const ENetEvent& event)

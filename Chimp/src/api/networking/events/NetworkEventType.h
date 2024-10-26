@@ -1,19 +1,15 @@
 #pragma once
 
 namespace Chimp {
-	enum class NetworkEventType {
-		CONNECTED, DISCONNECTED, MESSAGE, CLIENT_SET_ID
+	enum class NetworkPacketType {
+		INVALID, CLIENT_SET_ID
 	};
 
-	struct NetworkEvent {
+	struct NetworkPacket {
+		NetworkPacketType PacketType = NetworkPacketType::INVALID;
 	};
 
-	struct ConnectionEvent : public NetworkEvent {
-
-	};
-
-	struct IdPacket {
-		NetworkEventType Type = NetworkEventType::CLIENT_SET_ID;
-		int Id;
+	struct ToClientSetClientIdPacket : public NetworkPacket {
+		int NewClientId;
 	};
 }

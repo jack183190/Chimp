@@ -18,7 +18,7 @@ namespace Chimp {
 		[[nodiscard]] virtual bool IsValid() const = 0;
 
 		// Returns the event handler for this server
-		[[nodiscard]] EventHandler<NetworkEventType, NetworkEvent>& GetEventHandler() {
+		[[nodiscard]] EventHandler<NetworkPacketType, NetworkPacket>& GetEventHandler() {
 			return *m_EventHandlerAndBroadcaster.Handler;
 		}
 
@@ -36,7 +36,7 @@ namespace Chimp {
 
 	protected:
 		const ConnectionInfo m_ServerInfo;
-		ThreadQueue<std::tuple<NetworkEventType, NetworkEvent>> m_EventQueue;
+		ThreadQueue<std::tuple<NetworkPacketType, NetworkPacket>> m_EventQueue;
 		unsigned int m_ConnectionId = INVALID_ID;
 
 	private:
@@ -44,6 +44,6 @@ namespace Chimp {
 		bool m_IsBeingDestroyed = false;
 
 	protected:
-		EventHandlerAndBroadcaster<NetworkEventType, NetworkEvent> m_EventHandlerAndBroadcaster;
+		EventHandlerAndBroadcaster<NetworkPacketType, NetworkPacket> m_EventHandlerAndBroadcaster;
 	};
 }
