@@ -30,5 +30,6 @@ namespace Chimp {
 		std::unordered_map<ENetPeer*, int> m_ClientIds;
 		std::unordered_map<int, ENetPeer*> m_ClientIdsReverse;
 		int m_NextClientId = 0;
+		int m_ForwardNextPacketToClientId = INVALID_ID;
 	};
 }

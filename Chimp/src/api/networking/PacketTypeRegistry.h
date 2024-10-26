@@ -57,6 +57,7 @@ namespace Chimp {
 		static void RegisterChimpPacketTypes() {
 			RegisterPacketType<NetworkPacket>(Packets::INVALID);
 			RegisterPacketType<ToClientSetClientIdPacket>(Packets::CLIENT_SET_ID);
+			RegisterPacketType<ToServerForwardPacket>(Packets::FORWARD);
 			RegisterPacketType<TestPacket>(Packets::TEST);
 		}
 

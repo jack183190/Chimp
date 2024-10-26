@@ -151,6 +151,11 @@ TestScene::TestScene(Chimp::Engine& engine)
 
 		// Client 2
 		m_Client2 = m_Engine.ConnectToServer(serverInfo);
+
+		TestPacket testPacket;
+		testPacket.PacketType = Packets::TEST;
+		testPacket.TestInt = 123;
+		m_Client2->SendPacketToClient(0, testPacket, 0);
 	}
 }
 

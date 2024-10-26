@@ -121,9 +121,21 @@ namespace Chimp {
 	{
 		assert(event.type == ENET_EVENT_TYPE_RECEIVE);
 
-		// Broadcast event
+		// Parse packet
 		std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
 		assert(packet->PacketType != Packets::INVALID);
+
+		// Forward or broadcast packet
+		if (packet->PacketType == Packets::FORWARD)
+		{
+			ToServerForwardPacket* forwardPacket = reinterpret_cast<ToServerForwardPacket*>(packet.get());
+			m_ForwardNextPacketToClientId = forwardPacket->ClientId;
+		} else if (m_ForwardNextPacketToClientId != INVALID_ID)
+		{
+			SendPacketToClient(m_ForwardNextPacketToClientId, *packet);
+			m_ForwardNextPacketToClientId = INVALID_ID;
+		}
+
 		m_EventQueue.Push(std::make_tuple(packet->PacketType, std::move(packet)));
 
 		// Destroy packet

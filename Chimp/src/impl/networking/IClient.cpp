@@ -27,4 +27,15 @@ namespace Chimp {
 			m_EventHandlerAndBroadcaster.Broadcaster->Broadcast(eventType, eventPacket);
 			});
 	}
+
+	void IClient::SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel)
+	{
+		// We'll send a packet to the server telling the server to forward the next packet it receives okay sounds good
+		ToServerForwardPacket forwardPacket;
+		forwardPacket.PacketType = Packets::FORWARD;
+		forwardPacket.ClientId = clientId;
+
+		SendPacketToServer(forwardPacket, channel);
+		SendPacketToServer(packet, channel);
+	}
 }

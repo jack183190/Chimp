@@ -33,6 +33,12 @@ namespace Chimp {
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
 		virtual void SendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
 
+		// Send a packet to a client
+		// clientId - The client to send the packet to, make sure this is a valid client
+		// packet - The packet to send
+		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
+		void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0);
+
 	protected:
 		// Push events into a queue, this is called as fast as possible in its own thread
 		// it is up to the impl to handle if the server is invalid or if the function is called too early
