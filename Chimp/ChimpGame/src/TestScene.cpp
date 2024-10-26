@@ -137,6 +137,12 @@ TestScene::TestScene(Chimp::Engine& engine)
 		serverInfo.ConnectionTimeoutMs = 5000;
 		m_Client1 = m_Engine.ConnectToServer(serverInfo);
 
+		m_Client1->GetEventHandler().Subscribe(Packets::TEST,
+			[](const Chimp::NetworkPacket* packet) {
+				auto testPacket = static_cast<const Chimp::TestPacket*>(packet);
+				std::cout << "Client 1 received test packet with int " << testPacket->TestInt << std::endl;
+			});
+
 		// Client 2
 		m_Client2 = m_Engine.ConnectToServer(serverInfo);
 	}

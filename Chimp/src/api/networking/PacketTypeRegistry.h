@@ -1,0 +1,54 @@
+#pragma once
+
+#include "events/NetworkEventType.h"
+#include "stdafx.h"
+
+namespace Chimp {
+	class Engine;
+	class PacketTypeRegistry {
+		friend class Engine;
+	private:
+		PacketTypeRegistry() = default;
+
+		static PacketTypeRegistry& GetInstance() {
+			static PacketTypeRegistry instance;
+			return instance;
+		}
+	public:
+		// Registers a packet type with the registry
+		// type - Packet type id
+		template <typename T>
+		static void RegisterPacketType(NetworkPacketType type) {
+			size_t typeSize = sizeof(T);
+			std::function<std::unique_ptr<NetworkPacket>()> factoryFunc = []() { return std::unique_ptr<NetworkPacket>(static_cast<NetworkPacket*>(new T())); };
+			
+			GetInstance().m_PacketTypeMap[type] = std::make_tuple(typeSize, factoryFunc);
+		}
+
+		// Convert data into the correct packet type, returns a nullptr if the packet type is not registered
+		static std::unique_ptr<NetworkPacket> Parse(size_t size, char* data) {
+			NetworkPacketType type = *reinterpret_cast<NetworkPacketType*>(data);
+			auto iter = GetInstance().m_PacketTypeMap.find(type);
+			if (iter == GetInstance().m_PacketTypeMap.end()) {
+				assert(false);
+				return nullptr;
+			}
+
+			size_t thisPacketSize = std::get<0>(iter->second);
+			std::unique_ptr<NetworkPacket> packet = std::get<1>(iter->second)();
+			assert(size == thisPacketSize);
+			memcpy(packet.get(), data, size);
+			return std::move(packet);
+		}
+
+	private:
+		static void RegisterChimpPacketTypes() {
+			RegisterPacketType<NetworkPacket>(Packets::INVALID);
+			RegisterPacketType<ToClientSetClientIdPacket>(Packets::CLIENT_SET_ID);
+			RegisterPacketType<TestPacket>(Packets::TEST);
+		}
+
+	private:
+		std::unordered_map<NetworkPacketType, std::tuple<size_t, std::function<std::unique_ptr<NetworkPacket>()>>> m_PacketTypeMap;
+	};
+}

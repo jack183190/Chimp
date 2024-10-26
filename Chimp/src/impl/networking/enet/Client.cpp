@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "api/networking/PacketTypeRegistry.h"
 
 namespace Chimp {
 	Client::Client(const ConnectionInfo& serverInfo)
@@ -13,8 +14,8 @@ namespace Chimp {
 		// Create server
 		m_Server = OptionalReference<ENetHost>(
 			enet_host_create(
-			 nullptr,
-				 1,
+				nullptr,
+				1,
 				serverInfo.MaxChannels,
 				serverInfo.MaxIncomingBandwidth,
 				serverInfo.MaxOutgoingBandwidth
@@ -91,14 +92,15 @@ namespace Chimp {
 
 		// Set id
 		if (m_ConnectionId == INVALID_ID) {
-			assert(type == NetworkPacketType::CLIENT_SET_ID);
+			assert(type == Packets::CLIENT_SET_ID);
 			ToClientSetClientIdPacket* idPacket = reinterpret_cast<ToClientSetClientIdPacket*>(event.packet->data);
 			m_ConnectionId = idPacket->NewClientId;
 		}
 		else {
 			// Broadcast event
-			NetworkPacket receiveEvent;
 			//m_EventQueue.Push(std::make_tuple(receiveEvent, receiveEvent));
+			std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
+			m_EventQueue.Push(std::make_tuple(type, std::move(packet)));
 		}
 
 		// Destroy packet

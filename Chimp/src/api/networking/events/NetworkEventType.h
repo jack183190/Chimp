@@ -1,15 +1,22 @@
 #pragma once
 
 namespace Chimp {
-	enum class NetworkPacketType {
-		INVALID, CLIENT_SET_ID
-	};
+	typedef int NetworkPacketType;
+	namespace Packets {
+		static constexpr NetworkPacketType INVALID = 0;
+		static constexpr NetworkPacketType CLIENT_SET_ID = 1;
+		static constexpr NetworkPacketType TEST = 2;
+	}
 
 	struct NetworkPacket {
-		NetworkPacketType PacketType = NetworkPacketType::INVALID;
+		NetworkPacketType PacketType = Packets::INVALID;
 	};
 
 	struct ToClientSetClientIdPacket : public NetworkPacket {
 		int NewClientId;
+	};
+
+	struct TestPacket : public NetworkPacket {
+		int TestInt;
 	};
 }

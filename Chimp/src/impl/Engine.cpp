@@ -17,6 +17,8 @@
 #include "impl/networking/enet/ServerFactory.h"
 #endif
 
+#include "api/networking/PacketTypeRegistry.h"
+
 namespace Chimp {
 	Engine::Engine() :
 		m_AssetManager(*this),
@@ -24,6 +26,7 @@ namespace Chimp {
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager())
 	{
+		PacketTypeRegistry::RegisterChimpPacketTypes();
 	}
 
 	TimeManager& Engine::GetTimeManager()

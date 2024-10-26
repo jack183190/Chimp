@@ -36,7 +36,7 @@ namespace Chimp {
 
 	protected:
 		const ConnectionInfo m_ServerInfo;
-		ThreadQueue<std::tuple<NetworkPacketType, NetworkPacket>> m_EventQueue;
+		ThreadQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
 		unsigned int m_ConnectionId = INVALID_ID;
 
 	private:

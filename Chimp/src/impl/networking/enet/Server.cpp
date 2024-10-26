@@ -77,11 +77,18 @@ namespace Chimp {
 
 		// Give the client an id
 		ToClientSetClientIdPacket idPacket;
-		idPacket.PacketType = NetworkPacketType::CLIENT_SET_ID;
+		idPacket.PacketType = Packets::CLIENT_SET_ID;
 		idPacket.NewClientId = m_NextClientId++;
 		m_ClientIds[event.peer] = idPacket.NewClientId;
 
 		ENetPacket* packet = enet_packet_create(&idPacket, sizeof(ToClientSetClientIdPacket), ENET_PACKET_FLAG_RELIABLE);
+		enet_peer_send(event.peer, 0, packet);
+
+		// Send test packet
+		TestPacket testPacket;
+		testPacket.PacketType = Packets::TEST;
+		testPacket.TestInt = 123;
+		packet = enet_packet_create(&testPacket, sizeof(TestPacket), ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(event.peer, 0, packet);
 	}
 
