@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Chimp {
-	struct ServerInfo {
+	struct ConnectionInfo {
 	public:
 		unsigned short Port;
 		bool IsHost;

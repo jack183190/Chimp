@@ -2,10 +2,11 @@
 
 namespace Chimp {
 	enum class NetworkEventType {
-		CONNECTED, DISCONNECTED, MESSAGE
+		CONNECTED, DISCONNECTED, MESSAGE, CLIENT_SET_ID
 	};
 
-	struct NetworkEvent {};
+	struct NetworkEvent {
+	};
 
 	struct ConnectionEvent : public NetworkEvent {
 

@@ -116,7 +116,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 	{
 		// Server
 		{
-			Chimp::ServerInfo serverInfo;
+			Chimp::ConnectionInfo serverInfo;
 			serverInfo.IsHost = true;
 			serverInfo.HostName = "localhost";
 			serverInfo.Port = 37478;
@@ -136,7 +136,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		}
 
 		// Client 1
-		Chimp::ServerInfo serverInfo;
+		Chimp::ConnectionInfo serverInfo;
 		serverInfo.IsHost = false;
 		serverInfo.HostName = "localhost";
 		serverInfo.Port = 37478;
@@ -146,6 +146,17 @@ TestScene::TestScene(Chimp::Engine& engine)
 		serverInfo.MaxOutgoingBandwidth = 0;
 		serverInfo.ConnectionTimeoutMs = 500;
 		m_Client1 = m_Engine.ConnectOrHostServer(serverInfo);
+
+		m_Client1->GetEventHandler().Subscribe(NetworkEventType::MESSAGE, [](const NetworkEvent* event) {
+			std::cout << "Client 1 received message." << std::endl;
+			});
+
+		// Client 2
+		m_Client2 = m_Engine.ConnectOrHostServer(serverInfo);
+
+		m_Client2->GetEventHandler().Subscribe(NetworkEventType::MESSAGE, [](const NetworkEvent* event) {
+			std::cout << "Client 2 received message." << std::endl;
+			});
 	}
 }
 
@@ -165,7 +176,8 @@ void TestScene::OnUpdate()
 {
 	// Networking
 	m_Server->Update();
-	//m_Client1->Update();
+	m_Client1->Update();
+	m_Client2->Update();
 }
 
 void TestScene::OnRender()

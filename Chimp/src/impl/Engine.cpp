@@ -46,14 +46,14 @@ namespace Chimp {
 		return m_AssetManager;
 	}
 
-	std::unique_ptr<IServer> Engine::ConnectOrHostServer(const ServerInfo& serverInfo)
+	std::unique_ptr<IServerConnection> Engine::ConnectOrHostServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {
 			std::cerr << "Server info is invalid." << std::endl;
 			return nullptr;
 		}
 
-		std::unique_ptr<IServer> server = nullptr;
+		std::unique_ptr<IServerConnection> server = nullptr;
 #ifdef CHIMP_ENET
 		server = ENetServerFactory::CreateServer(serverInfo);
 #endif

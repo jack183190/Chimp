@@ -1,10 +1,10 @@
 #pragma once
 
-#include "api/networking/IServer.h"
+#include "api/networking/IServerConnection.h"
 
 namespace Chimp {
 	class ENetServerFactory {
 	public:
-		static std::unique_ptr<IServer> CreateServer(const ServerInfo& serverInfo);
+		static std::unique_ptr<IServerConnection> CreateServer(const ConnectionInfo& serverInfo);
 	};
 }

@@ -1,26 +1,21 @@
 #pragma once
 
 #include "stdafx.h"
-#include "ServerInfo.h"
+#include "ConnectionInfo.h"
 #include "EventHandler.h"
 #include "events/NetworkEventType.h"
 #include "api/utils/ThreadQueue.h"
 
 namespace Chimp {
-	class IServer {
+	class IServerConnection {
 	protected:
 		// Represents either a hosted server or a connection to a server
-		IServer(const ServerInfo& serverInfo);
+		IServerConnection(const ConnectionInfo& serverInfo);
 	public:
-		~IServer();
+		~IServerConnection();
 	public:
 		// If this is false, failed to connect to server
 		[[nodiscard]] virtual bool IsValid() const = 0;
-
-		// Get a locally unique id for this instance
-		[[nodiscard]] unsigned int GetServerLocalId() const {
-			return m_ServerLocalId;
-		}
 
 		// Returns true if we are hosting a server, false if we are connected to a server
 		[[nodiscard]] bool IsHosting() const {
@@ -40,15 +35,18 @@ namespace Chimp {
 		// it is up to the impl to handle if the server is invalid or if the function is called too early
 		virtual void PollEvents() = 0;
 
+	public:
+		constexpr static int HOST_ID = -1;
+		constexpr static unsigned int INVALID_ID = -2;
+
 	protected:
-		const ServerInfo m_ServerInfo;
+		const ConnectionInfo m_ServerInfo;
 		ThreadQueue<std::tuple<NetworkEventType, NetworkEvent>> m_EventQueue;
-		const unsigned int m_ServerLocalId;
+		unsigned int m_ConnectionId = INVALID_ID;
 
 	private:
 		std::thread m_EventPollingThread;
 		bool m_IsBeingDestroyed = false;
-		static unsigned int ServerIdCounter;
 
 	protected:
 		EventHandlerAndBroadcaster<NetworkEventType, NetworkEvent> m_EventHandlerAndBroadcaster;

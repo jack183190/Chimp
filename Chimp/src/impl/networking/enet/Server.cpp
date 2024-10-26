@@ -1,8 +1,8 @@
 #include "Server.h"
 
 namespace Chimp {
-	Server::Server(const ServerInfo& serverInfo)
-		: IServer(serverInfo)
+	Server::Server(const ConnectionInfo& serverInfo)
+		: IServerConnection(serverInfo)
 	{
 		InitENet::Init();
 
@@ -48,9 +48,9 @@ namespace Chimp {
 			}
 
 			// Send test packet
-			ENetPacket* packet = enet_packet_create("Hello, server!", strlen("Hello, server!") + 1, ENET_PACKET_FLAG_RELIABLE);
+			/*ENetPacket* packet = enet_packet_create("Hello, server!", strlen("Hello, server!") + 1, ENET_PACKET_FLAG_RELIABLE);
 			enet_peer_send(&m_Peer, 0, packet);
-			enet_host_flush(&m_Server);
+			enet_host_flush(&m_Server);*/
 		}
 		else {
 			std::cout << "Hosting server." << std::endl;
@@ -77,6 +77,8 @@ namespace Chimp {
 		if (!IsValid()) {
 			return;
 		}
+		
+		// first int in the packet is event type
 
 		ENetEvent event;
 		while (enet_host_service(&m_Server, &event, 0) > 0)
@@ -85,19 +87,10 @@ namespace Chimp {
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_CONNECT:
-				ConnectionEvent connectionEvent;
-				m_EventQueue.Push(std::make_tuple(NetworkEventType::CONNECTED, connectionEvent));
-				std::cout << "client connected, port: " << event.peer->address.port << std::endl;
+				HandleConnectionEvent(event);
 				break;
 			case ENET_EVENT_TYPE_RECEIVE:
-				NetworkEvent receiveEvent;
-				m_EventQueue.Push(std::make_tuple(NetworkEventType::MESSAGE, receiveEvent));
-				std::cout << "received packet with data: ";
-				for (size_t i = 0; i < event.packet->dataLength; ++i) {
-					std::cout << event.packet->data[i];
-				}
-				std::cout << std::endl;
-				enet_packet_destroy(event.packet);
+				HandleReceiveEvent(event);
 				break;
 			case ENET_EVENT_TYPE_DISCONNECT:
 				ConnectionEvent disconnectionEvent;
@@ -108,5 +101,78 @@ namespace Chimp {
 				break;
 			}
 		}
+	}
+	
+	struct IdPacket {
+		NetworkEventType Type = NetworkEventType::CLIENT_SET_ID;
+		int Id;
+	};
+
+	void Server::HandleConnectionEvent(const ENetEvent& event)
+	{
+		assert(event.type == ENET_EVENT_TYPE_CONNECT);
+		assert(IsHosting());
+
+		// Give the client an id
+		int thisClientId = m_NextClientId++;
+		m_ClientIds[event.peer] = thisClientId;
+
+		
+		IdPacket idPacket;
+		idPacket.Id = thisClientId;
+
+		ENetPacket* packet = enet_packet_create(&idPacket, sizeof(IdPacket), ENET_PACKET_FLAG_RELIABLE);
+		enet_peer_send(event.peer, 0, packet);
+
+		// Broadcast the event
+		ConnectionEvent connectionEvent;
+		m_EventQueue.Push(std::make_tuple(NetworkEventType::CONNECTED, connectionEvent));
+		std::cout << "client connected, port: " << event.peer->address.port << 
+			", assigned id: " << thisClientId << std::endl;
+	}
+
+	void Server::HandleDisconnectionEvent(const ENetEvent& event)
+	{
+		assert(event.type == ENET_EVENT_TYPE_DISCONNECT);
+		assert(IsHosting());
+
+		// Remove the client id
+		m_ClientIds.erase(event.peer);
+
+		// Broadcast the event
+		ConnectionEvent disconnectionEvent;
+		m_EventQueue.Push(std::make_tuple(NetworkEventType::DISCONNECTED, disconnectionEvent));
+		std::cout << "client disconnected, port: " << event.peer->address.port << std::endl;
+	}
+
+	void Server::HandleReceiveEvent(const ENetEvent& event)
+	{
+		assert(event.type == ENET_EVENT_TYPE_RECEIVE);
+		// Get packet type
+		NetworkEventType type = *reinterpret_cast<NetworkEventType*>(event.packet->data);
+
+		// Set id
+		if (m_ConnectionId == INVALID_ID) {
+			assert(type == NetworkEventType::CLIENT_SET_ID);
+			IdPacket* idPacket = reinterpret_cast<IdPacket*>(event.packet->data);
+			m_ConnectionId = idPacket->Id;
+			std::cout << "client set id: " << m_ConnectionId << std::endl;
+		}
+
+		// Broadcast event
+		NetworkEvent receiveEvent;
+		m_EventQueue.Push(std::make_tuple(NetworkEventType::MESSAGE, receiveEvent));
+
+		// Debug print
+		{
+			std::cout << "received packet with data: ";
+			for (size_t i = 0; i < event.packet->dataLength; ++i) {
+				std::cout << event.packet->data[i];
+			}
+			std::cout << std::endl;
+		}
+
+		// Destroy packet
+		enet_packet_destroy(event.packet);
 	}
 }

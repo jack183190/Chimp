@@ -21,7 +21,7 @@ private:
 	std::unique_ptr<Mesh> m_Mesh;
 	std::unique_ptr<GameRenderer> m_GameRenderer;
 	ECS m_ECS;
-	std::unique_ptr<IServer> m_Server;
-	std::unique_ptr<IServer> m_Client1;
-	std::unique_ptr<IServer> m_Client2;
+	std::unique_ptr<IServerConnection> m_Server;
+	std::unique_ptr<IServerConnection> m_Client1;
+	std::unique_ptr<IServerConnection> m_Client2;
 };
