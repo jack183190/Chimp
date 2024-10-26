@@ -25,6 +25,18 @@ namespace Chimp {
 			GetInstance().m_PacketTypeMap[type] = std::make_tuple(typeSize, factoryFunc);
 		}
 
+		// Get the size of a packet type in bytes
+		// type - Packet type id
+		static size_t GetPacketSize(NetworkPacketType type) {
+			auto iter = GetInstance().m_PacketTypeMap.find(type);
+			if (iter == GetInstance().m_PacketTypeMap.end()) {
+				assert(false);
+				return sizeof(NetworkPacket);
+			}
+
+			return std::get<0>(iter->second);
+		}
+
 		// Convert data into the correct packet type, returns a nullptr if the packet type is not registered
 		static std::unique_ptr<NetworkPacket> Parse(size_t size, char* data) {
 			NetworkPacketType type = *reinterpret_cast<NetworkPacketType*>(data);

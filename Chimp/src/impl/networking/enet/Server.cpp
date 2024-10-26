@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "networking/PacketTypeRegistry.h"
 
 namespace Chimp {
 	Server::Server(const ConnectionInfo& serverInfo)
@@ -43,6 +44,27 @@ namespace Chimp {
 		return m_IsValid;
 	}
 
+	void Server::SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel)
+	{
+		assert(IsValid());
+
+		ENetPeer* peer = m_ClientIdsReverse.at(clientId);
+		assert(peer);
+
+		const auto packetSize = PacketTypeRegistry::GetPacketSize(packet.PacketType);
+
+		ENetPacket* enetPacket = enet_packet_create(&packet, packetSize, ENET_PACKET_FLAG_RELIABLE);
+		enet_peer_send(peer, channel, enetPacket);
+	}
+
+	void Server::SendPacketToAllClients(const NetworkPacket& packet, int channel)
+	{
+		for (auto& [peer, clientId] : m_ClientIds)
+		{
+			SendPacketToClient(clientId, packet, channel);
+		}
+	}
+
 	void Server::PollEvents()
 	{
 		if (!IsValid()) {
@@ -80,16 +102,9 @@ namespace Chimp {
 		idPacket.PacketType = Packets::CLIENT_SET_ID;
 		idPacket.NewClientId = m_NextClientId++;
 		m_ClientIds[event.peer] = idPacket.NewClientId;
+		m_ClientIdsReverse[idPacket.NewClientId] = event.peer;
 
-		ENetPacket* packet = enet_packet_create(&idPacket, sizeof(ToClientSetClientIdPacket), ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(event.peer, 0, packet);
-
-		// Send test packet
-		TestPacket testPacket;
-		testPacket.PacketType = Packets::TEST;
-		testPacket.TestInt = 123;
-		packet = enet_packet_create(&testPacket, sizeof(TestPacket), ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(event.peer, 0, packet);
+		SendPacketToClient(idPacket.NewClientId, idPacket);
 	}
 
 	void Server::HandleDisconnectionEvent(const ENetEvent& event)
@@ -97,6 +112,8 @@ namespace Chimp {
 		assert(event.type == ENET_EVENT_TYPE_DISCONNECT);
 
 		// Remove the client id
+		int clientId = m_ClientIds[event.peer];
+		m_ClientIdsReverse.erase(clientId);
 		m_ClientIds.erase(event.peer);
 	}
 

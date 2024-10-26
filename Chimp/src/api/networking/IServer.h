@@ -22,6 +22,13 @@ namespace Chimp {
 			return *m_EventHandlerAndBroadcaster.Handler;
 		}
 
+		// Send a packet to a client
+		// clientId - The client to send the packet to, make sure this is a valid client
+		// packet - The packet to send
+		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
+		virtual void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0) = 0;
+		virtual void SendPacketToAllClients(const NetworkPacket& packet, int channel = 0) = 0;
+
 		// Broadcast all polled events
 		void Update();
 
