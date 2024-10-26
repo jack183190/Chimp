@@ -12,6 +12,8 @@ namespace Chimp {
 	public:
 		bool IsValid() const override;
 
+		void SendPacketToServer(const NetworkPacket& packet, int channel = 0) override;
+
 	protected:
 		void PollEvents() override;
 

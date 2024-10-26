@@ -66,6 +66,16 @@ namespace Chimp {
 		return m_IsValid;
 	}
 
+	void Client::SendPacketToServer(const NetworkPacket& packet, int channel)
+	{
+		assert(IsValid());
+
+		const auto packetSize = PacketTypeRegistry::GetPacketSize(packet.PacketType);
+
+		ENetPacket* enetPacket = enet_packet_create(&packet, packetSize, ENET_PACKET_FLAG_RELIABLE);
+		enet_peer_send(&m_Peer, channel, enetPacket);
+	}
+
 	void Client::PollEvents()
 	{
 		if (!IsValid()) {
@@ -89,6 +99,7 @@ namespace Chimp {
 		assert(event.type == ENET_EVENT_TYPE_RECEIVE);
 		// Get packet type
 		NetworkPacketType type = *reinterpret_cast<NetworkPacketType*>(event.packet->data);
+		assert(type != Packets::INVALID);
 
 		// Set id
 		if (m_ConnectionId == INVALID_ID) {
@@ -98,7 +109,6 @@ namespace Chimp {
 		}
 		else {
 			// Broadcast event
-			//m_EventQueue.Push(std::make_tuple(receiveEvent, receiveEvent));
 			std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
 			m_EventQueue.Push(std::make_tuple(type, std::move(packet)));
 		}

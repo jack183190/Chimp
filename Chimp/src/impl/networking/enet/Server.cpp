@@ -119,6 +119,14 @@ namespace Chimp {
 
 	void Server::HandleReceiveEvent(const ENetEvent& event)
 	{
-		// TODO
+		assert(event.type == ENET_EVENT_TYPE_RECEIVE);
+
+		// Broadcast event
+		std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
+		assert(packet->PacketType != Packets::INVALID);
+		m_EventQueue.Push(std::make_tuple(packet->PacketType, std::move(packet)));
+
+		// Destroy packet
+		enet_packet_destroy(event.packet);
 	}
 }

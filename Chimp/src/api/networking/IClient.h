@@ -7,6 +7,9 @@
 #include "api/utils/ThreadQueue.h"
 
 namespace Chimp {
+	// Client and server do share a lot of similarities, but it is easier to have them separate and just duplicate some code.
+	// because it makes sense to have the same code with different function names
+	// also yes you could have a base class, but it just makes the code a lot harder to reason about
 	class IClient {
 	protected:
 		// Represents a connection to a server
@@ -24,6 +27,11 @@ namespace Chimp {
 
 		// Broadcast all polled events
 		void Update();
+
+		// Send a packet to the server
+		// packet - The packet to send
+		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
+		virtual void SendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
 
 	protected:
 		// Push events into a queue, this is called as fast as possible in its own thread
