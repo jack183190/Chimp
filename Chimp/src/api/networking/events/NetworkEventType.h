@@ -11,4 +11,9 @@ namespace Chimp {
 	struct ConnectionEvent : public NetworkEvent {
 
 	};
+
+	struct IdPacket {
+		NetworkEventType Type = NetworkEventType::CLIENT_SET_ID;
+		int Id;
+	};
 }

@@ -46,26 +46,48 @@ namespace Chimp {
 		return m_AssetManager;
 	}
 
-	std::unique_ptr<IServerConnection> Engine::ConnectOrHostServer(const ConnectionInfo& serverInfo)
+	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {
 			std::cerr << "Server info is invalid." << std::endl;
 			return nullptr;
 		}
 
-		std::unique_ptr<IServerConnection> server = nullptr;
+		std::unique_ptr<IServer> server = nullptr;
 #ifdef CHIMP_ENET
 		server = ENetServerFactory::CreateServer(serverInfo);
 #endif
 		if (server == nullptr) {
-			std::cerr << "No server implementation available." << std::endl;
+			std::cerr << "No networking implementation available." << std::endl;
 			return nullptr;
 		}
 		if (!server->IsValid()) {
-			std::cerr << "Server is invalid, this means hosting or connecting failed." << std::endl;
+			std::cerr << "Server is invalid, this means hosting failed." << std::endl;
 			return nullptr;
 		}
 		return std::move(server);
+	}
+
+	std::unique_ptr<IClient> Engine::ConnectToServer(const ConnectionInfo& serverInfo)
+	{
+		if (!serverInfo.IsValid()) {
+			std::cerr << "Server info is invalid." << std::endl;
+			return nullptr;
+		}
+
+		std::unique_ptr<IClient> client = nullptr;
+#ifdef CHIMP_ENET
+		client = ENetServerFactory::CreateClient(serverInfo);
+#endif
+		if (client == nullptr) {
+			std::cerr << "No networking implementation available." << std::endl;
+			return nullptr;
+		}
+		if (!client->IsValid()) {
+			std::cerr << "Client is invalid, this means connecting failed." << std::endl;
+			return nullptr;
+		}
+		return std::move(client);
 	}
 
 	std::unique_ptr<IWindow> Engine::CreateWindow() const
@@ -82,7 +104,7 @@ namespace Chimp {
 		assert(m_ImageLoader);
 		std::unique_ptr<IRenderingManager> renderingManager = nullptr;
 #ifdef CHIMP_OPENGL
-		renderingManager= std::make_unique<GL::RenderingManager>(*m_ImageLoader);
+		renderingManager = std::make_unique<GL::RenderingManager>(*m_ImageLoader);
 #endif
 
 		if (!renderingManager) {

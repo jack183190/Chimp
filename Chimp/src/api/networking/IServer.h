@@ -7,20 +7,15 @@
 #include "api/utils/ThreadQueue.h"
 
 namespace Chimp {
-	class IServerConnection {
+	class IServer {
 	protected:
-		// Represents either a hosted server or a connection to a server
-		IServerConnection(const ConnectionInfo& serverInfo);
+		// Represents either a hosted server
+		IServer(const ConnectionInfo& serverInfo);
 	public:
-		~IServerConnection();
+		~IServer();
 	public:
-		// If this is false, failed to connect to server
+		// If this is false, failed to host the server
 		[[nodiscard]] virtual bool IsValid() const = 0;
-
-		// Returns true if we are hosting a server, false if we are connected to a server
-		[[nodiscard]] bool IsHosting() const {
-			return m_ServerInfo.IsHost;
-		}
 
 		// Returns the event handler for this server
 		[[nodiscard]] EventHandler<NetworkEventType, NetworkEvent>& GetEventHandler() {

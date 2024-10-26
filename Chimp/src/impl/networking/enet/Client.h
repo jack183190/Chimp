@@ -1,14 +1,14 @@
 #pragma once
 
-#include "api/networking/IServer.h"
+#include "api/networking/IClient.h"
 #include "api/utils/OptionalReference.h"
 #include "InitENet.h"
 
 namespace Chimp {
-	class Server : public IServer {
+	class Client : public IClient {
 	public:
-		Server(const ConnectionInfo& serverInfo);
-		~Server();
+		Client(const ConnectionInfo& serverInfo);
+		~Client();
 	public:
 		bool IsValid() const override;
 
@@ -16,14 +16,11 @@ namespace Chimp {
 		void PollEvents() override;
 
 	private:
-		void HandleConnectionEvent(const ENetEvent& event);
-		void HandleDisconnectionEvent(const ENetEvent& event);
 		void HandleReceiveEvent(const ENetEvent& event);
 
 	private:
 		bool m_IsValid = false;
 		OptionalReference<ENetHost> m_Server;
-		std::unordered_map<ENetPeer*, int> m_ClientIds;
-		int m_NextClientId = 0;
+		OptionalReference<ENetPeer> m_Peer;
 	};
 }

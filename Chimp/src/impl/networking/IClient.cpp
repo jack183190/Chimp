@@ -1,9 +1,9 @@
 #pragma once
 
-#include "api/networking/IServerConnection.h"
+#include "api/networking/IClient.h"
 
 namespace Chimp {
-	IServerConnection::IServerConnection(const ConnectionInfo& serverInfo) :
+	IClient::IClient(const ConnectionInfo& serverInfo) :
 		m_ServerInfo(serverInfo),
 		m_EventPollingThread([this]() {
 		while (!m_IsBeingDestroyed) {
@@ -13,13 +13,13 @@ namespace Chimp {
 
 	}
 
-	IServerConnection::~IServerConnection()
+	IClient::~IClient()
 	{
 		m_IsBeingDestroyed = true;
 		m_EventPollingThread.join();
 	}
 
-	void IServerConnection::Update()
+	void IClient::Update()
 	{
 		m_EventQueue.PopAll([this](const std::tuple<NetworkEventType, NetworkEvent>& event) {
 			m_EventHandlerAndBroadcaster.Broadcaster->Broadcast(std::get<0>(event), std::get<1>(event));

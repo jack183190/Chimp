@@ -117,45 +117,43 @@ TestScene::TestScene(Chimp::Engine& engine)
 		// Server
 		{
 			Chimp::ConnectionInfo serverInfo;
-			serverInfo.IsHost = true;
 			serverInfo.HostName = "localhost";
 			serverInfo.Port = 37478;
 			serverInfo.MaxClients = 32;
 			serverInfo.MaxChannels = 2;
 			serverInfo.MaxIncomingBandwidth = 0;
 			serverInfo.MaxOutgoingBandwidth = 0;
-			m_Server = m_Engine.ConnectOrHostServer(serverInfo);
+			m_Server = m_Engine.HostServer(serverInfo);
 
 			m_Server->GetEventHandler().Subscribe(
 				{
 					NetworkEventType::CONNECTED, NetworkEventType::DISCONNECTED, NetworkEventType::MESSAGE
 				},
 				[](const NetworkEventType type, const NetworkEvent* event) {
-					std::cout << "Server event: " << static_cast<int>(type) << std::endl;
+				//	std::cout << "Server event: " << static_cast<int>(type) << std::endl;
 				});
 		}
 
 		// Client 1
 		Chimp::ConnectionInfo serverInfo;
-		serverInfo.IsHost = false;
 		serverInfo.HostName = "localhost";
 		serverInfo.Port = 37478;
 		serverInfo.MaxClients = 1;
 		serverInfo.MaxChannels = 2;
 		serverInfo.MaxIncomingBandwidth = 0;
 		serverInfo.MaxOutgoingBandwidth = 0;
-		serverInfo.ConnectionTimeoutMs = 500;
-		m_Client1 = m_Engine.ConnectOrHostServer(serverInfo);
+		serverInfo.ConnectionTimeoutMs = 5000;
+		m_Client1 = m_Engine.ConnectToServer(serverInfo);
 
 		m_Client1->GetEventHandler().Subscribe(NetworkEventType::MESSAGE, [](const NetworkEvent* event) {
-			std::cout << "Client 1 received message." << std::endl;
+		//	std::cout << "Client 1 received message." << std::endl;
 			});
 
 		// Client 2
-		m_Client2 = m_Engine.ConnectOrHostServer(serverInfo);
+		m_Client2 = m_Engine.ConnectToServer(serverInfo);
 
 		m_Client2->GetEventHandler().Subscribe(NetworkEventType::MESSAGE, [](const NetworkEvent* event) {
-			std::cout << "Client 2 received message." << std::endl;
+			//std::cout << "Client 2 received message." << std::endl;
 			});
 	}
 }
