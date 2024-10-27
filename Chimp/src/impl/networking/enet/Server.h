@@ -16,7 +16,7 @@ namespace Chimp {
 
 		void SendPacketToAllClients(const NetworkPacket& packet, int channel = 0) override;
 
-		void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClientsexcludedClients, int channel = 0) override;
+		void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClients, int channel = 0) override;
 
 	protected:
 		void PollEvents() override;
@@ -33,5 +33,6 @@ namespace Chimp {
 		std::unordered_map<int, ENetPeer*> m_ClientIdsReverse;
 		int m_NextClientId = 0;
 		int m_ForwardNextPacketToClientId = INVALID_ID;
+		std::unordered_map<ENetPeer*, int> m_RespondToPacketId; // client, request id
 	};
 }

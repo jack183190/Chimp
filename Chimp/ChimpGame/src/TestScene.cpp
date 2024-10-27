@@ -137,7 +137,7 @@ TestScene::TestScene(Chimp::Engine& engine)
 		serverInfo.ConnectionTimeoutMs = 5000;
 		m_Client1 = m_Engine.ConnectToServer(serverInfo);
 
-		m_Client1->GetEventHandler().Subscribe(Packets::TEST,
+	/*	m_Client1->GetEventHandler().Subscribe(Packets::TEST,
 			[](const Chimp::NetworkPacket* packet) {
 				auto testPacket = static_cast<const Chimp::TestPacket*>(packet);
 				std::cout << "Client 1 received test packet with int " << testPacket->TestInt << std::endl;
@@ -153,15 +153,38 @@ TestScene::TestScene(Chimp::Engine& engine)
 			[](const Chimp::NetworkPacket* packet) {
 				auto testPacket = static_cast<const Chimp::TestPacket*>(packet);
 				std::cout << "Server received test packet with int " << testPacket->TestInt << std::endl;
-			});
+			});*/
 
 		// Client 2
 		m_Client2 = m_Engine.ConnectToServer(serverInfo);
 
-		TestPacket testPacket;
+	/*	TestPacket testPacket;
 		testPacket.PacketType = Packets::TEST;
 		testPacket.TestInt = 123;
-		m_Client2->SendPacketToClient(0, testPacket, 0);
+		m_Client2->SendPacketToClient(0, testPacket, 0);*/
+
+		// Test response
+		{
+			m_Server->SetPacketResponseHandler(Packets::TEST,
+				[](const Chimp::NetworkPacket* packet) {
+					auto testPacket = static_cast<const Chimp::TestPacket*>(packet);
+					std::cout << "received request for response with int " << testPacket->TestInt << std::endl;
+
+					std::unique_ptr<TestPacket> responsePacket = std::make_unique<TestPacket>();
+					responsePacket->PacketType = Packets::TEST;
+					responsePacket->TestInt = 1001;
+					return std::move(responsePacket);
+				});
+
+			TestPacket testPacket;
+			testPacket.PacketType = Packets::TEST;
+			testPacket.TestInt = 1000;
+			m_Client1->SendPacketToServerWithResponse(testPacket,
+				[](const Chimp::NetworkPacket* packet) {
+					auto testPacket = static_cast<const Chimp::TestPacket*>(packet);
+					std::cout << "Client 1 received response packet with int " << testPacket->TestInt << std::endl;
+				});
+		}
 	}
 }
 

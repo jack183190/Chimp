@@ -76,12 +76,26 @@ namespace Chimp {
 
 	void Client::SendPacketToServer(const NetworkPacket& packet, int channel)
 	{
+		// todo multithreading support here
 		assert(IsValid());
 
 		const auto packetSize = PacketTypeRegistry::GetPacketSize(packet.PacketType);
 
 		ENetPacket* enetPacket = enet_packet_create(&packet, packetSize, ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(&m_Peer, channel, enetPacket);
+	}
+
+	void Client::SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
+	{
+		int callbackId = m_CallbackIdCounter++;
+		m_AwaitingResponseCallbacks[callbackId] = callback;
+
+		ToServerRequestResponsePacket requestPacket;
+		requestPacket.PacketType = Packets::CLIENT_REQUEST_RESPONSE;
+		requestPacket.RequestId = callbackId;
+
+		SendPacketToServer(requestPacket, channel);
+		SendPacketToServer(packet, channel);
 	}
 
 	void Client::PollEvents()
@@ -115,6 +129,24 @@ namespace Chimp {
 			ToClientSetClientIdPacket* idPacket = reinterpret_cast<ToClientSetClientIdPacket*>(event.packet->data);
 			m_ConnectionId = idPacket->NewClientId;
 			m_ReceiveIdCv.notify_all();
+		}
+		else if (type == Packets::SERVER_RESPONDING_TO_CLIENT) {
+			// Make the next packet call the callback
+			m_IsHandlingCallback = true;
+			m_HandlingCallbackId = reinterpret_cast<ToClientServerRespondingPacket*>(event.packet->data)->RequestId;
+		}
+		else if (m_IsHandlingCallback) {
+			// Handle the callback
+			auto iter = m_AwaitingResponseCallbacks.find(m_HandlingCallbackId);
+			m_IsHandlingCallback = false;
+			if (iter != m_AwaitingResponseCallbacks.end()) {
+				std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
+				iter->second(packet.get());
+				m_AwaitingResponseCallbacks.erase(iter);
+			}
+			else {
+				assert(false);
+			}
 		}
 		else {
 			// Broadcast event

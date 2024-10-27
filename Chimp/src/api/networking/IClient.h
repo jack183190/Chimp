@@ -32,6 +32,7 @@ namespace Chimp {
 		// packet - The packet to send
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
 		virtual void SendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
+		virtual void SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;
 
 		// Send a packet to a client
 		// clientId - The client to send the packet to, make sure this is a valid client

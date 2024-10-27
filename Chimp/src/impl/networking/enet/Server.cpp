@@ -133,6 +133,7 @@ namespace Chimp {
 		int clientId = m_ClientIds[event.peer];
 		m_ClientIdsReverse.erase(clientId);
 		m_ClientIds.erase(event.peer);
+		m_RespondToPacketId.erase(event.peer);
 
 		// Broadcast disconnection
 		ClientDisconnectedPacket disconnectPacket;
@@ -159,6 +160,41 @@ namespace Chimp {
 		{
 			SendPacketToClient(m_ForwardNextPacketToClientId, *packet);
 			m_ForwardNextPacketToClientId = INVALID_ID;
+		}
+		// Respond to packet
+		else if (packet->PacketType == Packets::CLIENT_REQUEST_RESPONSE)
+		{
+			ToServerRequestResponsePacket* responsePacket = reinterpret_cast<ToServerRequestResponsePacket*>(packet.get());
+			assert(responsePacket);
+
+			// Mark next packet as one that needs to be responded to
+			m_RespondToPacketId[event.peer] = responsePacket->RequestId;
+
+			std::cout << "server will respond to next packet" << std::endl;
+		}
+		else if (m_RespondToPacketId.find(event.peer) != m_RespondToPacketId.end()) {
+			// Get request id
+			auto requestId = m_RespondToPacketId[event.peer];
+
+			// Remove request id
+			m_RespondToPacketId.erase(event.peer);
+
+			// Get our response
+			auto iter = m_PacketResponseHandlers.find(packet->PacketType);
+			assert(iter != m_PacketResponseHandlers.end());
+			PacketResponseFunc& responseFunc = iter->second;
+			std::unique_ptr<NetworkPacket> responsePacket = responseFunc(packet.get());
+
+			// Tell them our next packet is a response
+			ToClientServerRespondingPacket response;
+			response.PacketType = Packets::SERVER_RESPONDING_TO_CLIENT;
+			response.RequestId = requestId;
+			SendPacketToClient(m_ClientIds[event.peer], response);
+
+			// Send the response
+			SendPacketToClient(m_ClientIds[event.peer], *responsePacket);
+
+			std::cout << "server responded to packet whos request id was " << requestId << std::endl;
 		}
 
 		m_EventQueue.Push(std::make_tuple(packet->PacketType, std::move(packet)));

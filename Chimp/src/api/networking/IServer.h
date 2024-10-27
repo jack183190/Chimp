@@ -5,6 +5,7 @@
 #include "EventHandler.h"
 #include "events/NetworkEventType.h"
 #include "api/utils/ThreadQueue.h"
+#include "PacketResponseFunc.h"
 
 namespace Chimp {
 	class IServer {
@@ -29,7 +30,12 @@ namespace Chimp {
 		// excludedClients - Vector of client ids to exclude, if empty, the packet will be sent to all clients
 		virtual void SendPacketToClient(int clientId, const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void SendPacketToAllClients(const NetworkPacket& packet, int channel = 0) = 0;
-		virtual void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClientsexcludedClients, int channel = 0) = 0;
+		virtual void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClients, int channel = 0) = 0;
+
+		// Handle responding to a packet
+		void SetPacketResponseHandler(NetworkPacketType type, PacketResponseFunc func) {
+			m_PacketResponseHandlers[type] = func;
+		}
 
 		// Broadcast all polled events
 		void Update();
@@ -47,6 +53,7 @@ namespace Chimp {
 		const ConnectionInfo m_ServerInfo;
 		ThreadQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
 		int m_ConnectionId = INVALID_ID;
+		std::unordered_map<NetworkPacketType, PacketResponseFunc> m_PacketResponseHandlers;
 
 	private:
 		std::thread m_EventPollingThread;

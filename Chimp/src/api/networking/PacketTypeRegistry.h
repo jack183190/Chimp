@@ -61,6 +61,8 @@ namespace Chimp {
 			RegisterPacketType<TestPacket>(Packets::TEST);
 			RegisterPacketType<ClientConnectedPacket>(Packets::CLIENT_CONNECTED);
 			RegisterPacketType<ClientDisconnectedPacket>(Packets::CLIENT_DISCONNECTED);
+			RegisterPacketType<ToServerRequestResponsePacket>(Packets::CLIENT_REQUEST_RESPONSE);
+			RegisterPacketType<ToClientServerRespondingPacket>(Packets::SERVER_RESPONDING_TO_CLIENT);
 		}
 
 	private:
