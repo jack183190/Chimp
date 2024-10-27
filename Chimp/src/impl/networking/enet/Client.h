@@ -30,5 +30,7 @@ namespace Chimp {
 		std::unordered_map<int, std::function<void(const NetworkPacket*)>> m_AwaitingResponseCallbacks;
 		int m_HandlingCallbackId = 0;
 		bool m_IsHandlingCallback = false;
+		int m_RespondToPacketId = 0;
+		bool m_RespondingToPacket = false;
 	};
 }

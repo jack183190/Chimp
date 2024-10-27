@@ -28,9 +28,11 @@ namespace Chimp {
 		// packet - The packet to send
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
 		// excludedClients - Vector of client ids to exclude, if empty, the packet will be sent to all clients
+		// callback - The callback to call when a response is received
 		virtual void SendPacketToClient(int clientId, const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void SendPacketToAllClients(const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClients, int channel = 0) = 0;
+		virtual void SendPacketToClientWithResponse(int clientId, const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;
 
 		// Handle responding to a packet
 		void SetPacketResponseHandler(NetworkPacketType type, PacketResponseFunc func) {

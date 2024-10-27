@@ -130,6 +130,7 @@ namespace Chimp {
 			m_ConnectionId = idPacket->NewClientId;
 			m_ReceiveIdCv.notify_all();
 		}
+		// CLIENT ASKING SERVER FOR RESPONSE
 		else if (type == Packets::SERVER_RESPONDING_TO_CLIENT) {
 			// Make the next packet call the callback
 			m_IsHandlingCallback = true;
@@ -147,6 +148,38 @@ namespace Chimp {
 			else {
 				assert(false);
 			}
+		}
+		// SERVER ASKING CLIENT FOR RESPONSE
+		else if (type == Packets::SERVER_REQUEST_RESPONSE) {
+			std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
+			ToClientRequestResponsePacket* responsePacket = reinterpret_cast<ToClientRequestResponsePacket*>(packet.get());
+
+			// Mark next packet as one that needs to be responded to
+			m_RespondingToPacket = true;
+			m_RespondToPacketId = responsePacket->RequestId;
+
+			std::cout << "client will respond to next packet" << std::endl;
+		}
+		else if (m_RespondingToPacket) {
+			std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
+
+			// Get our response
+			auto iter = m_PacketResponseHandlers.find(type);
+			assert(iter != m_PacketResponseHandlers.end());
+			PacketResponseFunc& responseFunc = iter->second;
+			std::unique_ptr<NetworkPacket> responsePacket = responseFunc(packet.get());
+
+			// Tell them our next packet is a response
+			ToServerClientRespondingPacket response;
+			response.PacketType = Packets::CLIENT_RESPONDING_TO_SERVER;
+			response.RequestId = m_RespondToPacketId;
+			SendPacketToServer(response);
+
+			// Send the response
+			SendPacketToServer(*responsePacket);
+
+			m_RespondingToPacket = false;
+			std::cout << "client responded to packet whos request id was " << m_RespondToPacketId << std::endl;
 		}
 		else {
 			// Broadcast event

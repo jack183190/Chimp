@@ -5,6 +5,7 @@
 #include "EventHandler.h"
 #include "events/NetworkEventType.h"
 #include "api/utils/ThreadQueue.h"
+#include "PacketResponseFunc.h"
 
 namespace Chimp {
 	// Client and server do share a lot of similarities, but it is easier to have them separate and just duplicate some code.
@@ -31,6 +32,7 @@ namespace Chimp {
 		// Send a packet to the server
 		// packet - The packet to send
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
+		// callback - The callback to call when a response is received
 		virtual void SendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;
 
@@ -39,6 +41,11 @@ namespace Chimp {
 		// packet - The packet to send
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
 		void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0);
+
+		// Handle responding to a packet
+		void SetPacketResponseHandler(NetworkPacketType type, PacketResponseFunc func) {
+			m_PacketResponseHandlers[type] = func;
+		}
 
 	protected:
 		// Push events into a queue, this is called as fast as possible in its own thread
@@ -53,6 +60,7 @@ namespace Chimp {
 		const ConnectionInfo m_ServerInfo;
 		ThreadQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
 		unsigned int m_ConnectionId = INVALID_ID;
+		std::unordered_map<NetworkPacketType, PacketResponseFunc> m_PacketResponseHandlers;
 
 	private:
 		std::thread m_EventPollingThread;

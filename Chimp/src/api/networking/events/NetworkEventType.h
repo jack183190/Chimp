@@ -12,6 +12,8 @@ namespace Chimp {
 		static constexpr NetworkPacketType CLIENT_DISCONNECTED = 5;
 		static constexpr NetworkPacketType CLIENT_REQUEST_RESPONSE = 6;
 		static constexpr NetworkPacketType SERVER_RESPONDING_TO_CLIENT = 7;
+		static constexpr NetworkPacketType SERVER_REQUEST_RESPONSE = 8;
+		static constexpr NetworkPacketType CLIENT_RESPONDING_TO_SERVER = 9;
 	}
 
 	struct NetworkPacket {
@@ -45,6 +47,14 @@ namespace Chimp {
 	};
 
 	struct ToClientServerRespondingPacket : public NetworkPacket {
+		int RequestId;
+	};
+
+	struct ToClientRequestResponsePacket : public NetworkPacket {
+		int RequestId;
+	};
+
+	struct ToServerClientRespondingPacket : public NetworkPacket {
 		int RequestId;
 	};
 }

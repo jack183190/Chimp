@@ -77,6 +77,22 @@ namespace Chimp {
 
 	}
 
+	void Server::SendPacketToClientWithResponse(int clientId, const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
+	{
+		int callbackId = m_CallbackIdCounter++;
+		auto& thisClientCallbacks = m_AwaitingResponseCallbacks[m_ClientIdsReverse.at(clientId)];
+		thisClientCallbacks[callbackId] = callback;
+
+		ToServerRequestResponsePacket requestPacket;
+		requestPacket.PacketType = Packets::SERVER_REQUEST_RESPONSE;
+		requestPacket.RequestId = callbackId;
+
+		std::cout << "sending packet to client and requesting response\n";
+
+		SendPacketToClient(clientId, requestPacket, channel);
+		SendPacketToClient(clientId, packet, channel);
+	}
+
 	void Server::PollEvents()
 	{
 		if (!IsValid()) {
@@ -115,6 +131,7 @@ namespace Chimp {
 		idPacket.NewClientId = m_NextClientId++;
 		m_ClientIds[event.peer] = idPacket.NewClientId;
 		m_ClientIdsReverse[idPacket.NewClientId] = event.peer;
+		m_AwaitingResponseCallbacks[event.peer] = std::unordered_map<int, std::function<void(const NetworkPacket*)>>();
 
 		SendPacketToClient(idPacket.NewClientId, idPacket);
 
@@ -134,6 +151,11 @@ namespace Chimp {
 		m_ClientIdsReverse.erase(clientId);
 		m_ClientIds.erase(event.peer);
 		m_RespondToPacketId.erase(event.peer);
+		auto& thisClientCallbacks = m_AwaitingResponseCallbacks[event.peer];
+		for (auto& [callbackId, callback] : thisClientCallbacks) {
+			callback(nullptr); // Call it with nullptr to indicate the client disconnected
+		}
+		m_AwaitingResponseCallbacks.erase(event.peer);
 
 		// Broadcast disconnection
 		ClientDisconnectedPacket disconnectPacket;
@@ -161,7 +183,7 @@ namespace Chimp {
 			SendPacketToClient(m_ForwardNextPacketToClientId, *packet);
 			m_ForwardNextPacketToClientId = INVALID_ID;
 		}
-		// Respond to packet
+		// Handle client requesting a response
 		else if (packet->PacketType == Packets::CLIENT_REQUEST_RESPONSE)
 		{
 			ToServerRequestResponsePacket* responsePacket = reinterpret_cast<ToServerRequestResponsePacket*>(packet.get());
@@ -195,6 +217,25 @@ namespace Chimp {
 			SendPacketToClient(m_ClientIds[event.peer], *responsePacket);
 
 			std::cout << "server responded to packet whos request id was " << requestId << std::endl;
+		}
+		// Handle client responding to us
+		else if (packet->PacketType == Packets::CLIENT_RESPONDING_TO_SERVER) {
+			// Make the next packet call the callback
+			m_IsHandlingCallback = true;
+			m_HandlingCallbackId = reinterpret_cast<ToServerClientRespondingPacket*>(packet.get())->RequestId;
+		}
+		else if (m_IsHandlingCallback) {
+			// Handle the callback
+			auto& thisClientCallbacks = m_AwaitingResponseCallbacks[event.peer];
+			auto iter = thisClientCallbacks.find(m_HandlingCallbackId);
+			m_IsHandlingCallback = false;
+			if (iter != thisClientCallbacks.end()) {
+				iter->second(packet.get());
+				thisClientCallbacks.erase(iter);
+			}
+			else {
+				assert(false);
+			}
 		}
 
 		m_EventQueue.Push(std::make_tuple(packet->PacketType, std::move(packet)));
