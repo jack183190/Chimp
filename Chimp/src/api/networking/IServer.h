@@ -22,12 +22,14 @@ namespace Chimp {
 			return *m_EventHandlerAndBroadcaster.Handler;
 		}
 
-		// Send a packet to a client
+		// Send a packet to client(s)
 		// clientId - The client to send the packet to, make sure this is a valid client
 		// packet - The packet to send
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
-		virtual void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0) = 0;
+		// excludedClients - Vector of client ids to exclude, if empty, the packet will be sent to all clients
+		virtual void SendPacketToClient(int clientId, const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void SendPacketToAllClients(const NetworkPacket& packet, int channel = 0) = 0;
+		virtual void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClientsexcludedClients, int channel = 0) = 0;
 
 		// Broadcast all polled events
 		void Update();
@@ -39,12 +41,12 @@ namespace Chimp {
 
 	public:
 		constexpr static int HOST_ID = -1;
-		constexpr static unsigned int INVALID_ID = -2;
+		constexpr static int INVALID_ID = -2;
 
 	protected:
 		const ConnectionInfo m_ServerInfo;
 		ThreadQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
-		unsigned int m_ConnectionId = INVALID_ID;
+		int m_ConnectionId = INVALID_ID;
 
 	private:
 		std::thread m_EventPollingThread;

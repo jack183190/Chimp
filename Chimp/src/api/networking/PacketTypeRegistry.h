@@ -59,6 +59,8 @@ namespace Chimp {
 			RegisterPacketType<ToClientSetClientIdPacket>(Packets::CLIENT_SET_ID);
 			RegisterPacketType<ToServerForwardPacket>(Packets::FORWARD);
 			RegisterPacketType<TestPacket>(Packets::TEST);
+			RegisterPacketType<ClientConnectedPacket>(Packets::CLIENT_CONNECTED);
+			RegisterPacketType<ClientDisconnectedPacket>(Packets::CLIENT_DISCONNECTED);
 		}
 
 	private:

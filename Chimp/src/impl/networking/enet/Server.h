@@ -12,9 +12,11 @@ namespace Chimp {
 	public:
 		bool IsValid() const override;
 
-		void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0) override;
+		void SendPacketToClient(int clientId, const NetworkPacket& packet, int channel = 0) override;
 
 		void SendPacketToAllClients(const NetworkPacket& packet, int channel = 0) override;
+
+		void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClientsexcludedClients, int channel = 0) override;
 
 	protected:
 		void PollEvents() override;

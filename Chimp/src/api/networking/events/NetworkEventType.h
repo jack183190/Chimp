@@ -3,10 +3,13 @@
 namespace Chimp {
 	typedef int NetworkPacketType;
 	namespace Packets {
+		// Register these in packet type registry
 		static constexpr NetworkPacketType INVALID = 0;
 		static constexpr NetworkPacketType CLIENT_SET_ID = 1;
 		static constexpr NetworkPacketType FORWARD = 2;
 		static constexpr NetworkPacketType TEST = 3;
+		static constexpr NetworkPacketType CLIENT_CONNECTED = 4;
+		static constexpr NetworkPacketType CLIENT_DISCONNECTED = 5;
 	}
 
 	struct NetworkPacket {
@@ -25,5 +28,13 @@ namespace Chimp {
 
 	struct TestPacket : public NetworkPacket {
 		int TestInt;
+	};
+
+	struct ClientConnectedPacket : public NetworkPacket {
+		int ClientId;
+	};
+
+	struct ClientDisconnectedPacket : public NetworkPacket {
+		int ClientId;
 	};
 }

@@ -44,7 +44,7 @@ namespace Chimp {
 		return m_IsValid;
 	}
 
-	void Server::SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel)
+	void Server::SendPacketToClient(int clientId, const NetworkPacket& packet, int channel)
 	{
 		assert(IsValid());
 
@@ -63,6 +63,18 @@ namespace Chimp {
 		{
 			SendPacketToClient(clientId, packet, channel);
 		}
+	}
+
+	void Server::SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int> &excludedClients, int channel)
+	{
+		for (auto& [peer, clientId] : m_ClientIds)
+		{
+			if (std::find(excludedClients.begin(), excludedClients.end(), clientId) == excludedClients.end())
+			{
+				SendPacketToClient(clientId, packet, channel);
+			}
+		}
+
 	}
 
 	void Server::PollEvents()
@@ -105,6 +117,12 @@ namespace Chimp {
 		m_ClientIdsReverse[idPacket.NewClientId] = event.peer;
 
 		SendPacketToClient(idPacket.NewClientId, idPacket);
+
+		// Broadcast connection
+		ClientConnectedPacket connectPacket;
+		connectPacket.PacketType = Packets::CLIENT_CONNECTED;
+		connectPacket.ClientId = idPacket.NewClientId;
+		SendPacketToAllClientsExcept(connectPacket, { idPacket.NewClientId });
 	}
 
 	void Server::HandleDisconnectionEvent(const ENetEvent& event)
@@ -115,6 +133,12 @@ namespace Chimp {
 		int clientId = m_ClientIds[event.peer];
 		m_ClientIdsReverse.erase(clientId);
 		m_ClientIds.erase(event.peer);
+
+		// Broadcast disconnection
+		ClientDisconnectedPacket disconnectPacket;
+		disconnectPacket.PacketType = Packets::CLIENT_DISCONNECTED;
+		disconnectPacket.ClientId = clientId;
+		SendPacketToAllClients(disconnectPacket);
 	}
 
 	void Server::HandleReceiveEvent(const ENetEvent& event)
@@ -130,7 +154,8 @@ namespace Chimp {
 		{
 			ToServerForwardPacket* forwardPacket = reinterpret_cast<ToServerForwardPacket*>(packet.get());
 			m_ForwardNextPacketToClientId = forwardPacket->ClientId;
-		} else if (m_ForwardNextPacketToClientId != INVALID_ID)
+		}
+		else if (m_ForwardNextPacketToClientId != INVALID_ID)
 		{
 			SendPacketToClient(m_ForwardNextPacketToClientId, *packet);
 			m_ForwardNextPacketToClientId = INVALID_ID;

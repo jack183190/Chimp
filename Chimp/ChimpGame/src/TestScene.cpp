@@ -143,6 +143,12 @@ TestScene::TestScene(Chimp::Engine& engine)
 				std::cout << "Client 1 received test packet with int " << testPacket->TestInt << std::endl;
 			});
 
+		m_Client1->GetEventHandler().Subscribe(Packets::CLIENT_CONNECTED,
+			[](const Chimp::NetworkPacket* packet) {
+				auto connectedPacket = static_cast<const Chimp::ClientConnectedPacket*>(packet);
+				std::cout << "Client 1 received connected packet with client id " << connectedPacket->ClientId << std::endl;
+			});
+
 		m_Server->GetEventHandler().Subscribe(Packets::TEST,
 			[](const Chimp::NetworkPacket* packet) {
 				auto testPacket = static_cast<const Chimp::TestPacket*>(packet);
