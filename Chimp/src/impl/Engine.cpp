@@ -13,6 +13,12 @@
 #include "impl/graphics/images/stb/ImageLoader.h"
 #endif
 
+#ifdef CHIMP_ENET
+#include "impl/networking/enet/ServerFactory.h"
+#endif
+
+#include "api/networking/PacketTypeRegistry.h"
+
 namespace Chimp {
 	Engine::Engine() :
 		m_AssetManager(*this),
@@ -20,6 +26,7 @@ namespace Chimp {
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager())
 	{
+		PacketTypeRegistry::RegisterChimpPacketTypes();
 	}
 
 	TimeManager& Engine::GetTimeManager()
@@ -42,6 +49,50 @@ namespace Chimp {
 		return m_AssetManager;
 	}
 
+	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
+	{
+		if (!serverInfo.IsValid()) {
+			std::cerr << "Server info is invalid." << std::endl;
+			return nullptr;
+		}
+
+		std::unique_ptr<IServer> server = nullptr;
+#ifdef CHIMP_ENET
+		server = ENetServerFactory::CreateServer(serverInfo);
+#endif
+		if (server == nullptr) {
+			std::cerr << "No networking implementation available." << std::endl;
+			return nullptr;
+		}
+		if (!server->IsValid()) {
+			std::cerr << "Server is invalid, this means hosting failed." << std::endl;
+			return nullptr;
+		}
+		return std::move(server);
+	}
+
+	std::unique_ptr<IClient> Engine::ConnectToServer(const ConnectionInfo& serverInfo)
+	{
+		if (!serverInfo.IsValid()) {
+			std::cerr << "Server info is invalid." << std::endl;
+			return nullptr;
+		}
+
+		std::unique_ptr<IClient> client = nullptr;
+#ifdef CHIMP_ENET
+		client = ENetServerFactory::CreateClient(serverInfo);
+#endif
+		if (client == nullptr) {
+			std::cerr << "No networking implementation available." << std::endl;
+			return nullptr;
+		}
+		if (!client->IsValid()) {
+			std::cerr << "Client is invalid, this means connecting failed." << std::endl;
+			return nullptr;
+		}
+		return std::move(client);
+	}
+
 	std::unique_ptr<IWindow> Engine::CreateWindow() const
 	{
 #ifdef CHIMP_GLFW
@@ -56,7 +107,7 @@ namespace Chimp {
 		assert(m_ImageLoader);
 		std::unique_ptr<IRenderingManager> renderingManager = nullptr;
 #ifdef CHIMP_OPENGL
-		renderingManager= std::make_unique<GL::RenderingManager>(*m_ImageLoader);
+		renderingManager = std::make_unique<GL::RenderingManager>(*m_ImageLoader);
 #endif
 
 		if (!renderingManager) {

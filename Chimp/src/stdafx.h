@@ -59,10 +59,5 @@
 #include <../vendor/stb/stb_image.h>
 #endif
 
-// FLECS
-#ifdef CHIMP_FLECS
-#include <flecs.h>
-#endif
-
 // Preprocessor
 #include "preprocessor/CopyAndMove.h"

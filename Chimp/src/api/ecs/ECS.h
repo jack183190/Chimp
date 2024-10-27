@@ -3,6 +3,10 @@
 #include "stdafx.h"
 #include "api/utils/OptionalReference.h"
 
+#ifdef CHIMP_FLECS
+#include <flecs.h>
+#endif
+
 namespace Chimp {
 
 #ifdef CHIMP_FLECS

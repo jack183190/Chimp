@@ -12,6 +12,7 @@ namespace Chimp {
 
 		T* operator->() { return m_Value; }
 		T& operator*() { return *m_Value; }
+		T* operator&() { return m_Value; }
 
 		bool HasValue() const { return m_Value != nullptr; }
 
@@ -37,4 +38,7 @@ namespace Chimp {
 	private:
 		const T* m_Value;
 	};
+
+	template <typename T>
+	using RawPtr = OptionalReference<T>;
 }

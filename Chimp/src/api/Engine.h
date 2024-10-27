@@ -5,6 +5,9 @@
 #include "api/graphics/IRenderingManager.h"
 #include "api/graphics/images/IImageLoader.h"
 #include "api/assets/AssetManager.h"
+#include "api/networking/EventHandler.h"
+#include "api/networking/IServer.h"
+#include "api/networking/IClient.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -18,6 +21,17 @@ namespace Chimp {
 		[[nodiscard]] IWindow& GetWindow();
 		[[nodiscard]] IRenderingManager& GetRenderingManager();
 		[[nodiscard]] AssetManager& GetAssetManager();
+
+		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
+		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
+
+		// Create an event handler that can be used to send and receive events
+		// EventType - enum representing event type
+		// Event - struct representing event data, inheritance is supported
+		template <typename EventType, typename Event>
+		[[nodiscard]] EventHandlerAndBroadcaster<EventType, Event> CreateEventHandler() {
+			return EventHandlerAndBroadcaster<EventType, Event>();
+		}
 
 	private:
 		[[nodiscard]] std::unique_ptr<IWindow> CreateWindow() const;
