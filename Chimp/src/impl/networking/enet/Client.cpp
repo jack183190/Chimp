@@ -166,8 +166,6 @@ namespace Chimp {
 			// Mark next packet as one that needs to be responded to
 			m_RespondingToPacket = true;
 			m_RespondToPacketId = responsePacket->RequestId;
-
-			std::cout << "client will respond to next packet" << std::endl;
 		}
 		else if (m_RespondingToPacket) {
 			std::unique_ptr<NetworkPacket> packet = PacketTypeRegistry::Parse(event.packet->dataLength, (char*)(event.packet->data));
@@ -188,7 +186,6 @@ namespace Chimp {
 			ImplSendPacketToServer(*responsePacket);
 
 			m_RespondingToPacket = false;
-			std::cout << "client responded to packet whos request id was " << m_RespondToPacketId << std::endl;
 		}
 		else {
 			// Broadcast event

@@ -34,7 +34,6 @@ namespace Chimp {
 			m_PacketResponseHandlers[type] = func;
 		}
 
-
 		// Send a packet to the server
 		// packet - The packet to send
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
