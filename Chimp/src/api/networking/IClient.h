@@ -29,28 +29,33 @@ namespace Chimp {
 		// Broadcast all polled events
 		void Update();
 
-		// Send a packet to the server
-		// packet - The packet to send
-		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
-		// callback - The callback to call when a response is received
-		virtual void SendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
-		virtual void SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;
-
-		// Send a packet to a client
-		// clientId - The client to send the packet to, make sure this is a valid client
-		// packet - The packet to send
-		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
-		void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0);
-
 		// Handle responding to a packet
 		void SetPacketResponseHandler(NetworkPacketType type, PacketResponseFunc func) {
 			m_PacketResponseHandlers[type] = func;
 		}
 
+
+		// Send a packet to the server
+		// packet - The packet to send
+		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
+		// callback - The callback to call when a response is received
+		void SendPacketToServer(const NetworkPacket& packet, int channel = 0);
+		void SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0);
+
+		// Send a packet to another client
+		// clientId - The client to send the packet to, make sure this is a valid client
+		// packet - The packet to send
+		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
+		void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0);
+
 	protected:
-		// Push events into a queue, this is called as fast as possible in its own thread
+		virtual void ImplSendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
+		virtual void ImplSendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;
+		void ImplSendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0);
+
+		// Push events into a queue, this is called as fast as possible in its own thread, also send queued packets
 		// it is up to the impl to handle if the server is invalid or if the function is called too early
-		virtual void PollEvents() = 0;
+		virtual void AsyncUpdate() = 0;
 
 	public:
 		constexpr static int HOST_ID = -1;
@@ -61,6 +66,8 @@ namespace Chimp {
 		ThreadQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
 		unsigned int m_ConnectionId = INVALID_ID;
 		std::unordered_map<NetworkPacketType, PacketResponseFunc> m_PacketResponseHandlers;
+		ThreadQueue<std::function<void()>> m_QueuedPacketsToSend;
+		bool m_SendQueuedPackets = false;
 
 	private:
 		std::thread m_EventPollingThread;

@@ -44,7 +44,7 @@ namespace Chimp {
 		return m_IsValid;
 	}
 
-	void Server::SendPacketToClient(int clientId, const NetworkPacket& packet, int channel)
+	void Server::ImplSendPacketToClient(int clientId, const NetworkPacket& packet, int channel)
 	{
 		assert(IsValid());
 
@@ -57,27 +57,27 @@ namespace Chimp {
 		enet_peer_send(peer, channel, enetPacket);
 	}
 
-	void Server::SendPacketToAllClients(const NetworkPacket& packet, int channel)
+	void Server::ImplSendPacketToAllClients(const NetworkPacket& packet, int channel)
 	{
 		for (auto& [peer, clientId] : m_ClientIds)
 		{
-			SendPacketToClient(clientId, packet, channel);
+			ImplSendPacketToClient(clientId, packet, channel);
 		}
 	}
 
-	void Server::SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int> &excludedClients, int channel)
+	void Server::ImplSendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int> &excludedClients, int channel)
 	{
 		for (auto& [peer, clientId] : m_ClientIds)
 		{
 			if (std::find(excludedClients.begin(), excludedClients.end(), clientId) == excludedClients.end())
 			{
-				SendPacketToClient(clientId, packet, channel);
+				ImplSendPacketToClient(clientId, packet, channel);
 			}
 		}
 
 	}
 
-	void Server::SendPacketToClientWithResponse(int clientId, const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
+	void Server::ImplSendPacketToClientWithResponse(int clientId, const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
 	{
 		int callbackId = m_CallbackIdCounter++;
 		auto& thisClientCallbacks = m_AwaitingResponseCallbacks[m_ClientIdsReverse.at(clientId)];
@@ -89,17 +89,23 @@ namespace Chimp {
 
 		std::cout << "sending packet to client and requesting response\n";
 
-		SendPacketToClient(clientId, requestPacket, channel);
-		SendPacketToClient(clientId, packet, channel);
+		ImplSendPacketToClient(clientId, requestPacket, channel);
+		ImplSendPacketToClient(clientId, packet, channel);
 	}
 
-	void Server::PollEvents()
+	void Server::AsyncUpdate()
 	{
 		if (!IsValid()) {
 			return;
 		}
 
-		// first int in the packet is event type
+		// Send queued packets
+		if (m_SendQueuedPackets) {
+			m_QueuedPacketsToSend.PopAll([this](const std::function<void()>& packet) {
+				packet();
+				});
+			m_SendQueuedPackets = false;
+		}
 
 		ENetEvent event;
 		while (enet_host_service(&m_Server, &event, 0) > 0)
@@ -133,13 +139,13 @@ namespace Chimp {
 		m_ClientIdsReverse[idPacket.NewClientId] = event.peer;
 		m_AwaitingResponseCallbacks[event.peer] = std::unordered_map<int, std::function<void(const NetworkPacket*)>>();
 
-		SendPacketToClient(idPacket.NewClientId, idPacket);
+		ImplSendPacketToClient(idPacket.NewClientId, idPacket);
 
 		// Broadcast connection
 		ClientConnectedPacket connectPacket;
 		connectPacket.PacketType = Packets::CLIENT_CONNECTED;
 		connectPacket.ClientId = idPacket.NewClientId;
-		SendPacketToAllClientsExcept(connectPacket, { idPacket.NewClientId });
+		ImplSendPacketToAllClientsExcept(connectPacket, { idPacket.NewClientId });
 	}
 
 	void Server::HandleDisconnectionEvent(const ENetEvent& event)
@@ -161,7 +167,7 @@ namespace Chimp {
 		ClientDisconnectedPacket disconnectPacket;
 		disconnectPacket.PacketType = Packets::CLIENT_DISCONNECTED;
 		disconnectPacket.ClientId = clientId;
-		SendPacketToAllClients(disconnectPacket);
+		ImplSendPacketToAllClients(disconnectPacket);
 	}
 
 	void Server::HandleReceiveEvent(const ENetEvent& event)
@@ -180,7 +186,7 @@ namespace Chimp {
 		}
 		else if (m_ForwardNextPacketToClientId != INVALID_ID)
 		{
-			SendPacketToClient(m_ForwardNextPacketToClientId, *packet);
+			ImplSendPacketToClient(m_ForwardNextPacketToClientId, *packet);
 			m_ForwardNextPacketToClientId = INVALID_ID;
 		}
 		// Handle client requesting a response
@@ -211,10 +217,10 @@ namespace Chimp {
 			ToClientServerRespondingPacket response;
 			response.PacketType = Packets::SERVER_RESPONDING_TO_CLIENT;
 			response.RequestId = requestId;
-			SendPacketToClient(m_ClientIds[event.peer], response);
+			ImplSendPacketToClient(m_ClientIds[event.peer], response);
 
 			// Send the response
-			SendPacketToClient(m_ClientIds[event.peer], *responsePacket);
+			ImplSendPacketToClient(m_ClientIds[event.peer], *responsePacket);
 
 			std::cout << "server responded to packet whos request id was " << requestId << std::endl;
 		}

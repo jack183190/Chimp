@@ -74,7 +74,7 @@ namespace Chimp {
 		return m_Connected && m_ConnectionId != INVALID_ID;
 	}
 
-	void Client::SendPacketToServer(const NetworkPacket& packet, int channel)
+	void Client::ImplSendPacketToServer(const NetworkPacket& packet, int channel)
 	{
 		// todo multithreading support here
 		assert(IsValid());
@@ -85,7 +85,7 @@ namespace Chimp {
 		enet_peer_send(&m_Peer, channel, enetPacket);
 	}
 
-	void Client::SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
+	void Client::ImplSendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
 	{
 		int callbackId = m_CallbackIdCounter++;
 		m_AwaitingResponseCallbacks[callbackId] = callback;
@@ -94,16 +94,25 @@ namespace Chimp {
 		requestPacket.PacketType = Packets::CLIENT_REQUEST_RESPONSE;
 		requestPacket.RequestId = callbackId;
 
-		SendPacketToServer(requestPacket, channel);
-		SendPacketToServer(packet, channel);
+		ImplSendPacketToServer(requestPacket, channel);
+		ImplSendPacketToServer(packet, channel);
 	}
 
-	void Client::PollEvents()
+	void Client::AsyncUpdate()
 	{
 		if (!m_Connected) {
 			return;
 		}
 
+		// Send queued packets
+		if (m_SendQueuedPackets) {
+			m_QueuedPacketsToSend.PopAll([this](const std::function<void()>& packet) {
+				packet();
+				});
+			m_SendQueuedPackets = false;
+		}
+
+		// Poll events
 		ENetEvent event;
 		while (enet_host_service(&m_Server, &event, 0) > 0)
 		{
@@ -173,10 +182,10 @@ namespace Chimp {
 			ToServerClientRespondingPacket response;
 			response.PacketType = Packets::CLIENT_RESPONDING_TO_SERVER;
 			response.RequestId = m_RespondToPacketId;
-			SendPacketToServer(response);
+			ImplSendPacketToServer(response);
 
 			// Send the response
-			SendPacketToServer(*responsePacket);
+			ImplSendPacketToServer(*responsePacket);
 
 			m_RespondingToPacket = false;
 			std::cout << "client responded to packet whos request id was " << m_RespondToPacketId << std::endl;

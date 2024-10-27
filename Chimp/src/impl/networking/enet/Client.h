@@ -12,11 +12,11 @@ namespace Chimp {
 	public:
 		bool IsValid() const override;
 
-		void SendPacketToServer(const NetworkPacket& packet, int channel = 0) override;
-		void SendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) override;
-
 	protected:
-		void PollEvents() override;
+		void ImplSendPacketToServer(const NetworkPacket& packet, int channel = 0) override;
+		void ImplSendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) override;
+
+		void AsyncUpdate() override;
 
 	private:
 		void HandleReceiveEvent(const ENetEvent& event);
