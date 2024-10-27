@@ -5,6 +5,8 @@ namespace Chimp {
 	Client::Client(const ConnectionInfo& serverInfo)
 		: IClient(serverInfo)
 	{
+		const auto connectionStartTimestamp = std::chrono::high_resolution_clock::now();
+
 		InitENet::Init();
 
 		ENetAddress address = {};
@@ -40,13 +42,19 @@ namespace Chimp {
 		ENetEvent event;
 		if (enet_host_service(&m_Server, &event, serverInfo.ConnectionTimeoutMs) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
 			std::cout << "Connected to server." << std::endl;
+			m_Connected = true;
 		}
 		else {
 			std::cerr << "Failed to connect to server. Failed enet_host_service." << std::endl;
 			return;
 		}
 
-		m_IsValid = true;
+		// Wait until we have our id (or we timeout)
+		const auto msRemainingToConnect = std::chrono::milliseconds(serverInfo.ConnectionTimeoutMs) - (std::chrono::high_resolution_clock::now() - connectionStartTimestamp);
+
+		std::mutex m_ReceiveIdMutex;
+		std::unique_lock<std::mutex> lock(m_ReceiveIdMutex);
+		m_ReceiveIdCv.wait_for(lock, msRemainingToConnect, [this]() { return m_ConnectionId != INVALID_ID; });
 	}
 
 	Client::~Client()
@@ -63,7 +71,7 @@ namespace Chimp {
 
 	bool Client::IsValid() const
 	{
-		return m_IsValid;
+		return m_Connected && m_ConnectionId != INVALID_ID;
 	}
 
 	void Client::SendPacketToServer(const NetworkPacket& packet, int channel)
@@ -78,7 +86,7 @@ namespace Chimp {
 
 	void Client::PollEvents()
 	{
-		if (!IsValid()) {
+		if (!m_Connected) {
 			return;
 		}
 
@@ -106,6 +114,7 @@ namespace Chimp {
 			assert(type == Packets::CLIENT_SET_ID);
 			ToClientSetClientIdPacket* idPacket = reinterpret_cast<ToClientSetClientIdPacket*>(event.packet->data);
 			m_ConnectionId = idPacket->NewClientId;
+			m_ReceiveIdCv.notify_all();
 		}
 		else {
 			// Broadcast event

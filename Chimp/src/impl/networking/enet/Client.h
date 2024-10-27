@@ -21,8 +21,9 @@ namespace Chimp {
 		void HandleReceiveEvent(const ENetEvent& event);
 
 	private:
-		bool m_IsValid = false;
+		bool m_Connected = false;
 		OptionalReference<ENetHost> m_Server;
 		OptionalReference<ENetPeer> m_Peer;
+		std::condition_variable m_ReceiveIdCv;
 	};
 }
