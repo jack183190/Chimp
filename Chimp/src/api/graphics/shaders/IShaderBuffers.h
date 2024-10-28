@@ -43,4 +43,6 @@ namespace Chimp {
 		IShader& m_Shader;
 		std::vector<ShaderBuffer> m_Buffers;
 	};
+
+	using ShaderBufferId = IShaderBuffers::Index;
 }
