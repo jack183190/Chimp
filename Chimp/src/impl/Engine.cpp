@@ -18,6 +18,7 @@
 #endif
 
 #include "api/networking/PacketTypeRegistry.h"
+#include "Logging.h"
 
 namespace Chimp {
 	Engine::Engine() :
@@ -27,6 +28,8 @@ namespace Chimp {
 		m_RenderingManager(CreateRenderingManager())
 	{
 		PacketTypeRegistry::RegisterChimpPacketTypes();
+
+		Loggers::Main().Info("Initialized Chimp Engine!");
 	}
 
 	TimeManager& Engine::GetTimeManager()
@@ -91,6 +94,11 @@ namespace Chimp {
 			return nullptr;
 		}
 		return std::move(client);
+	}
+
+	std::unique_ptr<Logger> Engine::CreateLogger(const std::string& name, LogLevel level)
+	{
+		return std::make_unique<Logger>(name, level);
 	}
 
 	std::unique_ptr<IWindow> Engine::CreateWindow() const
