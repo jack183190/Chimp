@@ -1,4 +1,5 @@
 #include "ImageLoader.h"
+#include "Loggers.h"
 
 namespace Chimp::STB {
 	ImageLoader::LoadedImage::~LoadedImage()
@@ -18,15 +19,15 @@ namespace Chimp::STB {
 #ifndef NDEBUG
 		if (!image->IsValid())
 		{
-			std::cerr << "Failed to load image: " << path << std::endl;
+			Loggers::Resources().Error("Failed to load image: " + path);
 		}
 		else {
-			std::cout << "--------------------------" << std::endl;
-			std::cout << "Loaded image: " << path << std::endl;
-			std::cout << "Width: " << image->Width << std::endl;
-			std::cout << "Height: " << image->Height << std::endl;
-			std::cout << "Number of channels: " << image->NumberChannels << std::endl;
-			std::cout << "--------------------------" << std::endl;
+			Loggers::Resources().Info("--------------------------");
+			Loggers::Resources().Info("Loaded image: " + path);
+			Loggers::Resources().Info("Width: " + std::to_string(image->Width));
+			Loggers::Resources().Info("Height: " + std::to_string(image->Height));
+			Loggers::Resources().Info("Number of channels: " + std::to_string(image->NumberChannels));
+			Loggers::Resources().Info("--------------------------");
 		}
 #endif
 

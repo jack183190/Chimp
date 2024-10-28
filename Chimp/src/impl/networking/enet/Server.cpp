@@ -1,5 +1,6 @@
 #include "Server.h"
 #include "networking/PacketTypeRegistry.h"
+#include "Loggers.h"
 
 namespace Chimp {
 	Server::Server(const ConnectionInfo& serverInfo)
@@ -22,12 +23,11 @@ namespace Chimp {
 			));
 
 		if (!m_Server) {
-			std::cerr << "Failed to host ENet server." << std::endl;
+			Loggers::Network().Error("Failed to host ENet server.");
 			return;
 		}
 
-		std::cout << "Hosting server." << std::endl;
-
+		Loggers::Network().Info("Hosting server.");
 		m_IsValid = true;
 	}
 
@@ -86,8 +86,6 @@ namespace Chimp {
 		ToServerRequestResponsePacket requestPacket;
 		requestPacket.PacketType = Packets::SERVER_REQUEST_RESPONSE;
 		requestPacket.RequestId = callbackId;
-
-		std::cout << "sending packet to client and requesting response\n";
 
 		ImplSendPacketToClient(clientId, requestPacket, channel);
 		ImplSendPacketToClient(clientId, packet, channel);
@@ -197,8 +195,6 @@ namespace Chimp {
 
 			// Mark next packet as one that needs to be responded to
 			m_RespondToPacketId[event.peer] = responsePacket->RequestId;
-
-			std::cout << "server will respond to next packet" << std::endl;
 		}
 		else if (m_RespondToPacketId.find(event.peer) != m_RespondToPacketId.end()) {
 			// Get request id
@@ -221,8 +217,6 @@ namespace Chimp {
 
 			// Send the response
 			ImplSendPacketToClient(m_ClientIds[event.peer], *responsePacket);
-
-			std::cout << "server responded to packet whos request id was " << requestId << std::endl;
 		}
 		// Handle client responding to us
 		else if (packet->PacketType == Packets::CLIENT_RESPONDING_TO_SERVER) {

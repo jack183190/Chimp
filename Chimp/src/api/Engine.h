@@ -8,6 +8,7 @@
 #include "api/networking/EventHandler.h"
 #include "api/networking/IServer.h"
 #include "api/networking/IClient.h"
+#include "api/logging/Logger.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -24,6 +25,11 @@ namespace Chimp {
 
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
+
+		// Create an enabled logger that logs to console and file
+		// name - name of the logger, can be anything that is a valid directory name
+		// level - minimum log level to log
+		[[nodiscard]] std::unique_ptr<Logger> CreateLogger(const std::string& name, LogLevel level = LogLevel::INFO);
 
 		// Create an event handler that can be used to send and receive events
 		// EventType - enum representing event type

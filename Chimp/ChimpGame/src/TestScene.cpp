@@ -1,7 +1,9 @@
 #include "TestScene.h"
 
+Logger eventLogger("EventHandler", LogLevel::INFO);
+
 TestScene::TestScene(Chimp::Engine& engine)
-	: m_Engine(engine)
+	: m_Engine(engine), m_Logger("Game", Chimp::LogLevel::INFO)
 {
 	m_Engine.GetWindow().SetTitle("Test Scene");
 	m_Engine.GetWindow().SetSize({ 1280, 720 });
@@ -26,6 +28,8 @@ TestScene::TestScene(Chimp::Engine& engine)
 
 	// ECS
 	{
+		Logger ecsLogger("ECS", LogLevel::INFO);
+		ecsLogger.Disable();
 		struct a { int da; };
 		struct b { int db; };
 		struct c { int dc; };
@@ -36,10 +40,10 @@ TestScene::TestScene(Chimp::Engine& engine)
 		{
 			auto ent = m_ECS.CreateEntity();
 			m_ECS.SetComponent(ent, a{ 1 });
-			std::cout << "a: " << m_ECS.GetComponent<a>(ent)->da << std::endl;
+			ecsLogger.Info("a: " + std::to_string(m_ECS.GetComponent<a>(ent)->da));
 			m_ECS.GetMutableComponent<a>(ent)->da = 2;
-			std::cout << "a: " << m_ECS.GetComponent<a>(ent)->da << std::endl;
-			std::cout << "b ptr: " << m_ECS.GetComponent<b>(ent) << std::endl;
+			ecsLogger.Info("a: " + std::to_string(m_ECS.GetComponent<a>(ent)->da));
+			ecsLogger.Info("b ptr: " + std::to_string(m_ECS.GetComponent<b>(ent)));
 		}
 		// timing get entities
 		{
@@ -60,13 +64,14 @@ TestScene::TestScene(Chimp::Engine& engine)
 			}
 			auto end = std::chrono::high_resolution_clock::now();
 
-			std::cout << "Time to get entities: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count() << "ns" << std::endl;
-			std::cout << "Num entities: " << num << std::endl;
+			ecsLogger.Info("Time to get entities: " + std::to_string(std::chrono::duration_cast<std::chrono::nanoseconds>(end - now).count()) + "ns");
+			ecsLogger.Info("Num entities: " + std::to_string(num));
 		}
 	}
 
 	// Event handler
 	{
+		eventLogger.Disable();
 		enum class EventType {
 			ONE, TWO
 		};
@@ -85,22 +90,22 @@ TestScene::TestScene(Chimp::Engine& engine)
 		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
 		auto listenerId = pair.Handler->Subscribe(EventType::ONE, [](const Event* event) {
 			auto oneEvent = static_cast<const OneEvent*>(event);
-			std::cout << "One event: " << oneEvent->a << std::endl;
+			eventLogger.Info("One event: " + std::to_string(oneEvent->a));
 			});
 		pair.Handler->Subscribe(EventType::TWO, [](const Event* event) {
 			auto twoEvent = static_cast<const TwoEvent*>(event);
-			std::cout << "Two event: " << twoEvent->b << std::endl;
+			eventLogger.Info("Two event: " + std::to_string(twoEvent->b));
 			});
 		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);
 		pair.Handler->Unsubscribe(listenerId);
 	auto bothListenerId =	pair.Handler->Subscribe({ EventType::ONE, EventType::TWO }, [](const EventType type, const Event* event) {
 			if (type == EventType::ONE) {
 				auto oneEvent = static_cast<const OneEvent*>(event);
-				std::cout << "Both event: " << oneEvent->a << std::endl;
+				eventLogger.Info("Both event: " + std::to_string(oneEvent->a));
 			}
 			else if (type == EventType::TWO) {
 				auto twoEvent = static_cast<const TwoEvent*>(event);
-				std::cout << "Both event: " << twoEvent->b << std::endl;
+				eventLogger.Info("Both event: " + std::to_string(twoEvent->b));
 			}
 			});
 		pair.Broadcaster->Broadcast(EventType::ONE, eventOne);

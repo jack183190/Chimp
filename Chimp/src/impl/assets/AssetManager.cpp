@@ -1,5 +1,6 @@
 #include "api/assets/AssetManager.h"
 #include "api/Engine.h"
+#include "Loggers.h"
 
 namespace Chimp {
 	AssetManager::AssetManager(Engine& engine)
@@ -18,9 +19,11 @@ namespace Chimp {
 		std::shared_ptr<IShader> shader = m_Engine.GetRenderingManager().CompileShader(shaderFilePaths);
 		if (!shader->IsValid())
 		{
-			std::cerr << "Failed to compile shader" << std::endl
+			std::stringstream ss;
+			ss << "Failed to compile shader" << std::endl
 				<< "Vertex: " << shaderFilePaths.Vertex << std::endl
 				<< "Fragment: " << shaderFilePaths.Fragment << std::endl;
+			Loggers::Resources().Error(ss.str());
 		}
 		m_Shaders[shaderFilePaths] = shader;
 		return shader;
@@ -37,7 +40,7 @@ namespace Chimp {
 		std::unique_ptr<ITexture> texture = m_Engine.GetRenderingManager().CreateTextureFromImage(path);
 		if (!texture)
 		{
-			std::cerr << "Failed to load texture: " << path << std::endl;
+			Loggers::Resources().Error("Failed to load texture: " + path);
 		}
 		m_Textures[path] = std::move(texture);
 		return *m_Textures[path];
