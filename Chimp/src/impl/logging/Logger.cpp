@@ -2,7 +2,7 @@
 
 namespace Chimp {
 	Logger::Logger(const std::string& name, LogLevel level)
-		: m_Name(name), m_Level(level), m_LogToFile(true), m_LogToConsole(true) {
+		: m_Name(name), m_Level(level), m_LogToFile(true), m_LogToConsole(true), m_Disabled(false) {
 		try {
 			// Create logs directory if it doesn't exist
 			std::filesystem::path path = "logs";
@@ -49,54 +49,54 @@ namespace Chimp {
 		}
 	}
 
-	void Logger::Info(const std::string& message)
+	void Logger::Info(const std::string& message)const
 	{
 		Log(LogLevel::INFO, message);
 	}
 
-	void Logger::Info(const char* message)
+	void Logger::Info(const char* message)const
 	{
 		Info(std::string(message));
 	}
 
-	void Logger::Info(const std::stringstream& message)
+	void Logger::Info(const std::stringstream& message)const
 	{
 		Info(message.str());
 	}
 
-	void Logger::Warning(const std::string& message)
+	void Logger::Warning(const std::string& message)const
 	{
 		Log(LogLevel::WARNING, message);
 	}
 
-	void Logger::Warning(const char* message)
+	void Logger::Warning(const char* message)const
 	{
 		Warning(std::string(message));
 	}
 
-	void Logger::Warning(const std::stringstream& message)
+	void Logger::Warning(const std::stringstream& message)const
 	{
 		Warning(message.str());
 	}
 
-	void Logger::Error(const std::string& message)
+	void Logger::Error(const std::string& message)const
 	{
-		Log(LogLevel::ERROR, message);
+		Log(LogLevel::SEVERE, message);
 	}
 
-	void Logger::Error(const char* message)
+	void Logger::Error(const char* message)const
 	{
 		Error(std::string(message));
 	}
 
-	void Logger::Error(const std::stringstream& message)
+	void Logger::Error(const std::stringstream& message)const
 	{
 		Error(message.str());
 	}
 
-	void Logger::Log(LogLevel level, const std::string& message)
+	void Logger::Log(LogLevel level, const std::string& message)const
 	{
-		if (level < m_Level) return;
+		if (level < m_Level || m_Disabled) return;
 
 		std::stringstream ss;
 		// Name
@@ -111,7 +111,7 @@ namespace Chimp {
 		case LogLevel::WARNING:
 			ss << "[WARNING] ";
 			break;
-		case LogLevel::ERROR:
+		case LogLevel::SEVERE:
 			ss << "[ERROR] ";
 			break;
 		}
@@ -128,7 +128,7 @@ namespace Chimp {
 
 		// Print to console
 		if (m_LogToConsole) {
-			if (level < LogLevel::ERROR) std::cout << finalLog;
+			if (level < LogLevel::SEVERE) std::cout << finalLog;
 			else std::cerr << finalLog;
 		}
 
@@ -146,5 +146,25 @@ namespace Chimp {
 	void Logger::SetLogToConsole(bool logToConsole)
 	{
 		m_LogToConsole = logToConsole;
+	}
+
+	void Logger::SetDisabled(bool disabled)
+	{
+		m_Disabled = disabled;
+	}
+
+	void Logger::SetEnabled(bool enabled)
+	{
+		m_Disabled = !enabled;
+	}
+
+	void Logger::Enable()
+	{
+		m_Disabled = false;
+	}
+
+	void Logger::Disable()
+	{
+		m_Disabled = true;
 	}
 }

@@ -18,7 +18,7 @@
 #endif
 
 #include "api/networking/PacketTypeRegistry.h"
-#include "Logging.h"
+#include "Loggers.h"
 
 namespace Chimp {
 	Engine::Engine() :

@@ -1,5 +1,6 @@
 #include "Client.h"
 #include "api/networking/PacketTypeRegistry.h"
+#include "Loggers.h"
 
 namespace Chimp {
 	Client::Client(const ConnectionInfo& serverInfo)
@@ -24,7 +25,7 @@ namespace Chimp {
 			));
 
 		if (!m_Server) {
-			std::cerr << "Failed to create ENet server." << std::endl;
+			Loggers::Network().Error("Failed to create ENet server.");
 			return;
 		}
 
@@ -34,18 +35,18 @@ namespace Chimp {
 		);
 
 		if (!m_Peer) {
-			std::cerr << "Failed to connect to server. Failed enet_host_connect." << std::endl;
+			Loggers::Network().Error("Failed to connect to server. Failed enet_host_connect.");
 			return;
 		}
 
 		// Attempt the connection
 		ENetEvent event;
 		if (enet_host_service(&m_Server, &event, serverInfo.ConnectionTimeoutMs) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
-			std::cout << "Connected to server." << std::endl;
+			Loggers::Network().Info("Connected to server.");
 			m_Connected = true;
 		}
 		else {
-			std::cerr << "Failed to connect to server. Failed enet_host_service." << std::endl;
+			Loggers::Network().Error("Failed to connect to server. Failed enet_host_service.");
 			return;
 		}
 

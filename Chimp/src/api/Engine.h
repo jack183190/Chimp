@@ -26,7 +26,7 @@ namespace Chimp {
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
 
-		// Create a logger that logs to console and file
+		// Create an enabled logger that logs to console and file
 		// name - name of the logger, can be anything that is a valid directory name
 		// level - minimum log level to log
 		[[nodiscard]] std::unique_ptr<Logger> CreateLogger(const std::string& name, LogLevel level = LogLevel::INFO);

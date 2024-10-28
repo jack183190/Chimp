@@ -18,6 +18,7 @@ protected:
 
 private:
 	Engine& m_Engine;
+	Logger m_Logger;
 	std::unique_ptr<Mesh> m_Mesh;
 	std::unique_ptr<GameRenderer> m_GameRenderer;
 	ECS m_ECS;
