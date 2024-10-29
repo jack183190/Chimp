@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "InputManager.h"
+#include "api/imgui/ImGuiHandler.h"
 
 namespace Chimp {
 	enum class WindowStatus {
@@ -31,6 +32,8 @@ namespace Chimp {
 		virtual void SwapBuffers() = 0;
 
 	public:
+		ImGuiHandler& GetImGuiHandler();
+
 		// Returns the size of the window.
 		[[nodiscard]] virtual Vector2f GetSize() const = 0;
 
@@ -57,5 +60,6 @@ namespace Chimp {
 		WindowStatus m_Status = WindowStatus::FAILED_INITIALIZATION;
 		InputManager m_InputManager;
 		Vector2f m_OutdatedSize{};
+		ImGuiHandler m_ImGuiHandler;
 	};
 }

@@ -59,5 +59,10 @@
 #include <../vendor/stb/stb_image.h>
 #endif
 
+// IMGUI
+#ifdef CHIMP_IMGUI
+#include <imgui.h>
+#endif
+
 // Preprocessor
 #include "preprocessor/CopyAndMove.h"

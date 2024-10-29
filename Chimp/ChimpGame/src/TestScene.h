@@ -15,6 +15,7 @@ protected:
 
 	void OnUpdate() override;
 	void OnRender() override;
+	void OnRenderUI() override;
 
 private:
 	Engine& m_Engine;
