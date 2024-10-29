@@ -27,5 +27,8 @@ namespace Chimp {
 
 		// Called when the scene should render
 		virtual void OnRender() = 0;
+
+		// Called when the scene should render UI
+		virtual void OnRenderUI() = 0;
 	};
 }

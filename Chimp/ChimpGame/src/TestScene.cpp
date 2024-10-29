@@ -1,4 +1,5 @@
 #include "TestScene.h"
+#include "imgui.h"
 
 Logger eventLogger("EventHandler", LogLevel::INFO);
 
@@ -241,4 +242,9 @@ void TestScene::OnRender()
 	m_GameRenderer->BeginFrame();
 
 	m_GameRenderer->Render(*m_Mesh, Chimp::CreateIdentityMatrix());
+}
+
+void TestScene::OnRenderUI()
+{
+	ImGui::ShowDemoWindow();
 }

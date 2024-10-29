@@ -119,6 +119,11 @@ namespace Chimp {
 		glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, resizable);
 	}
 
+	GLFWwindow* WindowGLFW::GetGLFWWindow() const
+	{
+		return m_Window;
+	}
+
 	bool WindowGLFW::GLFWInitialized = false;
 	void WindowGLFW::InitGLFW()
 	{

@@ -19,7 +19,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(flecs)
 target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
 
-target_include_directories(ChimpGame PUBLIC "../src/") # Chimp engine include directoryv
+# Include chimp
+target_include_directories(ChimpGame PUBLIC "../src/")
+target_link_libraries(ChimpGame PRIVATE imgui)
 
 add_compile_definitions(GAME_SRC="${CMAKE_CURRENT_SOURCE_DIR}")
 

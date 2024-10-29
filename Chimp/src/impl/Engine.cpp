@@ -103,11 +103,16 @@ namespace Chimp {
 
 	std::unique_ptr<IWindow> Engine::CreateWindow() const
 	{
+		std::unique_ptr<IWindow> window = nullptr;
 #ifdef CHIMP_GLFW
-		return std::make_unique<WindowGLFW>();
+		window = std::make_unique<WindowGLFW>();
 #endif
-		std::cerr << "No window implementation available." << std::endl;
-		return nullptr;
+		if (window == nullptr) {
+			std::cerr << "No window implementation available." << std::endl;
+			return nullptr;
+		}
+		window->GetImGuiHandler().Init(*window);
+		return std::move(window);
 	}
 
 	std::unique_ptr<IRenderingManager> Engine::CreateRenderingManager() const

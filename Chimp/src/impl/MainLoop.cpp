@@ -16,6 +16,10 @@ namespace Chimp {
 			m_Engine.GetRenderingManager().GetRenderer().StartDrawing();
 			m_SceneManager.Render();
 
+			m_Engine.GetWindow().GetImGuiHandler().StartImGuiFrame();
+			m_SceneManager.RenderUI();
+			m_Engine.GetWindow().GetImGuiHandler().EndImGuiFrame();
+
 			m_Engine.GetWindow().SwapBuffers();
 
 			m_SceneManager.CheckForSceneChange();

@@ -25,6 +25,9 @@ namespace Chimp {
 		// Called when the scene should render
 		void Render();
 
+		// Called when the scene should render UI
+		void RenderUI();
+
 		// If m_NextScene is not nullptr, switch to it
 		void CheckForSceneChange();
 

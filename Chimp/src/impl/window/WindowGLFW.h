@@ -8,6 +8,7 @@ namespace Chimp {
 		WindowGLFW();
 		~WindowGLFW();
 
+		GLFWwindow* GetGLFWWindow() const;
 	protected:
 		void Update() override;
 		void SwapBuffers() override;
