@@ -7,7 +7,7 @@ endif()
 
 project ("ChimpGame")
 
-add_library (ChimpGame STATIC "src/GameMain.cpp" "src/TestScene.h" "src/TestScene.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp")
+add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/Menu/MenuScene.h" "src/Menu/MenuScene.cpp" "src/menu/networking/GameNetworking.h" "src/menu/networking/GameNetworking.cpp"  "src/stdafx.h" )
 
 # FLECS
 add_compile_definitions(CHIMP_FLECS=1)
@@ -19,7 +19,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(flecs)
 target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
 
-target_include_directories(ChimpGame PUBLIC "../src/") # Chimp engine include directoryv
+# Chimp engine include directory
+target_include_directories(ChimpGame PUBLIC "../src/") 
+
+# Add src as include dir
+target_include_directories(ChimpGame PUBLIC "src/")
 
 add_compile_definitions(GAME_SRC="${CMAKE_CURRENT_SOURCE_DIR}")
 
