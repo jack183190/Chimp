@@ -27,6 +27,11 @@ namespace Chimp {
 		m_CurrentScene->OnRender();
 	}
 
+	void SceneManager::RenderUI()
+	{
+		m_CurrentScene->OnRenderUI();
+	}
+
 	void SceneManager::CheckForSceneChange()
 	{
 		if (m_NextScene != nullptr) [[unlikely]] {

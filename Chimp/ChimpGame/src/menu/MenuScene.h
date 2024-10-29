@@ -16,6 +16,7 @@ protected:
 
 	void OnUpdate() override;
 	void OnRender() override;
+	void OnRenderUI() override;
 
 private:
 	Chimp::Engine& m_Engine;

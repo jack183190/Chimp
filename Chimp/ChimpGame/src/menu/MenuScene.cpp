@@ -42,3 +42,8 @@ void MenuScene::OnRender()
 {
 
 }
+
+void MenuScene::OnRenderUI()
+{
+	ImGui::ShowDemoWindow();
+}

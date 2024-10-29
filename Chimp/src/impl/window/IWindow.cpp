@@ -6,6 +6,11 @@ namespace Chimp {
 		m_InputManager.UpdateEnd();
 	}
 
+	ImGuiHandler& IWindow::GetImGuiHandler()
+	{
+		return m_ImGuiHandler;
+	}
+
 	bool IWindow::HasResized()
 	{
 		const auto size = GetSize();
