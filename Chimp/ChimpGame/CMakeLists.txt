@@ -11,13 +11,6 @@ add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameR
 
 # FLECS
 add_compile_definitions(CHIMP_FLECS=1)
-FetchContent_Declare(
-    flecs
-    GIT_REPOSITORY https://github.com/SanderMertens/flecs.git
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(flecs)
-target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
 
 # Add src as include dir
 target_include_directories(ChimpGame PUBLIC "src/")
@@ -25,6 +18,7 @@ target_include_directories(ChimpGame PUBLIC "src/")
 # Include chimp
 target_include_directories(ChimpGame PUBLIC "../src/")
 target_link_libraries(ChimpGame PRIVATE imgui)
+target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
 
 add_compile_definitions(GAME_SRC="${CMAKE_CURRENT_SOURCE_DIR}")
 
