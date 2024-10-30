@@ -52,6 +52,11 @@ namespace Chimp {
 		return m_AssetManager;
 	}
 
+	UpdateSubscriber& Engine::GetUpdateSubscriber()
+	{
+		return m_UpdateSubscriber;
+	}
+
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {

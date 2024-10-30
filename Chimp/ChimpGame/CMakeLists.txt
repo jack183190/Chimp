@@ -7,7 +7,7 @@ endif()
 
 project ("ChimpGame")
 
-add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/Menu/MenuScene.h" "src/Menu/MenuScene.cpp" "src/menu/networking/GameClient.h" "src/menu/networking/GameClient.cpp"  "src/stdafx.h"  "src/menu/networking/GameServer.h" "src/menu/networking/GameServer.cpp" "src/Logger.h")
+add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/Menu/MenuScene.h" "src/Menu/MenuScene.cpp" "src/menu/networking/GameClient.h" "src/menu/networking/GameClient.cpp"  "src/stdafx.h"  "src/menu/networking/GameServer.h" "src/menu/networking/GameServer.cpp" "src/Logger.h" "src/menu/game/GameScene.h" "src/menu/game/GameScene.cpp" "src/menu/networking/Networking.h")
 
 # Add src as include dir
 target_include_directories(ChimpGame PUBLIC "src/")

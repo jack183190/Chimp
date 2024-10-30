@@ -2,6 +2,9 @@
 
 GameClient::GameClient(Chimp::Engine& engine) : m_Engine(engine)
 {
+	m_Engine.GetUpdateSubscriber().SubscribeUpdate([this]() {
+		Update();
+		});
 }
 
 void GameClient::Connect(Chimp::ConnectionInfo connectionInfo)

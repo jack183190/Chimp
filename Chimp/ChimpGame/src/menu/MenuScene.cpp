@@ -2,8 +2,6 @@
 
 MenuScene::MenuScene(Chimp::Engine& engine)
 	: m_Engine(engine),
-	m_GameServer(std::make_shared<GameServer>(m_Engine)),
-	m_GameClient(std::make_shared<GameClient>(m_Engine)),
 	m_ConnectionInfo({})
 {
 	m_Engine.GetWindow().SetTitle("Chimp Challenge");
@@ -39,8 +37,6 @@ void MenuScene::OnDeactivate()
 
 void MenuScene::OnUpdate()
 {
-	m_GameServer->Update();
-	m_GameClient->Update();
 }
 
 void MenuScene::OnRender()
@@ -73,48 +69,48 @@ void MenuScene::OnRenderUI()
 	}
 
 	// Host
-	bool disableHostButton = m_GameServer->IsRunning();
+	bool disableHostButton = Networking::GetServer()->IsRunning();
 	if (m_ConnectionInfo.HostName != "localhost") {
 		ImGui::Text("You can only host on 'localhost' (you can connect on other ips)");
 		disableHostButton = true;
 	}
 	ImGui::BeginDisabled(disableHostButton);
 	if (ImGui::Button("Host Server")) {
-		m_GameServer->Start(m_ConnectionInfo);
+		Networking::GetServer()->Start(m_ConnectionInfo);
 	}
 	ImGui::EndDisabled();
 
 	// Shutdown server
-	ImGui::BeginDisabled(!m_GameServer->IsRunning());
+	ImGui::BeginDisabled(!Networking::GetServer()->IsRunning());
 	ImGui::SameLine();
 	if (ImGui::Button("Shutdown Server")) {
-		m_GameServer->Shutdown();
+		Networking::GetServer()->Shutdown();
 	}
 	ImGui::EndDisabled();
 
 	// Connect
-	ImGui::BeginDisabled(m_GameClient->IsConnected());
+	ImGui::BeginDisabled(Networking::GetClient()->IsConnected());
 	if (ImGui::Button("Connect")) {
-		m_GameClient->Connect(m_ConnectionInfo);
+		Networking::GetClient()->Connect(m_ConnectionInfo);
 	}
 	ImGui::EndDisabled();
 
 	// Disconnect
-	ImGui::BeginDisabled(!m_GameClient->IsConnected());
+	ImGui::BeginDisabled(!Networking::GetClient()->IsConnected());
 	ImGui::SameLine();
 	if (ImGui::Button("Disconnect")) {
-		m_GameClient->Disconnect();
+		Networking::GetClient()->Disconnect();
 	}
 	ImGui::EndDisabled();
 
 	// Text
-	if (m_GameServer->IsRunning()) {
+	if (Networking::GetServer()->IsRunning()) {
 		ImGui::Text("Server is being hosted");
 	}
 	else {
 		ImGui::Text("Server is not being hosted");
 	}
-	if (m_GameClient->IsConnected()) {
+	if (Networking::GetClient()->IsConnected()) {
 		ImGui::Text("Client is connected");
 	}
 	else {

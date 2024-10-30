@@ -12,9 +12,11 @@ public:
 	bool IsRunning() const { return m_Server != nullptr; }
 	void Shutdown();
 
+	Chimp::IServer& GetServer();
+
+private:
 	void Update();
 
-	Chimp::IServer& GetServer();
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::IServer> m_Server;

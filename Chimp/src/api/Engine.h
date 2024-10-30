@@ -9,6 +9,7 @@
 #include "api/networking/IServer.h"
 #include "api/networking/IClient.h"
 #include "api/logging/Logger.h"
+#include "api/utils/UpdateSubscriber.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -22,6 +23,7 @@ namespace Chimp {
 		[[nodiscard]] IWindow& GetWindow();
 		[[nodiscard]] IRenderingManager& GetRenderingManager();
 		[[nodiscard]] AssetManager& GetAssetManager();
+		[[nodiscard]] UpdateSubscriber& GetUpdateSubscriber();
 
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
@@ -47,6 +49,7 @@ namespace Chimp {
 	private:
 		AssetManager m_AssetManager;
 		TimeManager m_TimeManager;
+		UpdateSubscriber m_UpdateSubscriber;
 		std::unique_ptr<IWindow> m_Window;
 		std::unique_ptr<IImageLoader> m_ImageLoader; // must be above rendering manager
 		std::unique_ptr<IRenderingManager> m_RenderingManager;

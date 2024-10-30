@@ -12,9 +12,10 @@ public:
 	bool IsConnected();
 	void Disconnect() { m_Client.reset(); }
 
-	void Update();
-
 	Chimp::IClient& GetClient();
+
+private:
+	void Update();
 
 private:
 	Chimp::Engine& m_Engine;
