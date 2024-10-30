@@ -24,3 +24,5 @@ int ServerMatch::GetMatchId() const
 {
 	return m_MatchId;
 }
+
+int ServerMatch::s_NextMatchId = 0;

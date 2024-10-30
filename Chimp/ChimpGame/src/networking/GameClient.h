@@ -1,6 +1,11 @@
 #pragma once
 
 #include "stdafx.h"
+#include "client/ClientCurrentMatchHandler.h"
+
+struct ClientHandlers {
+	std::unique_ptr<ClientCurrentMatchHandler> CurrentMatchHandler; // not null
+};
 
 class GameClient
 {
@@ -13,6 +18,7 @@ public:
 	void Disconnect() { m_Client.reset(); }
 
 	Chimp::IClient& GetClient();
+	ClientHandlers& GetHandlers();
 
 private:
 	void Update();
@@ -20,4 +26,5 @@ private:
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::IClient> m_Client;
+	std::unique_ptr<ClientHandlers> m_Handlers;
 };

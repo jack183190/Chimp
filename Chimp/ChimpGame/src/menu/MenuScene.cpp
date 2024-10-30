@@ -111,7 +111,8 @@ void MenuScene::OnRenderUI()
 		ImGui::Text("Server is not being hosted");
 	}
 	if (Networking::GetClient()->IsConnected()) {
-		ImGui::Text("Client is connected");
+		auto str = "Client is connected with id " + std::to_string(Networking::GetClient()->GetClient().GetId());
+		ImGui::Text(str.c_str());
 	}
 	else {
 		ImGui::Text("Client is not connected");

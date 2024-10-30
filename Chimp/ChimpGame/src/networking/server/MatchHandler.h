@@ -14,6 +14,7 @@ public:
 
 private:
 	void HandleNewConnections(const Chimp::NetworkPacket* event);
+	void StartMatch(int player1, int player2);
 
 private:
 	Chimp::Engine& m_Engine;

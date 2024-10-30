@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "server/MatchHandler.h"
 
-struct ServerResources {
+struct ServerHandlers {
 	std::unique_ptr<MatchHandler> MatchHandler; // not null
 };
 
@@ -18,7 +18,7 @@ public:
 	void Shutdown();
 
 	Chimp::IServer& GetServer();
-	ServerResources& GetResources();
+	ServerHandlers& GetHandlers();
 
 private:
 	void Update();
@@ -26,5 +26,5 @@ private:
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::IServer> m_Server;
-	std::unique_ptr<ServerResources> m_Resources;
+	std::unique_ptr<ServerHandlers> m_Handlers;
 };

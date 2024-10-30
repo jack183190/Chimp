@@ -51,6 +51,11 @@ namespace Chimp {
 		// e.g server is shutdown
 		[[nodiscard]] bool WasDisconnected() const;
 
+		// Returns the connection id of the client
+		[[nodiscard]] unsigned int GetId() const {
+			return m_ConnectionId;
+		}
+
 	protected:
 		virtual void ImplSendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void ImplSendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;

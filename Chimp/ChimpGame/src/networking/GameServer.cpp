@@ -19,8 +19,8 @@ void GameServer::Start(Chimp::ConnectionInfo connectionInfo)
 	}
 	else
 	{
-		m_Resources = std::make_unique<ServerResources>();
-		m_Resources->MatchHandler = std::make_unique<MatchHandler>(m_Engine, *m_Server);
+		m_Handlers = std::make_unique<ServerHandlers>();
+		m_Handlers->MatchHandler = std::make_unique<MatchHandler>(m_Engine, *m_Server);
 	}
 }
 
@@ -28,8 +28,8 @@ void GameServer::Shutdown()
 {
 	if (m_Server)
 	{
-		assert(m_Resources);
-		m_Resources.reset();
+		assert(m_Handlers);
+		m_Handlers.reset();
 		m_Server.reset();
 	}
 }
@@ -38,9 +38,9 @@ void GameServer::Update()
 {
 	if (m_Server)
 	{
-		assert(m_Resources);
+		assert(m_Handlers);
 		m_Server->Update();
-		m_Resources->MatchHandler->Update();
+		m_Handlers->MatchHandler->Update();
 	}
 }
 
@@ -50,8 +50,8 @@ Chimp::IServer& GameServer::GetServer()
 	return *m_Server;
 }
 
-ServerResources& GameServer::GetResources()
+ServerHandlers& GameServer::GetHandlers()
 {
-	assert(m_Resources);
-	return *m_Resources;
+	assert(m_Handlers);
+	return *m_Handlers;
 }
