@@ -1,7 +1,6 @@
 #pragma once
 
 #include "api/networking/IServer.h"
-#include "api/utils/OptionalReference.h"
 #include "InitENet.h"
 
 namespace Chimp {
@@ -20,6 +19,10 @@ namespace Chimp {
 
 		void ImplSendPacketToClientWithResponse(int clientId, const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) override;
 
+		void DisconnectClient(int clientId) override;
+
+		void DisconnectAllClients() override;
+
 	protected:
 		void AsyncUpdate() override;
 
@@ -30,7 +33,7 @@ namespace Chimp {
 
 	private:
 		bool m_IsValid = false;
-		OptionalReference<ENetHost> m_Server;
+		ENetHost* m_Server;
 		std::unordered_map<ENetPeer*, int> m_ClientIds;
 		std::unordered_map<int, ENetPeer*> m_ClientIdsReverse;
 		int m_NextClientId = 0;

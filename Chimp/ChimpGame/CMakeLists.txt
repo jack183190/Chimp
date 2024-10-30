@@ -7,15 +7,13 @@ endif()
 
 project ("ChimpGame")
 
-add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/Menu/MenuScene.h" "src/Menu/MenuScene.cpp" "src/menu/networking/GameNetworking.h" "src/menu/networking/GameNetworking.cpp"  "src/stdafx.h" )
-
-# FLECS
-add_compile_definitions(CHIMP_FLECS=1)
+add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/Menu/MenuScene.h" "src/Menu/MenuScene.cpp" "src/menu/networking/GameClient.h" "src/menu/networking/GameClient.cpp"  "src/stdafx.h"  "src/menu/networking/GameServer.h" "src/menu/networking/GameServer.cpp" "src/Logger.h")
 
 # Add src as include dir
 target_include_directories(ChimpGame PUBLIC "src/")
 
 # Include chimp
+add_compile_definitions(CHIMP_FLECS=1)
 target_include_directories(ChimpGame PUBLIC "../src/")
 target_link_libraries(ChimpGame PRIVATE imgui)
 target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)

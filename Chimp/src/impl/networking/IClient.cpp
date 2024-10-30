@@ -7,7 +7,7 @@ namespace Chimp {
 	IClient::IClient(const ConnectionInfo& serverInfo) :
 		m_ServerInfo(serverInfo),
 		m_EventPollingThread([this]() {
-		while (!m_IsBeingDestroyed) {
+		while (!m_IsBeingDestroyed && !m_FailedToConnect && !m_WasDisconnected) {
 			AsyncUpdate();
 		}
 			}) {
@@ -16,8 +16,7 @@ namespace Chimp {
 
 	IClient::~IClient()
 	{
-		m_IsBeingDestroyed = true;
-		m_EventPollingThread.join();
+		assert(m_IsBeingDestroyed);
 	}
 
 	void IClient::Update()
@@ -69,6 +68,11 @@ namespace Chimp {
 			});
 	}
 
+	bool IClient::WasDisconnected() const
+	{
+		return m_WasDisconnected;
+	}
+
 	void IClient::ImplSendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel)
 	{
 		// We'll send a packet to the server telling the server to forward the next packet it receives okay sounds good
@@ -78,5 +82,11 @@ namespace Chimp {
 
 		ImplSendPacketToServer(forwardPacket, channel);
 		ImplSendPacketToServer(packet, channel);
+	}
+
+	void IClient::ShutdownThreads()
+	{
+		m_IsBeingDestroyed = true;
+		m_EventPollingThread.join();
 	}
 }

@@ -13,17 +13,17 @@ namespace Chimp {
 		address.port = serverInfo.Port;
 
 
-		m_Server = OptionalReference<ENetHost>(
-			enet_host_create(
+		m_Server = enet_host_create(
 				&address,
 				serverInfo.MaxClients,
 				serverInfo.MaxChannels,
 				serverInfo.MaxIncomingBandwidth,
 				serverInfo.MaxOutgoingBandwidth
-			));
+			);
 
 		if (!m_Server) {
 			Loggers::Network().Error("Failed to host ENet server.");
+			m_HostingFailed = true;
 			return;
 		}
 
@@ -33,9 +33,11 @@ namespace Chimp {
 
 	Server::~Server()
 	{
+		ShutdownThreads();
 		if (m_Server)
 		{
-			enet_host_destroy(&m_Server);
+			enet_host_destroy(m_Server);
+			m_Server = nullptr;
 		}
 	}
 
@@ -91,6 +93,23 @@ namespace Chimp {
 		ImplSendPacketToClient(clientId, packet, channel);
 	}
 
+	void Server::DisconnectClient(int clientId)
+	{
+		// TODO tell the client they were disconnected
+		ENetPeer* peer = m_ClientIdsReverse.at(clientId);
+		assert(peer);
+
+		enet_peer_disconnect_now(peer, 0);
+	}
+
+	void Server::DisconnectAllClients()
+	{
+		for (auto& [peer, clientId] : m_ClientIds)
+		{
+			DisconnectClient(clientId);
+		}
+	}
+
 	void Server::AsyncUpdate()
 	{
 		if (!IsValid()) {
@@ -106,7 +125,7 @@ namespace Chimp {
 		}
 
 		ENetEvent event;
-		while (enet_host_service(&m_Server, &event, 0) > 0)
+		while (enet_host_service(m_Server, &event, 0) > 0)
 		{
 			switch (event.type)
 			{

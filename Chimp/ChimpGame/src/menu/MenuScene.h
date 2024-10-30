@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameRenderer.h"
-#include "networking/GameNetworking.h"
+#include "networking/GameClient.h"
+#include "networking/GameServer.h"
 
 class MenuScene : public Chimp::Scene {
 public:
@@ -21,5 +22,7 @@ protected:
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<GameRenderer> m_GameRenderer;
-	std::shared_ptr<GameNetworking> m_GameNetworking;
+	std::shared_ptr<GameClient> m_GameClient;
+	std::shared_ptr<GameServer> m_GameServer;
+	Chimp::ConnectionInfo m_ConnectionInfo;
 };
