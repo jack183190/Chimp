@@ -110,6 +110,17 @@ namespace Chimp {
 		}
 	}
 
+	std::vector<int> Server::GetConnectedClientIds() const
+	{
+		std::vector<int> clientIds;
+		clientIds.reserve(m_ClientIds.size());
+		for (auto& [peer, clientId] : m_ClientIds)
+		{
+			clientIds.push_back(clientId);
+		}
+		return clientIds;
+	}
+
 	void Server::AsyncUpdate()
 	{
 		if (!IsValid()) {
@@ -163,6 +174,11 @@ namespace Chimp {
 		connectPacket.PacketType = Packets::CLIENT_CONNECTED;
 		connectPacket.ClientId = idPacket.NewClientId;
 		ImplSendPacketToAllClientsExcept(connectPacket, { idPacket.NewClientId });
+
+		std::unique_ptr<ServerClientConnectedPacket> serverConnectPacket = std::make_unique<ServerClientConnectedPacket>();
+		serverConnectPacket->PacketType = Packets::SERVER_CLIENT_CONNECTED;
+		serverConnectPacket->ClientId = idPacket.NewClientId;
+		m_EventQueue.Push(std::make_tuple(serverConnectPacket->PacketType, std::move(serverConnectPacket)));
 	}
 
 	void Server::HandleDisconnectionEvent(const ENetEvent& event)
@@ -185,6 +201,11 @@ namespace Chimp {
 		disconnectPacket.PacketType = Packets::CLIENT_DISCONNECTED;
 		disconnectPacket.ClientId = clientId;
 		ImplSendPacketToAllClients(disconnectPacket);
+
+		std::unique_ptr<ServerClientDisconnectedPacket> serverDisconnectPacket = std::make_unique<ServerClientDisconnectedPacket>();
+		serverDisconnectPacket->PacketType = Packets::SERVER_CLIENT_DISCONNECTED;
+		serverDisconnectPacket->ClientId = clientId;
+		m_EventQueue.Push(std::make_tuple(serverDisconnectPacket->PacketType, std::move(serverDisconnectPacket)));
 	}
 
 	void Server::HandleReceiveEvent(const ENetEvent& event)

@@ -23,6 +23,8 @@ namespace Chimp {
 
 		void DisconnectAllClients() override;
 
+		std::vector<int> GetConnectedClientIds() const override;
+
 	protected:
 		void AsyncUpdate() override;
 

@@ -1,6 +1,11 @@
 #pragma once
 
 #include "stdafx.h"
+#include "server/MatchHandler.h"
+
+struct ServerResources {
+	std::unique_ptr<MatchHandler> MatchHandler; // not null
+};
 
 class GameServer
 {
@@ -13,6 +18,7 @@ public:
 	void Shutdown();
 
 	Chimp::IServer& GetServer();
+	ServerResources& GetResources();
 
 private:
 	void Update();
@@ -20,4 +26,5 @@ private:
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::IServer> m_Server;
+	std::unique_ptr<ServerResources> m_Resources;
 };

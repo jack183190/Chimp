@@ -7,7 +7,7 @@ endif()
 
 project ("ChimpGame")
 
-add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/Menu/MenuScene.h" "src/Menu/MenuScene.cpp" "src/menu/networking/GameClient.h" "src/menu/networking/GameClient.cpp"  "src/stdafx.h"  "src/menu/networking/GameServer.h" "src/menu/networking/GameServer.cpp" "src/Logger.h" "src/menu/game/GameScene.h" "src/menu/game/GameScene.cpp" "src/menu/networking/Networking.h")
+add_library (ChimpGame STATIC "src/GameMain.cpp" "src/GameRenderer.h" "src/GameRenderer.cpp" "src/menu/MenuScene.h" "src/menu/MenuScene.cpp" "src/networking/GameClient.h" "src/networking/GameClient.cpp"  "src/stdafx.h"  "src/networking/GameServer.h" "src/networking/GameServer.cpp" "src/Logger.h" "src/game/GameScene.h" "src/game/GameScene.cpp" "src/networking/Networking.h" "src/networking/packets/ClientGameStartPacket.h" "src/networking/server/MatchHandler.h" "src/networking/server/MatchHandler.cpp" "src/networking/server/ServerMatch.h" "src/networking/matches/MatchResult.h" "src/networking/server/ServerMatch.cpp" "src/networking/server/MatchSet.h" "src/networking/server/MatchSet.cpp")
 
 # Add src as include dir
 target_include_directories(ChimpGame PUBLIC "src/")

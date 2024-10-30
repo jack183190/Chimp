@@ -46,6 +46,9 @@ namespace Chimp {
 		virtual void DisconnectClient(int clientId) = 0;
 		virtual void DisconnectAllClients() = 0;
 
+		// Get client ids
+		virtual std::vector<int> GetConnectedClientIds() const = 0;
+
 	protected:
 		virtual void ImplSendPacketToClient(int clientId, const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void ImplSendPacketToAllClients(const NetworkPacket& packet, int channel = 0) = 0;

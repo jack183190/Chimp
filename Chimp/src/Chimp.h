@@ -7,3 +7,4 @@
 #include "api/graphics/meshes/TexturedQuad.h"
 #include "api/graphics/camera/controllers/DebugCameraController.h"
 #include "api/ecs/ECS.h"
+#include "api/networking/PacketTypeRegistry.h"
