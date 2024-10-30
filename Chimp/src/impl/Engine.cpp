@@ -60,7 +60,7 @@ namespace Chimp {
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {
-			std::cerr << "Server info is invalid." << std::endl;
+			Loggers::Main().Error("Server info is invalid.");
 			return nullptr;
 		}
 
@@ -69,11 +69,11 @@ namespace Chimp {
 		server = ENetServerFactory::CreateServer(serverInfo);
 #endif
 		if (server == nullptr) {
-			std::cerr << "No networking implementation available." << std::endl;
+			Loggers::Main().Error("No networking implementation available.");
 			return nullptr;
 		}
 		if (!server->IsValid()) {
-			std::cerr << "Server is invalid, this means hosting failed." << std::endl;
+			Loggers::Main().Error("Server is invalid, this means hosting failed.");
 			return nullptr;
 		}
 		return std::move(server);
@@ -82,7 +82,7 @@ namespace Chimp {
 	std::unique_ptr<IClient> Engine::ConnectToServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {
-			std::cerr << "Server info is invalid." << std::endl;
+			Loggers::Main().Error("Server info is invalid.");
 			return nullptr;
 		}
 
@@ -91,11 +91,11 @@ namespace Chimp {
 		client = ENetServerFactory::CreateClient(serverInfo);
 #endif
 		if (client == nullptr) {
-			std::cerr << "No networking implementation available." << std::endl;
+			Loggers::Main().Error("No networking implementation available.");
 			return nullptr;
 		}
 		if (!client->IsValid()) {
-			std::cerr << "Client is invalid, this means connecting failed." << std::endl;
+			Loggers::Main().Error("Client is invalid, this means connecting failed.");
 			return nullptr;
 		}
 		return std::move(client);
@@ -113,7 +113,7 @@ namespace Chimp {
 		window = std::make_unique<WindowGLFW>();
 #endif
 		if (window == nullptr) {
-			std::cerr << "No window implementation available." << std::endl;
+			Loggers::Main().Error("No window implementation available.");
 			return nullptr;
 		}
 		window->GetImGuiHandler().Init(*window);
@@ -129,7 +129,7 @@ namespace Chimp {
 #endif
 
 		if (!renderingManager) {
-			std::cerr << "No rendering manager implementation available." << std::endl;
+			Loggers::Main().Error("No rendering manager implementation available.");
 			return nullptr;
 		}
 
@@ -142,7 +142,7 @@ namespace Chimp {
 #ifdef CHIMP_STB
 		return std::make_unique<STB::ImageLoader>();
 #endif
-		std::cerr << "No image loader implementation available." << std::endl;
+		Loggers::Main().Error("No image loader implementation available.");
 		return nullptr;
 	}
 }

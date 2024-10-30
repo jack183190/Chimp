@@ -4,6 +4,7 @@
 #include "buffers/ElementArrayLayout.h"
 #include "shaders/Shader.h"
 #include "textures/Texture.h"
+#include "Loggers.h"
 
 // thank u chatgpt
 void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -117,8 +118,14 @@ namespace Chimp::GL {
 		GLenum err = glewInit();
 		if (err != GLEW_OK) {
 			std::cerr << "GLEW Error: " << glewGetErrorString(err) << std::endl;
-			std::cerr << "Failed to initialise GLEW." << std::endl;
+			std::cerr << "Failed to initialize GLEW." << std::endl;
+			std::stringstream ss;
+			ss << "Failed to initialize GLEW: " << glewGetErrorString(err);
+			Loggers::Rendering().Error(ss);
 			exit(-1);
+		}
+		else {
+			Loggers::Rendering().Info("GLEW initialized.");
 		}
 
 #ifndef NDEBUG
@@ -126,7 +133,10 @@ namespace Chimp::GL {
 		glDebugMessageCallback(glDebugOutput, nullptr);
 #endif
 
-		std::cout << "Initialised OpenGL Renderer:" << std::endl;
-		std::cout << " OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+		Loggers::Rendering().Info("Initialized OpenGL Renderer.");
+		Loggers::Rendering().Info(" OpenGL Version: " + std::string((const char*)glGetString(GL_VERSION)));
+		Loggers::Rendering().Info(" GLSL Version: " + std::string((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
+		Loggers::Rendering().Info(" Vendor: " + std::string((const char*)glGetString(GL_VENDOR)));
+		Loggers::Rendering().Info(" Renderer: " + std::string((const char*)glGetString(GL_RENDERER)));
 	}
 }
