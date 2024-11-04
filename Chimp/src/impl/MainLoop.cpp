@@ -9,15 +9,18 @@ namespace Chimp {
 		while (!m_SceneManager.m_CurrentScene->ShouldExit()) {
 			m_Engine.GetTimeManager().Update();
 			m_Engine.GetWindow().Update();
-
 			m_SceneManager.Update();
+			m_Engine.GetUpdateSubscriber().Update();
+
 			m_Engine.GetWindow().UpdateEnd();
 
 			m_Engine.GetRenderingManager().GetRenderer().StartDrawing();
 			m_SceneManager.Render();
+			m_Engine.GetUpdateSubscriber().Render();
 
 			m_Engine.GetWindow().GetImGuiHandler().StartImGuiFrame();
 			m_SceneManager.RenderUI();
+			m_Engine.GetUpdateSubscriber().RenderUI();
 			m_Engine.GetWindow().GetImGuiHandler().EndImGuiFrame();
 
 			m_Engine.GetWindow().SwapBuffers();

@@ -16,7 +16,7 @@ namespace Chimp {
 		// Represents a connection to a server
 		IClient(const ConnectionInfo& serverInfo);
 	public:
-		~IClient();
+		virtual ~IClient();
 	public:
 		// If this is false, failed to connect to server
 		[[nodiscard]] virtual bool IsValid() const = 0;
@@ -47,6 +47,15 @@ namespace Chimp {
 		// channel - The channel to send the packet on, defaults to 0, make sure this is a valid channel
 		void SendPacketToClient(unsigned int clientId, const NetworkPacket& packet, int channel = 0);
 
+		// Returns true if the client was disconnected from the server abruptly
+		// e.g server is shutdown
+		[[nodiscard]] bool WasDisconnected() const;
+
+		// Returns the connection id of the client
+		[[nodiscard]] unsigned int GetId() const {
+			return m_ConnectionId;
+		}
+
 	protected:
 		virtual void ImplSendPacketToServer(const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void ImplSendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0) = 0;
@@ -55,6 +64,10 @@ namespace Chimp {
 		// Push events into a queue, this is called as fast as possible in its own thread, also send queued packets
 		// it is up to the impl to handle if the server is invalid or if the function is called too early
 		virtual void AsyncUpdate() = 0;
+
+		// Shut down the update thread, must be called before destroying the client
+		// probably should be called at the beginning of the child destructor
+		void ShutdownThreads();
 
 	public:
 		constexpr static int HOST_ID = -1;
@@ -67,6 +80,8 @@ namespace Chimp {
 		std::unordered_map<NetworkPacketType, PacketResponseFunc> m_PacketResponseHandlers;
 		ThreadQueue<std::function<void()>> m_QueuedPacketsToSend;
 		bool m_SendQueuedPackets = false;
+		bool m_FailedToConnect = false;
+		bool m_WasDisconnected = false;
 
 	private:
 		std::thread m_EventPollingThread;

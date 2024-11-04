@@ -4,16 +4,20 @@ namespace Chimp {
 	typedef int NetworkPacketType;
 	namespace Packets {
 		// Register these in packet type registry
-		static constexpr NetworkPacketType INVALID = 0;
-		static constexpr NetworkPacketType CLIENT_SET_ID = 1;
-		static constexpr NetworkPacketType FORWARD = 2;
-		static constexpr NetworkPacketType TEST = 3;
-		static constexpr NetworkPacketType CLIENT_CONNECTED = 4;
-		static constexpr NetworkPacketType CLIENT_DISCONNECTED = 5;
-		static constexpr NetworkPacketType CLIENT_REQUEST_RESPONSE = 6;
-		static constexpr NetworkPacketType SERVER_RESPONDING_TO_CLIENT = 7;
-		static constexpr NetworkPacketType SERVER_REQUEST_RESPONSE = 8;
-		static constexpr NetworkPacketType CLIENT_RESPONDING_TO_SERVER = 9;
+		// First word is who they are being sent to
+		// note in some cases (e.g SERVER_CLIENT_CONNECTED) they are being sent from the server to the server
+		static constexpr NetworkPacketType INVALID = -1;
+		static constexpr NetworkPacketType CLIENT_SET_ID = -2;
+		static constexpr NetworkPacketType FORWARD = -3;
+		static constexpr NetworkPacketType TEST = -4;
+		static constexpr NetworkPacketType CLIENT_CONNECTED = -5;
+		static constexpr NetworkPacketType CLIENT_DISCONNECTED = -6;
+		static constexpr NetworkPacketType CLIENT_REQUEST_RESPONSE = -7;
+		static constexpr NetworkPacketType SERVER_RESPONDING_TO_CLIENT = -8;
+		static constexpr NetworkPacketType SERVER_REQUEST_RESPONSE = -8;
+		static constexpr NetworkPacketType CLIENT_RESPONDING_TO_SERVER = -10;
+		static constexpr NetworkPacketType SERVER_CLIENT_CONNECTED = -11;
+		static constexpr NetworkPacketType SERVER_CLIENT_DISCONNECTED = -12;
 	}
 
 	struct NetworkPacket {
@@ -39,6 +43,14 @@ namespace Chimp {
 	};
 
 	struct ClientDisconnectedPacket : public NetworkPacket {
+		int ClientId;
+	};
+
+	struct ServerClientConnectedPacket : public NetworkPacket {
+		int ClientId;
+	};
+
+	struct ServerClientDisconnectedPacket : public NetworkPacket {
 		int ClientId;
 	};
 

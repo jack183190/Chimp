@@ -15,40 +15,44 @@ namespace Chimp {
 		address.port = serverInfo.Port;
 
 		// Create server
-		m_Server = OptionalReference<ENetHost>(
-			enet_host_create(
+		m_Server = enet_host_create(
 				nullptr,
 				1,
 				serverInfo.MaxChannels,
 				serverInfo.MaxIncomingBandwidth,
-				serverInfo.MaxOutgoingBandwidth
-			));
+				serverInfo.MaxOutgoingBandwidth);
 
 		if (!m_Server) {
 			Loggers::Network().Error("Failed to create ENet server.");
+			m_FailedToConnect = true;
 			return;
 		}
 
 		// Server connection
-		m_Peer = OptionalReference<ENetPeer>(
-			enet_host_connect(&m_Server, &address, serverInfo.MaxChannels, 0)
-		);
+		m_Peer = enet_host_connect(m_Server, &address, serverInfo.MaxChannels, 0);
 
 		if (!m_Peer) {
 			Loggers::Network().Error("Failed to connect to server. Failed enet_host_connect.");
+			m_FailedToConnect = true;
 			return;
 		}
 
 		// Attempt the connection
 		ENetEvent event;
-		if (enet_host_service(&m_Server, &event, serverInfo.ConnectionTimeoutMs) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
+		if (enet_host_service(m_Server, &event, serverInfo.ConnectionTimeoutMs) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
 			Loggers::Network().Info("Connected to server.");
-			m_Connected = true;
+			m_DidSuccessfullyConnect = true;
 		}
 		else {
 			Loggers::Network().Error("Failed to connect to server. Failed enet_host_service.");
+			m_FailedToConnect = true;
 			return;
+
 		}
+
+		// Set properties
+		enet_peer_timeout(m_Peer, serverInfo.FailedPacketsBeforeDisconnect, 5000, 10000);
+		enet_peer_ping_interval(m_Peer, serverInfo.KeepAliveIntervalMs);
 
 		// Wait until we have our id (or we timeout)
 		const auto msRemainingToConnect = std::chrono::milliseconds(serverInfo.ConnectionTimeoutMs) - (std::chrono::high_resolution_clock::now() - connectionStartTimestamp);
@@ -60,19 +64,23 @@ namespace Chimp {
 
 	Client::~Client()
 	{
-		if (m_Server)
-		{
-			enet_host_destroy(&m_Server);
-		}
+		ShutdownThreads();
+
 		if (m_Peer)
 		{
-			enet_peer_reset(&m_Peer);
+			enet_peer_reset(m_Peer);
+			m_Peer = nullptr;
+		}
+		if (m_Server)
+		{
+			enet_host_destroy(m_Server);
+			m_Server = nullptr;
 		}
 	}
 
 	bool Client::IsValid() const
 	{
-		return m_Connected && m_ConnectionId != INVALID_ID;
+		return m_DidSuccessfullyConnect && m_ConnectionId != INVALID_ID;
 	}
 
 	void Client::ImplSendPacketToServer(const NetworkPacket& packet, int channel)
@@ -83,7 +91,7 @@ namespace Chimp {
 		const auto packetSize = PacketTypeRegistry::GetPacketSize(packet.PacketType);
 
 		ENetPacket* enetPacket = enet_packet_create(&packet, packetSize, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(&m_Peer, channel, enetPacket);
+		enet_peer_send(m_Peer, channel, enetPacket);
 	}
 
 	void Client::ImplSendPacketToServerWithResponse(const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel)
@@ -101,7 +109,7 @@ namespace Chimp {
 
 	void Client::AsyncUpdate()
 	{
-		if (!m_Connected) {
+		if (!m_DidSuccessfullyConnect) {
 			return;
 		}
 
@@ -115,12 +123,16 @@ namespace Chimp {
 
 		// Poll events
 		ENetEvent event;
-		while (enet_host_service(&m_Server, &event, 0) > 0)
+		while (enet_host_service(m_Server, &event, 0) > 0)
 		{
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
 				HandleReceiveEvent(event);
+				break;
+			case ENET_EVENT_TYPE_DISCONNECT:
+				Loggers::Network().Info("Disconnected from server.");
+				m_WasDisconnected = true;
 				break;
 			}
 		}

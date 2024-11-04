@@ -11,13 +11,19 @@ namespace Chimp::Loggers {
 
 	static Logger& Network()
 	{
-		static Logger logger("ChimpNetwork", LogLevel::WARNING);
+		static Logger logger("ChimpNetwork", LogLevel::INFO);
 		return logger;
 	}
 
 	static Logger& Resources()
 	{
 		static Logger logger("ChimpResources", LogLevel::WARNING);
+		return logger;
+	}
+
+	static Logger& Rendering()
+	{
+		static Logger logger("ChimpRendering", LogLevel::INFO);
 		return logger;
 	}
 }

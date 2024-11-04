@@ -7,7 +7,7 @@ namespace Chimp {
 	IServer::IServer(const ConnectionInfo& serverInfo) :
 		m_ServerInfo(serverInfo),
 		m_EventPollingThread([this]() {
-		while (!m_IsBeingDestroyed) {
+		while (!m_IsBeingDestroyed && !m_HostingFailed) {
 			AsyncUpdate();
 		}
 			}) {
@@ -16,8 +16,7 @@ namespace Chimp {
 
 	IServer::~IServer()
 	{
-		m_IsBeingDestroyed = true;
-		m_EventPollingThread.join();
+		assert(m_IsBeingDestroyed);
 	}
 
 	void IServer::SendPacketToClient(int clientId, const NetworkPacket& packet, int channel)
@@ -74,5 +73,11 @@ namespace Chimp {
 			m_EventHandlerAndBroadcaster.Broadcaster->Broadcast(std::get<0>(event), *std::get<1>(event));
 			});
 		m_SendQueuedPackets = true;
+	}
+
+	void IServer::ShutdownThreads()
+	{
+		m_IsBeingDestroyed = true;
+		m_EventPollingThread.join();
 	}
 }

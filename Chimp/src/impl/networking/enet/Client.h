@@ -1,7 +1,6 @@
 #pragma once
 
 #include "api/networking/IClient.h"
-#include "api/utils/OptionalReference.h"
 #include "InitENet.h"
 
 namespace Chimp {
@@ -22,9 +21,9 @@ namespace Chimp {
 		void HandleReceiveEvent(const ENetEvent& event);
 
 	private:
-		bool m_Connected = false;
-		OptionalReference<ENetHost> m_Server;
-		OptionalReference<ENetPeer> m_Peer;
+		bool m_DidSuccessfullyConnect = false;
+		ENetHost* m_Server;
+		ENetPeer* m_Peer;
 		std::condition_variable m_ReceiveIdCv;
 		int m_CallbackIdCounter = 0;
 		std::unordered_map<int, std::function<void(const NetworkPacket*)>> m_AwaitingResponseCallbacks;

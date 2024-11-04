@@ -2,25 +2,23 @@
 
 #include "Chimp.h"
 
-using namespace Chimp;
-
 class GameRenderer
 {
 public:
 	GameRenderer(Chimp::Engine& engine, 
-		std::shared_ptr<IShader> shader);
+		std::shared_ptr<Chimp::IShader> shader);
 	
 public:
-	void SetCamera(Camera* camera);
+	void SetCamera(Chimp::Camera* camera);
 
 	void BeginFrame();
 
 	void Render(const Chimp::Mesh &mesh, const Chimp::Matrix &transform);
 
 private:
-	Engine& m_Engine;
-	Chimp::IShaderBuffers::Index m_CameraBufferId;
-	Camera* m_Camera;
-	Chimp::IShaderBuffers::Index m_ModelBufferId;
-	std::shared_ptr<IShader> m_Shader;
+	Chimp::Engine& m_Engine;
+	Chimp::ShaderBufferId m_CameraBufferId;
+	Chimp::Camera* m_Camera;
+	Chimp::ShaderBufferId m_ModelBufferId;
+	std::shared_ptr<Chimp::IShader> m_Shader;
 };

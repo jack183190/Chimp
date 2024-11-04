@@ -13,7 +13,7 @@ namespace Chimp {
 		// Represents either a hosted server
 		IServer(const ConnectionInfo& serverInfo);
 	public:
-		~IServer();
+		virtual ~IServer();
 	public:
 		// If this is false, failed to host the server
 		[[nodiscard]] virtual bool IsValid() const = 0;
@@ -42,6 +42,13 @@ namespace Chimp {
 		// Broadcast all polled events
 		void Update();
 
+		// Disconnect clients
+		virtual void DisconnectClient(int clientId) = 0;
+		virtual void DisconnectAllClients() = 0;
+
+		// Get client ids
+		virtual std::vector<int> GetConnectedClientIds() const = 0;
+
 	protected:
 		virtual void ImplSendPacketToClient(int clientId, const NetworkPacket& packet, int channel = 0) = 0;
 		virtual void ImplSendPacketToAllClients(const NetworkPacket& packet, int channel = 0) = 0;
@@ -51,6 +58,10 @@ namespace Chimp {
 		// Push events into a queue, this is called as fast as possible in its own thread, also send queued packets
 		// it is up to the impl to handle if the server is invalid or if the function is called too early
 		virtual void AsyncUpdate() = 0;
+
+		// Shut down the update thread, must be called before destroying the client
+		// probably should be called at the beginning of the child destructor
+		void ShutdownThreads();
 
 	public:
 		constexpr static int HOST_ID = -1;
@@ -63,6 +74,7 @@ namespace Chimp {
 		std::unordered_map<NetworkPacketType, PacketResponseFunc> m_PacketResponseHandlers;
 		ThreadQueue<std::function<void()>> m_QueuedPacketsToSend;
 		bool m_SendQueuedPackets = false;
+		bool m_HostingFailed = false;
 
 	private:
 		std::thread m_EventPollingThread;

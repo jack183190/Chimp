@@ -1,7 +1,9 @@
 #include "GameRenderer.h"
 
+using namespace Chimp;
+
 GameRenderer::GameRenderer(
-	Chimp::Engine& engine,
+	Engine& engine,
 	std::shared_ptr<IShader> shader) :
 	m_Engine(engine),
 	m_Camera(&engine.GetRenderingManager().GetRenderer().GetDefaultCamera()),
