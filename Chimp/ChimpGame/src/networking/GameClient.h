@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "client/ClientCurrentMatchHandler.h"
+#include "rendering/GameRenderer.h"
 
 struct ClientHandlers {
 	std::unique_ptr<ClientCurrentMatchHandler> CurrentMatchHandler; // not null

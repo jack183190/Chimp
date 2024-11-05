@@ -3,7 +3,7 @@
 #include "api/graphics/IRenderingManager.h"
 
 namespace Chimp {
-	class TexturedQuad : public Mesh {
+	class TexturedQuad {
 	public:
 		TexturedQuad() = delete;
 

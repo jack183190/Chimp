@@ -38,6 +38,10 @@ namespace Chimp {
 	// scale - The scale vector
 	[[nodiscard]] Matrix CreateScaleMatrix(Vector3f scale);
 
+	// Create rotation matrix from yaw, pitch and roll (in radians)
+	// y, x, z axis rotation
+	[[nodiscard]] Matrix CreateRotationMatrixYawPitchRoll(Vector3f yawPitchRoll);
+
 	// Get the forward, up and right vectors from a yaw, pitch and roll (in radians)
 	[[nodiscard]] std::array<Vector3f, 3> GetForwardUpRightVectors(const Vector3f yawPitchRoll);
 
@@ -55,4 +59,17 @@ namespace Chimp {
 	// zNear - The Z value of the near clipping plane. This defines the minimum Z-coordinate visible in the orthographic projection.
 	// zFar - The Z value of the far clipping plane. This defines the maximum Z-coordinate visible in the orthographic projection.
 	[[nodiscard]] Matrix CreateOrthographicProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar);
+
+	// Represents a transformation
+	struct Transform {
+		Vector3f Translation = Vector3f(0.0f, 0.0f, 0.0f);
+		Vector3f Rotation = Vector3f(0.0f, 0.0f, 0.0f);
+		Vector3f Scale = Vector3f(1.0f, 1.0f, 1.0f);
+
+		Matrix CreateTransformMatrix() const {
+			return CreateTranslationMatrix(Translation) *
+				CreateRotationMatrixYawPitchRoll(Rotation) *
+				CreateScaleMatrix(Scale);
+		}
+	};
 }

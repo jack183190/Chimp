@@ -10,11 +10,14 @@
 #include "api/networking/IClient.h"
 #include "api/logging/Logger.h"
 #include "api/utils/UpdateSubscriber.h"
+#include "scenes/SceneManager.h"
 
 namespace Chimp {
 	class EntryPoint;
+	class MainLoop;
 	class Engine {
 		friend class EntryPoint;
+		friend class MainLoop;
 	private:
 		Engine();
 
@@ -24,6 +27,7 @@ namespace Chimp {
 		[[nodiscard]] IRenderingManager& GetRenderingManager();
 		[[nodiscard]] AssetManager& GetAssetManager();
 		[[nodiscard]] UpdateSubscriber& GetUpdateSubscriber();
+		[[nodiscard]] SceneManager& GetSceneManager();
 
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
@@ -53,5 +57,6 @@ namespace Chimp {
 		std::unique_ptr<IWindow> m_Window;
 		std::unique_ptr<IImageLoader> m_ImageLoader; // must be above rendering manager
 		std::unique_ptr<IRenderingManager> m_RenderingManager;
+		std::unique_ptr<SceneManager> m_SceneManager; // initialized in MainLoop
 	};
 }

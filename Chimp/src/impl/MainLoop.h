@@ -9,7 +9,6 @@ namespace Chimp {
 		MainLoop(std::unique_ptr<Scene> entryScene, Engine& engine);
 
 	private:
-		SceneManager m_SceneManager;
 		Engine& m_Engine;
 	};
 }

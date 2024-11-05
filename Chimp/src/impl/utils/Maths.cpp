@@ -26,6 +26,13 @@ namespace Chimp {
 		return glm::scale(CreateIdentityMatrix(), scale);
 	}
 
+	Matrix CreateRotationMatrixYawPitchRoll(Vector3f yawPitchRoll)
+	{
+		return glm::rotate(CreateIdentityMatrix(), yawPitchRoll.x, Vector3f(0.0f, 1.0f, 0.0f)) *
+			glm::rotate(CreateIdentityMatrix(), yawPitchRoll.y, Vector3f(1.0f, 0.0f, 0.0f)) *
+			glm::rotate(CreateIdentityMatrix(), yawPitchRoll.z, Vector3f(0.0f, 0.0f, 1.0f));
+	}
+
 	std::array<Vector3f, 3> GetForwardUpRightVectors(const Vector3f yawPitchRoll)
 	{
 		// https://chatgpt.com/c/670ba852-a8f4-8003-844d-82eb84a0a3ec

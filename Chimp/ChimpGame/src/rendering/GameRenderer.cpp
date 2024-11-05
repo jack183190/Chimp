@@ -50,6 +50,7 @@ void GameRenderer::SetCamera(Camera* camera)
 
 void GameRenderer::BeginFrame()
 {
+	m_IsFrameBegun = true;
 	// Update camera
 	Chimp::Matrix cameraMatrix = m_Camera->GetCameraMatrices().GetProjectionMatrix() * m_Camera->GetCameraMatrices().GetViewMatrix();
 	m_Shader->SetShaderBufferSubData(m_CameraBufferId, &cameraMatrix, sizeof(Chimp::Matrix), 0);
@@ -57,6 +58,8 @@ void GameRenderer::BeginFrame()
 
 void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transform)
 {
+	assert(m_IsFrameBegun);
+
 	// Send transform
 	m_Shader->SetShaderBufferSubData(m_ModelBufferId, &transform, sizeof(Chimp::Matrix), 0);
 
@@ -71,5 +74,32 @@ void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transfor
 
 		// Draw the section
 		m_Engine.GetRenderingManager().GetRenderer().Draw(section, *m_Shader);
+	}
+}
+
+void GameRenderer::RenderWorld(Chimp::ECS& ecs)
+{
+	auto zSorter = [](const std::tuple<TransformComponent&, MeshComponent&>& a, const std::tuple<TransformComponent&, MeshComponent&>& b)
+		{
+			return std::get<0>(a).GetTranslation().z < std::get<0>(b).GetTranslation().z;
+		};
+	std::priority_queue<
+		std::tuple<TransformComponent&, MeshComponent&>,
+		std::vector<std::tuple<TransformComponent&, MeshComponent&>>, 
+		decltype(zSorter)>
+		renderQueue(zSorter);
+
+	auto view = ecs.GetEntitiesWithComponents<TransformComponent, MeshComponent>();
+	for (auto& [transformComp, meshComp] : view)
+	{
+		renderQueue.push({transformComp, meshComp});
+	}
+
+	while (!renderQueue.empty())
+	{
+		auto& [transformComp, meshComp] = renderQueue.top();
+		assert(meshComp.Mesh != nullptr);
+		Render(*meshComp.Mesh, transformComp.GetTransformMatrix());
+		renderQueue.pop();
 	}
 }

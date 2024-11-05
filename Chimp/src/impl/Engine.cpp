@@ -57,6 +57,11 @@ namespace Chimp {
 		return m_UpdateSubscriber;
 	}
 
+	SceneManager& Engine::GetSceneManager()
+	{
+		return *m_SceneManager;
+	}
+
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {

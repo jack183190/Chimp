@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameRenderer.h"
+#include "rendering/GameRenderer.h"
 #include "networking/Networking.h"
 
 class MenuScene : public Chimp::Scene {
@@ -8,7 +8,6 @@ public:
 	~MenuScene();
 
 public:
-	bool ShouldExit() const override { return m_Engine.GetWindow().GetStatus() == Chimp::WindowStatus::SHOULD_CLOSE; }
 
 protected:
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;

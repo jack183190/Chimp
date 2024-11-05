@@ -4,14 +4,16 @@
 
 namespace Chimp {
 	class SceneManager;
+	class Engine;
 
 	class Scene {
 		friend class SceneManager;
 	public:
 		Scene() = default;
+		virtual ~Scene() = default;
 
 	public:
-		virtual bool ShouldExit() const = 0;
+		virtual bool ShouldExit(Chimp::Engine& engine) const;
 
 	protected:
 		// Called when the scene is activated, this may happen more than once

@@ -1,4 +1,5 @@
 #include "MenuScene.h"
+#include "game/GameScene.h"
 
 MenuScene::MenuScene(Chimp::Engine& engine)
 	: m_Engine(engine),
@@ -37,6 +38,13 @@ void MenuScene::OnDeactivate()
 
 void MenuScene::OnUpdate()
 {
+	if (!Networking::GetClient()->IsConnected()) return;
+	auto& clientHandlers = Networking::GetClient()->GetHandlers();
+	
+	if (clientHandlers.CurrentMatchHandler->IsInMatch()) {
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameRenderer));
+	}
+	
 }
 
 void MenuScene::OnRender()

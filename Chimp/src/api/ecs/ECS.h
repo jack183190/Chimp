@@ -1,5 +1,8 @@
 #pragma once
 
+#include "components/MeshComponent.h"
+#include "components/TransformComponent.h"
+
 #include "stdafx.h"
 #include "api/utils/OptionalReference.h"
 
@@ -46,7 +49,7 @@ namespace Chimp {
 			return m_World.entity();
 		}
 
-		// Set a component on an entity
+		// Set a component on an entity, creating it if it doesn't exist
 		// Component - The component type to set
 		// entity - The entity to set the component on
 		// component - The value to set the component to

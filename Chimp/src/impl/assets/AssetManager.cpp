@@ -1,5 +1,6 @@
 #include "api/assets/AssetManager.h"
 #include "api/Engine.h"
+#include "api/graphics/meshes/TexturedQuad.h"
 #include "Loggers.h"
 
 namespace Chimp {
@@ -53,5 +54,45 @@ namespace Chimp {
 		{
 			m_Textures.erase(it);
 		}
+	}
+
+	void AssetManager::StoreMesh(const std::string& id, std::unique_ptr<Mesh> mesh)
+	{
+		if (m_Meshes.find(id) != m_Meshes.end())
+		{
+			Loggers::Resources().Error("Mesh already exists: " + id);
+			return;
+		}
+		m_Meshes[id] = std::move(mesh);
+	}
+
+	void AssetManager::CreateTexturedQuad(const std::string& id, const std::string& texturePath)
+	{
+		CreateTexturedQuad(id, LoadTexture(texturePath));
+	}
+
+	void AssetManager::CreateTexturedQuad(const std::string& id, ITexture& texture)
+	{
+		auto mesh = TexturedQuad::Create(
+			m_Engine.GetRenderingManager(),
+			texture
+		);
+		StoreMesh(id, std::move(mesh));
+	}
+
+	Mesh& AssetManager::GetMesh(const std::string& id)
+	{
+		auto it = m_Meshes.find(id);
+		assert(it != m_Meshes.end());
+		return *it->second;
+	}
+
+	std::unique_ptr<Mesh> AssetManager::ReclaimStoredMesh(const std::string& id)
+	{
+		auto it = m_Meshes.find(id);
+		assert(it != m_Meshes.end());
+		std::unique_ptr<Mesh> mesh = std::move(it->second);
+		m_Meshes.erase(it);
+		return std::move(mesh);
 	}
 }
