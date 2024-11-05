@@ -79,27 +79,34 @@ void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transfor
 
 void GameRenderer::RenderWorld(Chimp::ECS& ecs)
 {
-	auto zSorter = [](const std::tuple<TransformComponent&, MeshComponent&>& a, const std::tuple<TransformComponent&, MeshComponent&>& b)
-		{
-			return std::get<0>(a).GetTranslation().z < std::get<0>(b).GetTranslation().z;
+	struct Renderable
+	{
+		float Z;
+		Chimp::Matrix TransformMatrix;
+		Chimp::Mesh* Mesh;
+	};
+	auto zSorter = [](
+		const Renderable& a,
+		const Renderable& b) {
+			return a.Z < b.Z;
 		};
-	std::priority_queue<
-		std::tuple<TransformComponent&, MeshComponent&>,
-		std::vector<std::tuple<TransformComponent&, MeshComponent&>>, 
-		decltype(zSorter)>
-		renderQueue(zSorter);
+	std::vector<Renderable> renderQueue;
 
 	auto view = ecs.GetEntitiesWithComponents<TransformComponent, MeshComponent>();
-	for (auto& [transformComp, meshComp] : view)
+	for (auto& [transform, mesh] : view)
 	{
-		renderQueue.push({transformComp, meshComp});
+		Renderable renderable;
+		renderable.TransformMatrix = transform.GetTransformMatrix();
+		assert(mesh.Mesh != nullptr);
+		renderable.Mesh = mesh.Mesh;
+		renderable.Z = transform.GetTranslation().z;
+		renderQueue.push_back(renderable);
 	}
 
-	while (!renderQueue.empty())
+	std::sort(renderQueue.begin(), renderQueue.end(), zSorter);
+
+	for (const auto& renderable : renderQueue)
 	{
-		auto& [transformComp, meshComp] = renderQueue.top();
-		assert(meshComp.Mesh != nullptr);
-		Render(*meshComp.Mesh, transformComp.GetTransformMatrix());
-		renderQueue.pop();
+		Render(*renderable.Mesh, renderable.TransformMatrix);
 	}
 }

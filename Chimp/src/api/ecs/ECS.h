@@ -28,8 +28,7 @@ namespace Chimp {
 			View(flecs::world& world) {
 				world.system<Components...>().each([this](Components&... components) {
 					m_Components.emplace_back(components...);
-					});
-				world.progress();
+					}).run();
 			}
 
 		public:

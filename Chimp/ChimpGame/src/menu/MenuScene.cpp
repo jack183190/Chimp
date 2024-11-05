@@ -21,6 +21,10 @@ MenuScene::MenuScene(Chimp::Engine& engine)
 
 	// Our renderer
 	m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);
+
+
+	Networking::GetServer()->Start(m_ConnectionInfo);
+	Networking::GetClient()->Connect(m_ConnectionInfo);
 }
 
 MenuScene::~MenuScene()

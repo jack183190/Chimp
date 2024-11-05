@@ -7,7 +7,7 @@ namespace Chimp {
 	struct TransformComponent {
 		TransformComponent() = default;
 		TransformComponent(const Vector3f& translation, const Vector3f& rotation, const Vector3f& scale)
-			: m_Transform{ translation, rotation, scale} {
+			: m_Transform{ translation, rotation, scale } {
 			UpdateTransform();
 		}
 		TransformComponent(const Transform& transform)
@@ -19,10 +19,13 @@ namespace Chimp {
 		const Vector3f& GetRotation() const { return m_Transform.Rotation; }
 		const Vector3f& GetScale() const { return m_Transform.Scale; }
 
+		void Move(const float x, const float y, const float z) {
+			SetTranslation(m_Transform.Translation + Vector3f{ x, y, z });
+		}
 		void SetTranslation(const float x, const float y, const float z) {
 			SetTranslation({ x, y, z });
 		}
-		void SetTranslation(const Vector3f& translation) { 
+		void SetTranslation(const Vector3f& translation) {
 			m_Transform.Translation = translation;
 			UpdateTransform();
 		}
@@ -31,7 +34,7 @@ namespace Chimp {
 			m_Transform.Rotation = rotation;
 			UpdateTransform();
 		}
-		void SetScale(const Vector3f& scale) { 
+		void SetScale(const Vector3f& scale) {
 			m_Transform.Scale = scale;
 			UpdateTransform();
 		}
@@ -41,7 +44,14 @@ namespace Chimp {
 
 	private:
 		void UpdateTransform() {
-			m_TransformMatrix = m_Transform.CreateTransformMatrix();
+			// offset for bottom left origin
+			m_TransformMatrix = m_Transform.CreateTransformMatrix(
+				{
+					m_Transform.Scale.x * 0.5f,
+					m_Transform.Scale.y * -0.5f,
+					0.0f
+				}
+			);
 		}
 
 	private:

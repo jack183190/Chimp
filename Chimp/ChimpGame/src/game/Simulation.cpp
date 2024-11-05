@@ -1,5 +1,6 @@
 #include "Simulation.h"
 
+Chimp::EntityId bg;
 Simulation::Simulation(Chimp::Engine& engine,
 	std::shared_ptr<GameRenderer> gameRenderer,
 	Chimp::Vector2f position)
@@ -15,11 +16,11 @@ Simulation::Simulation(Chimp::Engine& engine,
 		{ 280.0f, 720.0f }
 		})
 {
-	Entities::CreateBaseEntity(
+	bg = Entities::CreateBaseEntity(
 		m_ECS,
 		m_Engine.GetAssetManager().GetMesh("MapBackground"),
 		{
-			{ m_Position.x, m_Position.y, 0.0f },
+			{ m_Position.x, m_Position.y, 10.0f },
 			{ 0.0f, 0.0f, 0.0f },
 			{ m_Engine.GetWindow().GetSize().x / 2.0f, m_Engine.GetWindow().GetSize().y, 1.0f}
 		}
@@ -29,9 +30,9 @@ Simulation::Simulation(Chimp::Engine& engine,
 		m_ECS,
 		m_Engine.GetAssetManager().GetMesh("MapBackground"),
 		{
-			{ m_Position.x, m_Position.y, 0.0f },
 			{ 0.0f, 0.0f, 0.0f },
-			{ 10, 10, 1.0f}
+			{ 0.0f, 0.0f, 0.0f },
+			{ 100, 100, 1.0f}
 		}
 	);
 }
@@ -39,13 +40,30 @@ Simulation::Simulation(Chimp::Engine& engine,
 void Simulation::Update()
 {
 	float dt = m_Engine.GetTimeManager().GetDeltaTime();
-	dist += dt * 50.0f;
-	auto [point, before, after] = m_Path.GetPointByDistance(dist);
+	//dist += dt * 50.0f;
+	//auto [point, before, after] = m_Path.GetPointByDistance(dist);
 	//if (before) std::cout << "before\n";
 	//if (after) std::cout << "after\n";
 	//if (after) dist = 0;
-	m_ECS.GetMutableComponent<Chimp::TransformComponent>(testEntity)->SetTranslation(point.x, point.y, 0.0f);
-	std::cout << "point: " << point.x << ", " << point.y << std::endl;
+	auto mut = m_ECS.GetMutableComponent<Chimp::TransformComponent>(testEntity);
+	float speed = dt * 100;
+	if (m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::W))
+	{
+		mut->Move(0.0f, -speed, 0.0f);
+	}
+	if (m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::S))
+	{
+		mut->Move(0.0f, speed, 0.0f);
+	}
+	if (m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::A))
+	{
+		mut->Move(-speed, 0.0f, 0.0f);
+	}
+	if (m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::D))
+	{
+		mut->Move(speed, 0.0f, 0.0f);
+	}
+	//std::cout << "point: " << point.x << ", " << point.y << std::endl;
 }
 
 void Simulation::Render()

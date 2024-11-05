@@ -94,7 +94,6 @@ namespace Chimp {
 			return;
 			}
 		glfwSwapBuffers(m_Window);
-
 	}
 
 	Vector2f WindowGLFW::GetSize() const
