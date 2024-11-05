@@ -7,7 +7,7 @@ GameScene::GameScene(Chimp::Engine& engine,
 {
 	m_Engine.GetAssetManager().CreateTexturedQuad("MapBackground", std::string(GAME_SRC) + "/assets/textures/MapBackground.png");
 
-	//m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f });
+	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f });
 	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f });
 }
 
@@ -27,7 +27,7 @@ void GameScene::OnDeactivate()
 void GameScene::OnUpdate()
 {
 	m_PlayerSimulation->Update();
-	//m_OpponentSimulation->Update();
+	m_OpponentSimulation->Update();
 }
 
 void GameScene::OnRender()
@@ -35,7 +35,7 @@ void GameScene::OnRender()
 	m_GameRenderer->BeginFrame();
 
 	m_PlayerSimulation->Render();
-	//m_OpponentSimulation->Render();
+	m_OpponentSimulation->Render();
 }
 
 void GameScene::OnRenderUI()

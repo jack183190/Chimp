@@ -6,8 +6,8 @@ namespace Chimp {
 		m_UpVector(0.0f, -1.0f, 0.0f),
 		m_ForwardVector(0.0f, 0.0f, 1.0f),
 		m_RightVector(1.0f, 0.0f, 0.0f),
-		m_ViewTopLeft(0.0f, 720.0f),
-		m_ViewBottomRight(1280.0f, 0.0f),
+		m_ViewTopLeft(0.0f, 0.0f),
+		m_ViewBottomRight(1280.0f, 720.0f),
 		m_ViewClippingPlane(0.0f, 1000.0f)
 	{
 		UpdateViewMatrix();

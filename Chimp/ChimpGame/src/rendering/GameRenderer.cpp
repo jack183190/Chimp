@@ -88,7 +88,7 @@ void GameRenderer::RenderWorld(Chimp::ECS& ecs)
 	auto zSorter = [](
 		const Renderable& a,
 		const Renderable& b) {
-			return a.Z < b.Z;
+			return a.Z > b.Z;
 		};
 	std::vector<Renderable> renderQueue;
 
