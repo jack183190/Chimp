@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 
+// Get instance of this class from Engine
 namespace Chimp {
 	class Engine;
 	class MainLoop;

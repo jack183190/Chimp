@@ -17,4 +17,7 @@ private:
 	Chimp::Vector2f m_Position;
 	Chimp::ECS m_ECS;
 	std::shared_ptr<GameRenderer> m_GameRenderer;
+	Chimp::Path<Chimp::Vector2f> m_Path;
+	Chimp::EntityId testEntity;
+	float dist = 0;
 };

@@ -72,4 +72,48 @@ namespace Chimp {
 				CreateScaleMatrix(Scale);
 		}
 	};
+
+	// Lerp between two values
+	// a - The start value
+	// b - The end value
+	// t - The interpolation value
+	// Clamps t to 0 and 1
+	inline float Lerp(float a, float b, float t) {
+		return a + t * (b - a);
+	}
+	inline	Vector2f Lerp(Vector2f a, Vector2f b, float t) {
+		return Vector2f(
+			Lerp(a.x, b.x, t), 
+			Lerp(a.y, b.y, t)
+		);
+	}
+	inline Vector3f Lerp(Vector3f a, Vector3f b, float t) {
+		return Vector3f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t),
+			Lerp(a.z, b.z, t)
+		);
+	}
+	inline Vector4f Lerp(Vector4f a, Vector4f b, float t) {
+		return Vector4f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t),
+			Lerp(a.z, b.z, t),
+			Lerp(a.w, b.w, t)
+		);
+	}
+
+	// Get distance between two points
+	inline float GetDistanceBetween(float a, float b) {
+		return std::abs(a - b);
+	}
+	inline float GetDistanceBetween(Vector2f a, Vector2f b) {
+		return glm::distance(a, b);
+	}
+	inline float GetDistanceBetween(Vector3f a, Vector3f b) {
+		return glm::distance(a, b);
+	}
+	inline float GetDistanceBetween(Vector4f a, Vector4f b) {
+		return glm::distance(a, b);
+	}
 }

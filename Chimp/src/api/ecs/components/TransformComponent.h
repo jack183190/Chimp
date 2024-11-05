@@ -19,6 +19,9 @@ namespace Chimp {
 		const Vector3f& GetRotation() const { return m_Transform.Rotation; }
 		const Vector3f& GetScale() const { return m_Transform.Scale; }
 
+		void SetTranslation(const float x, const float y, const float z) {
+			SetTranslation({ x, y, z });
+		}
 		void SetTranslation(const Vector3f& translation) { 
 			m_Transform.Translation = translation;
 			UpdateTransform();
