@@ -9,11 +9,13 @@ private:
 	Networking() = delete;
 public:
 	static constexpr Chimp::NetworkPacketType CLIENT_MATCH_START = 0;
+	static constexpr Chimp::NetworkPacketType CLIENT_MATCH_WIN = 1;
 
 	static void Init(Chimp::Engine& engine) {
 		assert(!client && !server);
 
 		Chimp::PacketTypeRegistry::RegisterPacketType<ClientMatchStartPacket>(CLIENT_MATCH_START);
+		Chimp::PacketTypeRegistry::RegisterPacketType<ClientMatchWinPacket>(CLIENT_MATCH_WIN);
 
 		client = std::make_shared<GameClient>(engine);
 		server = std::make_shared<GameServer>(engine);
@@ -29,5 +31,5 @@ public:
 
 private:
 	inline static std::shared_ptr<GameClient> client = nullptr;
-	inline	static std::shared_ptr<GameServer> server = nullptr;
+	inline static std::shared_ptr<GameServer> server = nullptr;
 };

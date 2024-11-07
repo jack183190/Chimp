@@ -3,9 +3,12 @@
 #include "stdafx.h"
 #include "client/ClientCurrentMatchHandler.h"
 #include "rendering/GameRenderer.h"
+#include "client/GameWinListener.h"
 
 struct ClientHandlers {
-	std::unique_ptr<ClientCurrentMatchHandler> CurrentMatchHandler; // not null
+	// not null ptrs (instantiated in Connect)
+	std::unique_ptr<ClientCurrentMatchHandler> CurrentMatchHandler;
+	std::unique_ptr<GameWinListener> WinListener; 
 };
 
 class GameClient
@@ -16,7 +19,10 @@ public:
 	void Connect(Chimp::ConnectionInfo connectionInfo);
 
 	bool IsConnected();
-	void Disconnect() { m_Client.reset(); }
+	void Disconnect() { 
+		m_Handlers.reset();
+		m_Client.reset(); 
+	}
 
 	Chimp::IClient& GetClient();
 	ClientHandlers& GetHandlers();

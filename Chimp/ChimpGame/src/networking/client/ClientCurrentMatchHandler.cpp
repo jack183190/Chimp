@@ -14,7 +14,7 @@ ClientCurrentMatchHandler::ClientCurrentMatchHandler(Chimp::Engine& engine,
 	matchStartPacket.PacketType = Networking::CLIENT_MATCH_START;
 	matchStartPacket.MatchId = 1;
 	matchStartPacket.OpponentId = 2;
-	HandleMatchStart(&matchStartPacket); 
+	//HandleMatchStart(&matchStartPacket); 
 }
 
 ClientCurrentMatchHandler::~ClientCurrentMatchHandler()

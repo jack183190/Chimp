@@ -25,14 +25,11 @@ Simulation::Simulation(Chimp::Engine& engine,
 		}
 	);
 
-	testEntity = Entities::CreateBaseEntity(
+	testEntity = Entities::CreateBloonEntity(
 		m_ECS,
-		m_Engine.GetAssetManager().GetMesh("MapBackground"),
-		{
-			{ 0.0f, 0.0f, 0.0f },
-			{ 0.0f, 0.0f, 0.0f },
-			{ 100, 100, 1.0f}
-		}
+		m_Engine,
+		{ 0.0f, 0.0f },
+		Bloons::BloonType::BLUE
 	);
 }
 
@@ -41,8 +38,6 @@ void Simulation::Update()
 	float dt = m_Engine.GetTimeManager().GetDeltaTime();
 	dist += dt * 150.0f;
 	auto [point, before, after] = m_Path.GetPointByDistance(dist);
-	if (before) std::cout << "before\n";
-	if (after) std::cout << "after\n";
 	if (after) dist = 0;
 	auto mut = m_ECS.GetMutableComponent<Chimp::TransformComponent>(testEntity);
 	mut->SetTranslation({ point.x + m_Position.x, point.y + m_Position.y, 0.0f });
@@ -51,4 +46,9 @@ void Simulation::Update()
 void Simulation::Render()
 {
 	m_GameRenderer->RenderWorld(m_ECS);
+}
+
+bool Simulation::HasLost() const
+{
+	return m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L);
 }

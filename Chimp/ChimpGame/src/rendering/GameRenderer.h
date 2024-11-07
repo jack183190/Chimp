@@ -19,6 +19,15 @@ public:
 	// Render world, where entities with maximum z are rendered first
 	void RenderWorld(Chimp::ECS& ecs);
 
+	// Create and load textured quad into asset manager
+	// engine - engine instance
+	// name - name of the asset
+	// path - path to the texture (relative to assets/textures)
+	// returns name parameter
+	static std::string LoadSprite(Chimp::Engine& engine, const std::string& name, const std::string& path);
+	static void UnloadSprite(Chimp::Engine& engine, const std::string& name);
+	static void UnloadSprites(Chimp::Engine& engine, const std::vector<std::string>& names);
+
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::ShaderBufferId m_CameraBufferId;

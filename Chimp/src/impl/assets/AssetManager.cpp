@@ -87,6 +87,11 @@ namespace Chimp {
 		return *it->second;
 	}
 
+	bool AssetManager::HasMesh(const std::string& id) const
+	{
+		return m_Meshes.find(id) != m_Meshes.end();
+	}
+
 	std::unique_ptr<Mesh> AssetManager::ReclaimStoredMesh(const std::string& id)
 	{
 		auto it = m_Meshes.find(id);

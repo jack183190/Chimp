@@ -15,9 +15,12 @@ public:
 	void OnRender() override;
 	void OnRenderUI() override;
 
+	bool ShouldExit(Chimp::Engine& engine) const override;
+
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<GameRenderer> m_GameRenderer;
 	std::unique_ptr<Simulation> m_OpponentSimulation;
 	std::unique_ptr<Simulation> m_PlayerSimulation;
+	std::vector<std::string> m_LoadedSprites;
 };

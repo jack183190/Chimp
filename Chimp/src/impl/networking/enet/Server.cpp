@@ -50,6 +50,8 @@ namespace Chimp {
 	{
 		assert(IsValid());
 
+		std::cout << "Sending packet to client " << clientId << " with type " << packet.PacketType << "\n";
+
 		ENetPeer* peer = m_ClientIdsReverse.at(clientId);
 		assert(peer);
 

@@ -12,6 +12,8 @@ public:
 
 	void Update();
 	void Render();
+
+	bool HasLost() const;
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::Vector2f m_Position;

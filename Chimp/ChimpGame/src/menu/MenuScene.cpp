@@ -1,7 +1,8 @@
 #include "MenuScene.h"
 #include "game/GameScene.h"
 
-MenuScene::MenuScene(Chimp::Engine& engine)
+MenuScene::MenuScene(Chimp::Engine& engine,
+	std::shared_ptr<GameRenderer> renderer)
 	: m_Engine(engine),
 	m_ConnectionInfo({})
 {
@@ -11,20 +12,26 @@ MenuScene::MenuScene(Chimp::Engine& engine)
 
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
-	// Shader
-	Chimp::ShaderFilePaths shaderFilePaths = {};
-	{
-		shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
-		shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
+	if (renderer == nullptr) {
+		// Shader
+		Chimp::ShaderFilePaths shaderFilePaths = {};
+		{
+			shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
+			shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
+		}
+		auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
+
+		// Our renderer
+		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);
+
+		//Networking::GetServer()->Start(m_ConnectionInfo);
+		//Networking::GetClient()->Connect(m_ConnectionInfo);
 	}
-	auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
-
-	// Our renderer
-	m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);
-
-
-	Networking::GetServer()->Start(m_ConnectionInfo);
-	Networking::GetClient()->Connect(m_ConnectionInfo);
+	else {
+		m_GameRenderer = renderer;
+		Networking::GetServer()->Shutdown();
+		Networking::GetClient()->Disconnect();
+	}
 }
 
 MenuScene::~MenuScene()

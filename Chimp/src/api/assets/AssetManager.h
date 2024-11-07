@@ -31,6 +31,8 @@ namespace Chimp {
 		void CreateTexturedQuad(const std::string& id, ITexture& texture);
 		// Get mesh, bad stuff happens if you haven't stored it
 		[[nodiscard]] Mesh& GetMesh(const std::string& id);
+		// True if the mesh is stored
+		[[nodiscard]] bool HasMesh(const std::string& id) const;
 		// Reclaim a stored mesh, this will remove it from the asset manager
 		std::unique_ptr<Mesh> ReclaimStoredMesh(const std::string& id);
 		std::unique_ptr<Mesh> DestroyStoredMesh(const std::string& id) { return ReclaimStoredMesh(id); }

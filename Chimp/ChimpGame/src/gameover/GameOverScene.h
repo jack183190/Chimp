@@ -1,18 +1,17 @@
+#pragma once
+
 #include "stdafx.h"
 #include "rendering/GameRenderer.h"
-#include "networking/Networking.h"
 
-class MenuScene : public Chimp::Scene {
+class GameOverScene : public Chimp::Scene {
 public:
-	MenuScene(Chimp::Engine& engine, std::shared_ptr<GameRenderer> renderer = nullptr);
-	~MenuScene();
+	GameOverScene(Chimp::Engine& engine,
+		std::shared_ptr<GameRenderer> gameRenderer,
+		bool didWin);
+	~GameOverScene();
 
-public:
-
-protected:
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;
 	void OnDeactivate() override;
-
 	void OnUpdate() override;
 	void OnRender() override;
 	void OnRenderUI() override;
@@ -20,5 +19,5 @@ protected:
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<GameRenderer> m_GameRenderer;
-	Chimp::ConnectionInfo m_ConnectionInfo;
+	bool m_DidWin;
 };
