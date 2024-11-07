@@ -13,9 +13,41 @@ public:
 
 	void RemoveMatch(const ServerMatch& match);
 
+	void RemoveMatchById(int matchId);
+
 	Chimp::OptionalReference<ServerMatch> GetMatchByPlayerId(int playerId);
 
 	Chimp::OptionalReference<ServerMatch> GetMatchByMatchId(int matchId);
+
+	// ITERATOR
+    class Iterator {
+    public:
+        Iterator(std::unordered_map<int, ServerMatch>::iterator inner) : m_Iter(inner) {}
+
+        // Dereference to get only ServerMatch, not the pair
+        ServerMatch& operator*() { return m_Iter->second; }
+        ServerMatch* operator->() { return &m_Iter->second; }
+
+        Iterator& operator++() {
+            ++m_Iter;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator temp = *this;
+            ++m_Iter;
+            return temp;
+        }
+
+        bool operator==(const Iterator& other) const { return m_Iter == other.m_Iter; }
+        bool operator!=(const Iterator& other) const { return m_Iter != other.m_Iter; }
+
+    private:
+        std::unordered_map<int, ServerMatch>::iterator m_Iter;
+    };
+
+    Iterator begin() { return Iterator(m_Matches.begin()); }
+    Iterator end() { return Iterator(m_Matches.end()); }
 
 private:
 	std::unordered_map<int, ServerMatch> m_Matches; // matchId -> match

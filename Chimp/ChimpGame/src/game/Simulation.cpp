@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "networking/Networking.h"
 
 Simulation::Simulation(Chimp::Engine& engine,
 	std::shared_ptr<GameRenderer> gameRenderer,
@@ -50,5 +51,5 @@ void Simulation::Render()
 
 bool Simulation::HasLost() const
 {
-	return m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L);
+	return m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) || !Networking::GetClient()->IsConnected();
 }

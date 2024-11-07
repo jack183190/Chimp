@@ -48,6 +48,12 @@ void GameScene::OnUpdate()
 			packet
 		);
 
+		// Send end packet to server
+		ServerMatchEndPacket endPacket = {};	
+		endPacket.PacketType = Networking::SERVER_MATCH_END;
+		endPacket.MatchId = clientHandlers.CurrentMatchHandler->GetMatchId();
+		Networking::GetClient()->GetClient().SendPacketToServer(endPacket);
+
 		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameRenderer, false));
 	}
 	// Did we win?

@@ -34,6 +34,9 @@ namespace Chimp {
 		void SendPacketToAllClientsExcept(const NetworkPacket& packet, const std::vector<int>& excludedClients, int channel = 0);
 		void SendPacketToClientWithResponse(int clientId, const NetworkPacket& packet, std::function<void(const NetworkPacket*)> callback, int channel = 0);
 
+		// Send packet to ourself
+		void SendPacketToSelf(const NetworkPacket& packet);
+
 		// Handle responding to a packet
 		void SetPacketResponseHandler(NetworkPacketType type, PacketResponseFunc func) {
 			m_PacketResponseHandlers[type] = func;

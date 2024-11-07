@@ -67,6 +67,16 @@ namespace Chimp {
 			});
 	}
 
+	void IServer::SendPacketToSelf(const NetworkPacket& packet)
+	{
+		const char* packetData = (char*)&packet;
+		const size_t packetSize = PacketTypeRegistry::GetPacketSize(packet.PacketType);
+		char* packetBuffer = new char[packetSize]; // this is deleted by the network packet unique ptr
+		memcpy(packetBuffer, packetData, packetSize);
+		std::unique_ptr<NetworkPacket> packetCopy = PacketTypeRegistry::Parse(packetSize, packetBuffer);
+		m_EventQueue.Push(std::make_tuple(packet.PacketType, std::move(packetCopy)));
+	}
+
 	void IServer::Update()
 	{
 		m_EventQueue.PopAll([this](const std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>& event) {

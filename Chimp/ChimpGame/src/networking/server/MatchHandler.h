@@ -14,7 +14,9 @@ public:
 
 private:
 	void HandleNewConnections(const Chimp::NetworkPacket* event);
+	void HandleMatchEnd(const Chimp::NetworkPacket* event);
 	void StartMatch(int player1, int player2);
+	void SendMatchEndPacket(int matchId);
 
 private:
 	Chimp::Engine& m_Engine;
@@ -22,4 +24,5 @@ private:
 	std::queue<int> m_PlayersNotInMatch;
 	MatchSet m_MatchSet;
 	Chimp::EventListener m_NewConnectionListener;
+	Chimp::EventListener m_MatchEndListener;
 };

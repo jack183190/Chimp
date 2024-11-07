@@ -14,7 +14,18 @@ void MatchSet::AddMatch(const ServerMatch& match)
 
 void MatchSet::RemoveMatch(const ServerMatch& match)
 {
+	RemoveMatchById(match.GetMatchId());
+}
 
+void MatchSet::RemoveMatchById(int matchId)
+{
+	auto iter = m_Matches.find(matchId);
+	if (iter != m_Matches.end())
+	{
+		m_PlayerOneIdMatchId.erase(iter->second.GetPlayerOneId());
+		m_PlayerTwoIdMatchId.erase(iter->second.GetPlayerTwoId());
+		m_Matches.erase(iter);
+	}
 }
 
 Chimp::OptionalReference<ServerMatch> MatchSet::GetMatchByPlayerId(int playerId)
