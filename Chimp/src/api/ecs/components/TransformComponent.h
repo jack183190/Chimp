@@ -29,6 +29,9 @@ namespace Chimp {
 			m_Transform.Translation = translation;
 			UpdateTransform();
 		}
+		void SetTranslationXY(const Vector2f& translation) {
+			SetTranslation({ translation.x, translation.y, m_Transform.Translation.z });
+		}
 		// yaw, pitch, roll in radians
 		void SetRotation(const Vector3f& rotation) {
 			m_Transform.Rotation = rotation;

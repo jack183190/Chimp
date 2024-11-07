@@ -37,6 +37,10 @@ namespace Chimp {
 			iterator begin() { return m_Components.begin(); }
 			iterator end() { return m_Components.end(); }
 
+			size_t Size() const {
+				return m_Components.size();
+			}
+
 		private:
 			std::vector<ComponentTuple> m_Components;
 		};
@@ -46,6 +50,16 @@ namespace Chimp {
 		// Create an entity with no components
 		EntityId CreateEntity() {
 			return m_World.entity();
+		}
+
+		// Remove an entity from the world
+		void RemoveEntity(EntityId entity) {
+			entity.destruct();
+		}
+
+		// Is entity alive
+		bool IsEntityAlive(EntityId entity) {
+			return entity.is_alive();
 		}
 
 		// Set a component on an entity, creating it if it doesn't exist

@@ -17,14 +17,14 @@ namespace Chimp {
 		std::is_same<T, Chimp::Vector4f>::value
 	>::type> {
 	public:
-		Path(std::vector<T> points) {
+		Path(std::vector<T> points, T offsetPoints = {}) {
 			assert(!points.empty());
 			float distance = 0.0f;
 			for (size_t i = 0; i < points.size(); ++i) {
 				if (i > 0) {
 					distance += GetDistanceBetween(points[i - 1], points[i]);
 				}
-				m_Points.push_back(std::make_tuple(distance, points[i]));
+				m_Points.push_back(std::make_tuple(distance, points[i] + offsetPoints));
 			}
 		}
 
@@ -34,6 +34,21 @@ namespace Chimp {
 			assert(index < m_Points.size());
 			assert(index >= 0);
 			return std::get<1>(m_Points[index]);
+		}
+
+		// Get start point
+		T GetStart() const {
+			return GetPointByIndex(0);
+		}
+
+		// Get end point
+		T GetEnd() const {
+			return GetPointByIndex(m_Points.size() - 1);
+		}
+
+		// Get total distance of path
+		float GetTotalDistance() const {
+			return std::get<0>(m_Points.back());
 		}
 
 		// Get point t along the path, where t is a value from 0 to 1

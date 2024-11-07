@@ -1,6 +1,5 @@
 # How to implement game!!
 
-TODO: If one player disconnects, tell the other player that they won.
 TODO: Way to mark entity as dead so it is removed at end of frame
 TODO: Collisions
 TODO: Different maps

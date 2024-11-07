@@ -7,14 +7,8 @@ Simulation::Simulation(Chimp::Engine& engine,
 	: m_Engine(engine),
 	m_GameRenderer(gameRenderer),
 	m_Position(position),
-	m_Path({
-		{ 310.0f, 0.0f },
-		{ 310.0f, -210.0f },
-		{ 50.0f, -210.0f },
-		{ 50.0f, -530.0f },
-		{ 530.0f, -530.0f },
-		{ 530.0f, -720.0f }
-		})
+	m_HealthSystem(m_ECS),
+	m_BloonManager(m_ECS, m_Engine, m_Position)
 {
 	Entities::CreateBaseEntity(
 		m_ECS,
@@ -26,22 +20,13 @@ Simulation::Simulation(Chimp::Engine& engine,
 		}
 	);
 
-	testEntity = Entities::CreateBloonEntity(
-		m_ECS,
-		m_Engine,
-		{ 0.0f, 0.0f },
-		Bloons::BloonType::BLUE
-	);
+	m_BloonManager.SpawnBloon(Bloons::BloonType::GREEN);
 }
 
 void Simulation::Update()
 {
-	float dt = m_Engine.GetTimeManager().GetDeltaTime();
-	dist += dt * 150.0f;
-	auto [point, before, after] = m_Path.GetPointByDistance(dist);
-	if (after) dist = 0;
-	auto mut = m_ECS.GetMutableComponent<Chimp::TransformComponent>(testEntity);
-	mut->SetTranslation({ point.x + m_Position.x, point.y + m_Position.y, 0.0f });
+	m_HealthSystem.Update();
+	m_BloonManager.Update();
 }
 
 void Simulation::Render()
@@ -49,7 +34,16 @@ void Simulation::Render()
 	m_GameRenderer->RenderWorld(m_ECS);
 }
 
+void Simulation::RenderUI()
+{
+	m_BloonManager.RenderUI();
+}
+
 bool Simulation::HasLost() const
 {
-	return m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) || !Networking::GetClient()->IsConnected();
+	return m_BloonManager.HasLost() ||
+#ifndef NDEBUG
+		m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) || 
+#endif
+		!Networking::GetClient()->IsConnected();
 }

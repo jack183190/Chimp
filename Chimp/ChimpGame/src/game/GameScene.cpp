@@ -72,9 +72,16 @@ void GameScene::OnRender()
 
 void GameScene::OnRenderUI()
 {
+	ImGui::Begin("##GameSceneUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+	ImGui::SetWindowPos({ 0.0f, 0.0f });
+	ImGui::SetWindowSize({ m_Engine.GetWindow().GetSize().x, m_Engine.GetWindow().GetSize().y });
+	m_PlayerSimulation->RenderUI();
+	m_OpponentSimulation->RenderUI();
+	ImGui::End();
 }
 
 bool GameScene::ShouldExit(Chimp::Engine& engine) const
 {
-	return	m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::ESCAPE);
+	return m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::ESCAPE)
+		|| Scene::ShouldExit(engine);
 }

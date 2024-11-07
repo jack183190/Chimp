@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "rendering/GameRenderer.h"
 #include "Entities.h"
+#include "entities/health/HealthSystem.h"
+#include "BloonManager.h"
 
 class Simulation {
 public:
@@ -12,6 +14,7 @@ public:
 
 	void Update();
 	void Render();
+	void RenderUI();
 
 	bool HasLost() const;
 private:
@@ -19,7 +22,6 @@ private:
 	Chimp::Vector2f m_Position;
 	Chimp::ECS m_ECS;
 	std::shared_ptr<GameRenderer> m_GameRenderer;
-	Chimp::Path<Chimp::Vector2f> m_Path;
-	Chimp::EntityId testEntity;
-	float dist = 0;
+	HealthSystem m_HealthSystem;
+	BloonManager m_BloonManager;
 };
