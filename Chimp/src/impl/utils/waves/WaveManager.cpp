@@ -12,7 +12,7 @@ namespace Chimp {
 		return *this;
 	}
 
-	std::unique_ptr<WaveManager> WaveManager::Builder::Build() {
+	std::unique_ptr<WaveManager> WaveManager::Builder::Build(float delayAfterWaves) {
 		if (m_WaveManager->m_Waves.empty()) {
 			Loggers::WaveManager().Warning("WaveManager created with no waves");
 		}
@@ -24,6 +24,7 @@ namespace Chimp {
 			else if (wave->m_Commands.empty()) {
 				Loggers::WaveManager().Warning("WaveManager created with a wave with no commands");
 			}
+			wave->Delay(delayAfterWaves); // Delay after each wave
 		}
 		return std::move(m_WaveManager);
 	}
@@ -61,8 +62,13 @@ namespace Chimp {
 		m_CanStartNextWave = true;
 	}
 
-	size_t WaveManager::GetWave() const {
+	size_t WaveManager::GetCurrentWaveIndex() const
+	{
 		return m_CurrentWaveIndex;
+	}
+
+	size_t WaveManager::GetWave() const {
+		return m_CurrentWaveIndex + 1;
 	}
 
 	size_t WaveManager::NumWaves() const {
@@ -71,7 +77,7 @@ namespace Chimp {
 
 	bool WaveManager::IsCurrentWaveFinished() const
 	{
-		return m_WaveFinished;
+		return m_WaveFinished || AreAllWavesFinished();
 	}
 
 	bool WaveManager::AreAllWavesFinished() const
