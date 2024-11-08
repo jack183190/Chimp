@@ -8,7 +8,8 @@ Simulation::Simulation(Chimp::Engine& engine,
 	m_GameRenderer(gameRenderer),
 	m_Position(position),
 	m_HealthSystem(m_ECS),
-	m_BloonManager(m_ECS, m_Engine, m_Position)
+	m_BloonManager(m_ECS, m_Engine, m_Position),
+	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager))
 {
 	Entities::CreateBaseEntity(
 		m_ECS,
@@ -20,13 +21,14 @@ Simulation::Simulation(Chimp::Engine& engine,
 		}
 	);
 
-	m_BloonManager.SpawnBloon(Bloons::BloonType::GREEN);
+	m_WaveManager->SetWaveAutoStart(true);
 }
 
 void Simulation::Update()
 {
 	m_HealthSystem.Update();
 	m_BloonManager.Update();
+	m_WaveManager->Update();
 }
 
 void Simulation::Render()

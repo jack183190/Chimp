@@ -5,6 +5,7 @@
 #include "Entities.h"
 #include "entities/health/HealthSystem.h"
 #include "BloonManager.h"
+#include "waves/WaveManagerBuilder.h"
 
 class Simulation {
 public:
@@ -24,4 +25,5 @@ private:
 	std::shared_ptr<GameRenderer> m_GameRenderer;
 	HealthSystem m_HealthSystem;
 	BloonManager m_BloonManager;
+	std::unique_ptr<Chimp::WaveManager> m_WaveManager;
 };
