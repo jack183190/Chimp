@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "rendering/GameRenderer.h"
 #include "Simulation.h"
+#include "waves/WaveStartHandler.h"
+#include "match_end/MatchWinLoseHandler.h"
 
 class GameScene : public Chimp::Scene {
 public:
@@ -23,4 +25,6 @@ private:
 	std::unique_ptr<Simulation> m_OpponentSimulation;
 	std::unique_ptr<Simulation> m_PlayerSimulation;
 	std::vector<std::string> m_LoadedSprites;
+	std::unique_ptr<WaveStartHandler> m_WaveStartHandler;
+	std::unique_ptr<MatchWinLoseHandler> m_MatchWinLoseHandler;
 };

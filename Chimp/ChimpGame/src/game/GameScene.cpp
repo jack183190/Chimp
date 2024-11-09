@@ -1,6 +1,5 @@
 #include "GameScene.h"
 #include "Entities.h"
-#include "gameover/GameOverScene.h"
 #include "networking/Networking.h"
 
 GameScene::GameScene(Chimp::Engine& engine,
@@ -15,6 +14,10 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f });
 	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f });
+
+	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
+
+	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameRenderer);
 }
 
 GameScene::~GameScene()
@@ -37,29 +40,9 @@ void GameScene::OnUpdate()
 	m_PlayerSimulation->Update();
 	m_OpponentSimulation->Update();
 
-	// Did we lose?
-	if (m_PlayerSimulation->HasLost()) {
-		// Send win packet to opponent
-		ClientMatchWinPacket packet = {};
-		packet.PacketType = Networking::CLIENT_MATCH_WIN;
-		packet.MatchId = clientHandlers.CurrentMatchHandler->GetMatchId();
-		Networking::GetClient()->GetClient().SendPacketToClient(
-			clientHandlers.CurrentMatchHandler->GetOpponentId(), 
-			packet
-		);
+	m_WaveStartHandler->Update();
 
-		// Send end packet to server
-		ServerMatchEndPacket endPacket = {};	
-		endPacket.PacketType = Networking::SERVER_MATCH_END;
-		endPacket.MatchId = clientHandlers.CurrentMatchHandler->GetMatchId();
-		Networking::GetClient()->GetClient().SendPacketToServer(endPacket);
-
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameRenderer, false));
-	}
-	// Did we win?
-	else if (clientHandlers.WinListener->DidWinMatch(clientHandlers.CurrentMatchHandler->GetMatchId())) {
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameRenderer, true));
-	}
+	m_MatchWinLoseHandler->Update();
 }
 
 void GameScene::OnRender()
@@ -75,8 +58,14 @@ void GameScene::OnRenderUI()
 	ImGui::Begin("##GameSceneUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
 	ImGui::SetWindowPos({ 0.0f, 0.0f });
 	ImGui::SetWindowSize({ m_Engine.GetWindow().GetSize().x, m_Engine.GetWindow().GetSize().y });
+	ImVec2 windowCenter = { m_Engine.GetWindow().GetSize().x / 2.0f, m_Engine.GetWindow().GetSize().y / 2.0f };
 	m_PlayerSimulation->RenderUI();
 	m_OpponentSimulation->RenderUI();
+
+	ImGui::SetCursorPos({ windowCenter.x - 100.0f, 50.0f });
+	ImGui::SetWindowFontScale(2.5f);
+	ImGui::Text("Wave: %d", m_PlayerSimulation->GetWaveManager().GetWave());
+	ImGui::SetWindowFontScale(1.0f);
 	ImGui::End();
 }
 

@@ -62,6 +62,11 @@ void MatchHandler::Update()
 	}
 }
 
+void MatchHandler::AddMatchEndCallback(std::function<void(const ServerMatch&)> callback)
+{
+	m_MatchEndCallbacks.push_back(callback);
+}
+
 void MatchHandler::HandleNewConnections(const Chimp::NetworkPacket* event)
 {
 	auto clientConnected =
@@ -76,7 +81,11 @@ void MatchHandler::HandleMatchEnd(const Chimp::NetworkPacket* event)
 	auto matchEndPacket = static_cast<const ServerMatchEndPacket*>(event);
 	assert(matchEndPacket != nullptr);
 
-	m_MatchSet.RemoveMatchById(matchEndPacket->MatchId);
+	auto match = m_MatchSet.RemoveMatchById(matchEndPacket->MatchId);
+	for (auto& callback : m_MatchEndCallbacks)
+	{
+		callback(match);
+	}
 }
 
 void MatchHandler::StartMatch(int player1, int player2)
@@ -96,6 +105,14 @@ void MatchHandler::StartMatch(int player1, int player2)
 	m_Server.SendPacketToClient(player1, matchStartPacket);
 	matchStartPacket.OpponentId = player1;
 	m_Server.SendPacketToClient(player2, matchStartPacket);
+
+	// Start first wave
+	ClientStartWavePacket startWavePacket;
+	startWavePacket.PacketType = Networking::CLIENT_START_WAVE;
+	startWavePacket.MatchId = matchId;
+	startWavePacket.WaveIndex = 0;
+	m_Server.SendPacketToClient(player1, startWavePacket);
+	m_Server.SendPacketToClient(player2, startWavePacket);
 }
 
 void MatchHandler::SendMatchEndPacket(int matchId)

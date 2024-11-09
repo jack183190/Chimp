@@ -18,6 +18,7 @@ public:
 	void RenderUI();
 
 	bool HasLost() const;
+	Chimp::WaveManager& GetWaveManager();
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::Vector2f m_Position;

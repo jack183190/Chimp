@@ -21,6 +21,6 @@ private:
 	Chimp::Engine& m_Engine;
 	Chimp::Path<Chimp::Vector2f> m_Path;
 	Chimp::Vector2f m_SimulationPosition;
-	static constexpr unsigned int MAX_LIVES = 10;
+	static constexpr unsigned int MAX_LIVES = 1000;
 	unsigned int m_Lives = MAX_LIVES;
 };

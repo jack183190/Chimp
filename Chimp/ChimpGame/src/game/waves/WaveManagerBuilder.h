@@ -1,7 +1,10 @@
 #pragma once
 
-#include "waves/Wave1.h"
 #include "game/BloonManager.h"
+
+#include "waves/Wave1.h"
+#include "waves/Wave2.h"
+#include "waves/Wave3.h"
 
 class WaveManagerBuilder
 {
@@ -17,6 +20,8 @@ public:
 	{
 		return Chimp::WaveManager::Builder(engine)
 			ADD_WAVE_TO_BUILDER(Wave1)
+			ADD_WAVE_TO_BUILDER(Wave2)
+			ADD_WAVE_TO_BUILDER(Wave3)
 			.Build();
 	}
 };

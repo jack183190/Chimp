@@ -27,8 +27,13 @@ namespace Chimp {
 		// Allow the wave manager to start the next wave once the current wave has finished
 		void AllowStartNextWave();
 
+		// Add a callback to be called when the wave has finished
+		// callback - function to be called when the wave has finished, takes the wave index as a parameter
+		void AddWaveFinishedCallback(std::function<void(unsigned int)> callback);
+
 		// Get current wave index (0-indexed)
-		size_t GetCurrentWaveIndex() const;
+		// is -1 if no waves have been started
+		long long GetCurrentWaveIndex() const;
 		// Get current wave number (1-indexed)
 		size_t GetWave() const;
 		// Get total number of waves
@@ -43,11 +48,12 @@ namespace Chimp {
 		// If false, need to call AllowStartNextWave to start the next wave
 		void SetWaveAutoStart(bool autoStart);
 	private:
-		size_t m_CurrentWaveIndex = -1;
+		long long m_CurrentWaveIndex = -1;
 		std::vector<std::unique_ptr<Wave>> m_Waves;
 		Chimp::Engine& m_Engine;
 		bool m_CanStartNextWave = false;
-		bool m_WaveAutoStart = true;
+		bool m_WaveAutoStart = false;
 		bool m_WaveFinished = true;
+		std::vector<std::function<void(unsigned int)>> m_WaveFinishedCallbacks;
 	};
 }

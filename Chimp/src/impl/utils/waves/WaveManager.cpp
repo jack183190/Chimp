@@ -26,6 +26,7 @@ namespace Chimp {
 			}
 			wave->Delay(delayAfterWaves); // Delay after each wave
 		}
+		m_WaveManager->m_Waves.shrink_to_fit();
 		return std::move(m_WaveManager);
 	}
 
@@ -54,6 +55,9 @@ namespace Chimp {
 		auto& wave = m_Waves[m_CurrentWaveIndex];
 		if (wave->Update(m_Engine)) {
 			m_WaveFinished = true;
+			for (auto& callback : m_WaveFinishedCallbacks) {
+				callback(m_CurrentWaveIndex);
+			}
 		}
 	}
 
@@ -62,7 +66,12 @@ namespace Chimp {
 		m_CanStartNextWave = true;
 	}
 
-	size_t WaveManager::GetCurrentWaveIndex() const
+	void WaveManager::AddWaveFinishedCallback(std::function<void(unsigned int)> callback)
+	{
+		m_WaveFinishedCallbacks.push_back(callback);
+	}
+
+	long long WaveManager::GetCurrentWaveIndex() const
 	{
 		return m_CurrentWaveIndex;
 	}

@@ -11,9 +11,10 @@ public:
 
 	void AddMatch(const ServerMatch &match);
 
-	void RemoveMatch(const ServerMatch& match);
+    void RemoveMatch(const ServerMatch& match);
 
-	void RemoveMatchById(int matchId);
+    // Remove a match, returns a copy of the removed match
+    ServerMatch RemoveMatchById(int matchId);
 
 	Chimp::OptionalReference<ServerMatch> GetMatchByPlayerId(int playerId);
 

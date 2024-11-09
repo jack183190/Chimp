@@ -2,9 +2,12 @@
 
 #include "stdafx.h"
 #include "server/MatchHandler.h"
+#include "server/WaveHandler.h"
 
 struct ServerHandlers {
 	std::unique_ptr<MatchHandler> MatchHandler; // not null
+	std::unique_ptr<WaveHandler> WaveHandler; // not null
+	// Instiantiated in GameServer::Start
 };
 
 class GameServer

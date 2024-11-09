@@ -21,7 +21,7 @@ Simulation::Simulation(Chimp::Engine& engine,
 		}
 	);
 
-	m_WaveManager->SetWaveAutoStart(true);
+	//m_WaveManager->SetWaveAutoStart(true);
 }
 
 void Simulation::Update()
@@ -48,4 +48,9 @@ bool Simulation::HasLost() const
 		m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) || 
 #endif
 		!Networking::GetClient()->IsConnected();
+}
+
+Chimp::WaveManager& Simulation::GetWaveManager()
+{
+	return *m_WaveManager;
 }

@@ -21,6 +21,7 @@ void GameServer::Start(Chimp::ConnectionInfo connectionInfo)
 	{
 		m_Handlers = std::make_unique<ServerHandlers>();
 		m_Handlers->MatchHandler = std::make_unique<MatchHandler>(m_Engine, *m_Server);
+		m_Handlers->WaveHandler = std::make_unique<WaveHandler>(m_Engine, *m_Server, *m_Handlers->MatchHandler);
 	}
 }
 
