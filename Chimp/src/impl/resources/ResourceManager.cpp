@@ -8,7 +8,8 @@
 
 namespace Chimp {
 	ResourceManager::ResourceManager(Engine& engine)
-		: m_Engine(engine)
+		: m_Engine(engine),
+		m_MeshStorage(engine)
 	{
 	}
 
@@ -59,51 +60,6 @@ namespace Chimp {
 		}
 	}
 
-	void ResourceManager::StoreMesh(const std::string& id, std::unique_ptr<Mesh> mesh)
-	{
-		if (m_Meshes.find(id) != m_Meshes.end())
-		{
-			Loggers::Resources().Error("Mesh already exists: " + id);
-			return;
-		}
-		m_Meshes[id] = std::move(mesh);
-	}
-
-	void ResourceManager::CreateTexturedQuad(const std::string& id, const std::string& texturePath)
-	{
-		CreateTexturedQuad(id, LoadTexture(texturePath));
-	}
-
-	void ResourceManager::CreateTexturedQuad(const std::string& id, ITexture& texture)
-	{
-		auto mesh = TexturedQuad::Create(
-			m_Engine.GetRenderingManager(),
-			texture
-		);
-		StoreMesh(id, std::move(mesh));
-	}
-
-	Mesh& ResourceManager::GetMesh(const std::string& id)
-	{
-		auto it = m_Meshes.find(id);
-		assert(it != m_Meshes.end());
-		return *it->second;
-	}
-
-	bool ResourceManager::HasMesh(const std::string& id) const
-	{
-		return m_Meshes.find(id) != m_Meshes.end();
-	}
-
-	std::unique_ptr<Mesh> ResourceManager::ReclaimStoredMesh(const std::string& id)
-	{
-		auto it = m_Meshes.find(id);
-		assert(it != m_Meshes.end());
-		std::unique_ptr<Mesh> mesh = std::move(it->second);
-		m_Meshes.erase(it);
-		return std::move(mesh);
-	}
-
 	Mesh& ResourceManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
 	{
 		assert(m_ModelImporter);
@@ -130,6 +86,12 @@ namespace Chimp {
 			m_Models.erase(it);
 		}
 	}
+
+	MeshStorage& ResourceManager::GetMeshStorage()
+	{
+		return m_MeshStorage;
+	}
+
 	void ResourceManager::InitModelImporter()
 	{
 #ifdef CHIMP_ASSIMP
