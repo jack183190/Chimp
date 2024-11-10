@@ -13,7 +13,7 @@ Simulation::Simulation(Chimp::Engine& engine,
 {
 	Entities::CreateBaseEntity(
 		m_ECS,
-		m_Engine.GetAssetManager().GetMesh("MapBackground"),
+		m_Engine.GetResourceManager().GetMeshStorage().GetMesh("MapBackground"),
 		{
 			{ m_Position.x, m_Position.y, 10.0f },
 			{ 0.0f, 0.0f, 0.0f },

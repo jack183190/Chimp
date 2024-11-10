@@ -7,6 +7,7 @@ namespace Chimp {
 	// A mesh consists of several Mesh::Section objects, each with an element array and a shader.
 	// This allows different parts of a mesh to have different shaders, materials, etc.
 	class Mesh {
+		DISABLE_COPY(Mesh);
 	public:
 		// Section of a mesh
 		struct Section {

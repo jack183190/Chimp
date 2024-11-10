@@ -1,3 +1,5 @@
+#pragma once
+
 #include "stdafx.h"
 #include "rendering/GameRenderer.h"
 #include "networking/Networking.h"

@@ -29,6 +29,9 @@ namespace Chimp {
 		// Get the primitive type
 		[[nodiscard]] virtual const PrimitiveType GetPrimitiveType() const;
 
+		// Get the stride (size of a single vertex)
+		[[nodiscard]] virtual const unsigned int GetStride() const;
+
 	private:
 		static unsigned int CalculateStride(const std::vector<ElementComponentLayout>& layouts);
 

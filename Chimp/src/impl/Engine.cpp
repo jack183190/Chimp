@@ -22,11 +22,13 @@
 
 namespace Chimp {
 	Engine::Engine() :
-		m_AssetManager(*this),
+		m_ResourceManager(*this),
 		m_Window(CreateWindow()),
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager())
 	{
+		m_ResourceManager.InitModelImporter();
+
 		PacketTypeRegistry::RegisterChimpPacketTypes();
 
 		Loggers::Main().Info("Initialized Chimp Engine!");
@@ -47,9 +49,9 @@ namespace Chimp {
 		return *m_RenderingManager;
 	}
 
-	AssetManager& Engine::GetAssetManager()
+	ResourceManager& Engine::GetResourceManager()
 	{
-		return m_AssetManager;
+		return m_ResourceManager;
 	}
 
 	UpdateSubscriber& Engine::GetUpdateSubscriber()

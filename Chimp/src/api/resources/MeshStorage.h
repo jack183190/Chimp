@@ -7,20 +7,17 @@
 #include "api/utils/OptionalReference.h"
 
 namespace Chimp {
+	class ResourceManager;
 	class Engine;
-	class IShader;
-
-	class AssetManager {
-		friend class Engine;
+	// This is a utility class to store procedurally generated or hard coded meshes and models.
+	// It's used to store meshes that weren't loaded from a model file, like TexturedQuad or other meshes such as a sphere.
+	// Don't store actual models here, they are managed by the resource manager.
+	// You can store and retrieve meshes, and reclaim or destroy them once you're done with them.
+	class MeshStorage {
+		friend class ResourceManager;
 	private:
-		AssetManager(Engine& engine);
-
+		MeshStorage(Engine& engine);
 	public:
-		[[nodiscard]] std::shared_ptr<IShader> LoadShader(const ShaderFilePaths& shaderFilePaths);
-
-		[[nodiscard]] ITexture& LoadTexture(const std::string& path);
-		void UnloadTexture(const std::string& path);
-
 		// Store a mesh, asset manager will keep it until its unloaded
 		void StoreMesh(const std::string& id, std::unique_ptr<Mesh> mesh);
 		// Create and store a textured quad mesh
@@ -39,12 +36,6 @@ namespace Chimp {
 
 	private:
 		Engine& m_Engine;
-
-		// Shaders are slow to compile but aren't expensive to store, so we'll just store them forever
-		std::unordered_map<ShaderFilePaths, std::shared_ptr<IShader>> m_Shaders;
-
-		std::unordered_map<std::string, std::unique_ptr<ITexture>> m_Textures;
-
 		std::unordered_map<std::string, std::unique_ptr<Mesh>> m_Meshes;
 	};
 }

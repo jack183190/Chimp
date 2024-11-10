@@ -15,6 +15,11 @@ namespace Chimp {
 		return m_PrimitiveType;
 	}
 
+	const unsigned int IElementArrayLayout::GetStride() const
+	{
+		return m_Stride;
+	}
+
 	unsigned int Chimp::IElementArrayLayout::CalculateStride(const std::vector<ElementComponentLayout>& layouts)
 	{
 		unsigned int stride = 0;
