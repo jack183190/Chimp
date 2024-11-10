@@ -20,7 +20,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 			shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
 			shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
 		}
-		auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
+		auto shader = m_Engine.GetResourceManager().LoadShader(shaderFilePaths);
 
 		// Our renderer
 		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);

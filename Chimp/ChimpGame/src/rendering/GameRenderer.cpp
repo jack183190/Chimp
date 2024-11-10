@@ -113,19 +113,19 @@ void GameRenderer::RenderWorld(Chimp::ECS& ecs)
 
 std::string GameRenderer::LoadSprite(Chimp::Engine& engine, const std::string& name, const std::string& path)
 {
-	engine.GetAssetManager().CreateTexturedQuad(name, std::string(GAME_SRC) + "/assets/textures/" + path);
+	engine.GetResourceManager().CreateTexturedQuad(name, std::string(GAME_SRC) + "/assets/textures/" + path);
 	return name;
 }
 
 void GameRenderer::UnloadSprite(Chimp::Engine& engine, const std::string& name)
 {
-	engine.GetAssetManager().DestroyStoredMesh(name);
+	engine.GetResourceManager().DestroyStoredMesh(name);
 }
 
 void GameRenderer::UnloadSprites(Chimp::Engine& engine, const std::vector<std::string>& names)
 {
 	for (const auto& name : names)
 	{
-		engine.GetAssetManager().DestroyStoredMesh(name);
+		engine.GetResourceManager().DestroyStoredMesh(name);
 	}
 }

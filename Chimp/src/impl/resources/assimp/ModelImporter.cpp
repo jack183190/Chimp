@@ -2,7 +2,7 @@
 #include "api/graphics/IRenderingManager.h"
 #include "api/utils/RawArray.h"
 #include "api/utils/FilePath.h"
-#include "api/assets/AssetManager.h"
+#include "api/resources/ResourceManager.h"
 #include "Loggers.h"
 
 namespace Chimp {

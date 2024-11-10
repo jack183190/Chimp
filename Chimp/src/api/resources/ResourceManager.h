@@ -11,10 +11,10 @@ namespace Chimp {
 	class Engine;
 	class IShader;
 
-	class AssetManager {
+	class ResourceManager {
 		friend class Engine;
 	private:
-		AssetManager(Engine& engine);
+		ResourceManager(Engine& engine);
 
 	public:
 		// Load a shader, if it's already loaded, it will return the existing shader

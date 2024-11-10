@@ -1,10 +1,10 @@
 #pragma once
 
-#include "api/assets/IModelImporter.h"
+#include "api/resources/IModelImporter.h"
 
 namespace Chimp {
 	class ModelImporter : public Chimp::IModelImporter {
-		friend class AssetManager;
+		friend class ResourceManager;
 	private:
 		ModelImporter(IRenderingManager& renderingManager) :
 			IModelImporter(renderingManager) {}

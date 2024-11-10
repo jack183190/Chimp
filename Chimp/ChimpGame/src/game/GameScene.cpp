@@ -61,7 +61,7 @@ void GameScene::OnRender()
 	settings.FlipUVs = false;
 	settings.IncludeNormals = true;
 	settings.IncludeTextureCoordinates = true;
-	auto& test = m_Engine.GetAssetManager().LoadModel(std::string(GAME_SRC) + "/assets/models/assimp_models/OBJ/spider.obj", settings);
+	auto& test = m_Engine.GetResourceManager().LoadModel(std::string(GAME_SRC) + "/assets/models/assimp_models/OBJ/spider.obj", settings);
 	m_GameRenderer->Render(test, testMatrix);
 }
 

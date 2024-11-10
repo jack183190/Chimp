@@ -4,7 +4,7 @@
 #include "api/graphics/meshes/Mesh.h"
 
 namespace Chimp {
-	class AssetManager;
+	class ResourceManager;
 	class IRenderingManager;
 	class IModelImporter {
 	public:

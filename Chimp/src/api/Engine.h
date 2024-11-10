@@ -4,7 +4,7 @@
 #include "api/window/IWindow.h"
 #include "api/graphics/IRenderingManager.h"
 #include "api/graphics/images/IImageLoader.h"
-#include "api/assets/AssetManager.h"
+#include "api/resources/ResourceManager.h"
 #include "api/networking/EventHandler.h"
 #include "api/networking/IServer.h"
 #include "api/networking/IClient.h"
@@ -25,7 +25,7 @@ namespace Chimp {
 		[[nodiscard]] TimeManager& GetTimeManager();
 		[[nodiscard]] IWindow& GetWindow();
 		[[nodiscard]] IRenderingManager& GetRenderingManager();
-		[[nodiscard]] AssetManager& GetAssetManager();
+		[[nodiscard]] ResourceManager& GetResourceManager();
 		[[nodiscard]] UpdateSubscriber& GetUpdateSubscriber();
 		[[nodiscard]] SceneManager& GetSceneManager();
 
@@ -51,7 +51,7 @@ namespace Chimp {
 		[[nodiscard]] std::unique_ptr<IImageLoader> CreateImageLoader() const;
 
 	private:
-		AssetManager m_AssetManager;
+		ResourceManager m_ResourceManager;
 		TimeManager m_TimeManager;
 		UpdateSubscriber m_UpdateSubscriber;
 		std::unique_ptr<IWindow> m_Window;

@@ -1,18 +1,18 @@
-#include "api/assets/AssetManager.h"
+#include "api/resources/ResourceManager.h"
 #include "api/Engine.h"
 #include "api/graphics/meshes/TexturedQuad.h"
 #include "Loggers.h"
 #ifdef CHIMP_ASSIMP
-#include "impl/assets/assimp/ModelImporter.h"
+#include "impl/resources/assimp/ModelImporter.h"
 #endif
 
 namespace Chimp {
-	AssetManager::AssetManager(Engine& engine)
+	ResourceManager::ResourceManager(Engine& engine)
 		: m_Engine(engine)
 	{
 	}
 
-	std::shared_ptr<IShader> AssetManager::LoadShader(const ShaderFilePaths& shaderFilePaths)
+	std::shared_ptr<IShader> ResourceManager::LoadShader(const ShaderFilePaths& shaderFilePaths)
 	{
 		auto it = m_Shaders.find(shaderFilePaths);
 		if (it != m_Shaders.end())
@@ -33,7 +33,7 @@ namespace Chimp {
 		return shader;
 	}
 
-	ITexture& AssetManager::LoadTexture(const std::string& path)
+	ITexture& ResourceManager::LoadTexture(const std::string& path)
 	{
 		auto it = m_Textures.find(path);
 		if (it != m_Textures.end())
@@ -50,7 +50,7 @@ namespace Chimp {
 		return *m_Textures[path];
 	}
 
-	void AssetManager::UnloadTexture(const std::string& path)
+	void ResourceManager::UnloadTexture(const std::string& path)
 	{
 		auto it = m_Textures.find(path);
 		if (it != m_Textures.end())
@@ -59,7 +59,7 @@ namespace Chimp {
 		}
 	}
 
-	void AssetManager::StoreMesh(const std::string& id, std::unique_ptr<Mesh> mesh)
+	void ResourceManager::StoreMesh(const std::string& id, std::unique_ptr<Mesh> mesh)
 	{
 		if (m_Meshes.find(id) != m_Meshes.end())
 		{
@@ -69,12 +69,12 @@ namespace Chimp {
 		m_Meshes[id] = std::move(mesh);
 	}
 
-	void AssetManager::CreateTexturedQuad(const std::string& id, const std::string& texturePath)
+	void ResourceManager::CreateTexturedQuad(const std::string& id, const std::string& texturePath)
 	{
 		CreateTexturedQuad(id, LoadTexture(texturePath));
 	}
 
-	void AssetManager::CreateTexturedQuad(const std::string& id, ITexture& texture)
+	void ResourceManager::CreateTexturedQuad(const std::string& id, ITexture& texture)
 	{
 		auto mesh = TexturedQuad::Create(
 			m_Engine.GetRenderingManager(),
@@ -83,19 +83,19 @@ namespace Chimp {
 		StoreMesh(id, std::move(mesh));
 	}
 
-	Mesh& AssetManager::GetMesh(const std::string& id)
+	Mesh& ResourceManager::GetMesh(const std::string& id)
 	{
 		auto it = m_Meshes.find(id);
 		assert(it != m_Meshes.end());
 		return *it->second;
 	}
 
-	bool AssetManager::HasMesh(const std::string& id) const
+	bool ResourceManager::HasMesh(const std::string& id) const
 	{
 		return m_Meshes.find(id) != m_Meshes.end();
 	}
 
-	std::unique_ptr<Mesh> AssetManager::ReclaimStoredMesh(const std::string& id)
+	std::unique_ptr<Mesh> ResourceManager::ReclaimStoredMesh(const std::string& id)
 	{
 		auto it = m_Meshes.find(id);
 		assert(it != m_Meshes.end());
@@ -104,7 +104,7 @@ namespace Chimp {
 		return std::move(mesh);
 	}
 
-	Mesh& AssetManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
+	Mesh& ResourceManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
 	{
 		assert(m_ModelImporter);
 		auto it = m_Models.find(path);
@@ -122,7 +122,7 @@ namespace Chimp {
 		return *m_Models[path]->Mesh;
 	}
 
-	void AssetManager::UnloadModel(const std::string& path)
+	void ResourceManager::UnloadModel(const std::string& path)
 	{
 		auto it = m_Models.find(path);
 		if (it != m_Models.end())
@@ -130,7 +130,7 @@ namespace Chimp {
 			m_Models.erase(it);
 		}
 	}
-	void AssetManager::InitModelImporter()
+	void ResourceManager::InitModelImporter()
 	{
 #ifdef CHIMP_ASSIMP
 		m_ModelImporter = std::unique_ptr<ModelImporter>(new ModelImporter(m_Engine.GetRenderingManager()));
