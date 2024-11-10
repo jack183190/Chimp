@@ -6,6 +6,7 @@
 
 namespace Chimp {
 	class ITexture {
+		DISABLE_COPY(ITexture);
 	protected:
 		// Represents a texture (2D buffer) on the GPU.
 		ITexture(const TextureSlot slot, 

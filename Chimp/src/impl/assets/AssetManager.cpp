@@ -2,6 +2,9 @@
 #include "api/Engine.h"
 #include "api/graphics/meshes/TexturedQuad.h"
 #include "Loggers.h"
+#ifdef CHIMP_ASSIMP
+#include "impl/assets/assimp/ModelImporter.h"
+#endif
 
 namespace Chimp {
 	AssetManager::AssetManager(Engine& engine)
@@ -99,5 +102,40 @@ namespace Chimp {
 		std::unique_ptr<Mesh> mesh = std::move(it->second);
 		m_Meshes.erase(it);
 		return std::move(mesh);
+	}
+
+	Mesh& AssetManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
+	{
+		assert(m_ModelImporter);
+		auto it = m_Models.find(path);
+		if (it != m_Models.end())
+		{
+			return *it->second->Mesh;
+		}
+
+		std::unique_ptr<IModelImporter::ImportedMesh> importedMesh = m_ModelImporter->LoadModel(path, settings);
+		if (!importedMesh)
+		{
+			Loggers::Resources().Error("Failed to load model: " + path);
+		}
+		m_Models[path] = std::move(importedMesh);
+		return *m_Models[path]->Mesh;
+	}
+
+	void AssetManager::UnloadModel(const std::string& path)
+	{
+		auto it = m_Models.find(path);
+		if (it != m_Models.end())
+		{
+			m_Models.erase(it);
+		}
+	}
+	void AssetManager::InitModelImporter()
+	{
+#ifdef CHIMP_ASSIMP
+		m_ModelImporter = std::unique_ptr<ModelImporter>(new ModelImporter(m_Engine.GetRenderingManager()));
+#else
+		Loggers::Resources().Error("No model importer available, can't load models.");
+#endif
 	}
 }

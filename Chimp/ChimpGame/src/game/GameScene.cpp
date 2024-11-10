@@ -51,6 +51,18 @@ void GameScene::OnRender()
 
 	m_PlayerSimulation->Render();
 	m_OpponentSimulation->Render();
+
+
+	Chimp::Matrix testMatrix =
+		Chimp::CreateScaleMatrix({ 10.0f, 10.0f, 10.0f}) *
+		Chimp::CreateTranslationMatrix({ 50,-30,0});
+
+	Chimp::IModelImporter::Settings settings;
+	settings.FlipUVs = false;
+	settings.IncludeNormals = true;
+	settings.IncludeTextureCoordinates = true;
+	auto& test = m_Engine.GetAssetManager().LoadModel(std::string(GAME_SRC) + "/assets/models/assimp_models/OBJ/spider.obj", settings);
+	m_GameRenderer->Render(test, testMatrix);
 }
 
 void GameScene::OnRenderUI()

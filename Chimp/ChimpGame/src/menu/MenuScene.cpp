@@ -1,5 +1,6 @@
 #include "MenuScene.h"
 #include "game/GameScene.h"
+#include "Debug.h"
 
 MenuScene::MenuScene(Chimp::Engine& engine,
 	std::shared_ptr<GameRenderer> renderer)
@@ -24,8 +25,10 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 		// Our renderer
 		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);
 
-	//	Networking::GetServer()->Start(m_ConnectionInfo);
-	//	Networking::GetClient()->Connect(m_ConnectionInfo);
+#ifdef DEBUG_AUTOHOST_AUTOCONNECT
+		Networking::GetServer()->Start(m_ConnectionInfo);
+		Networking::GetClient()->Connect(m_ConnectionInfo);
+#endif
 	}
 	else {
 		m_GameRenderer = renderer;

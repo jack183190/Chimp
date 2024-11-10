@@ -27,6 +27,8 @@ namespace Chimp {
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager())
 	{
+		m_AssetManager.InitModelImporter();
+
 		PacketTypeRegistry::RegisterChimpPacketTypes();
 
 		Loggers::Main().Info("Initialized Chimp Engine!");

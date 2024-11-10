@@ -2,6 +2,7 @@
 #include "networking/packets/Packets.h"
 #include "networking/Networking.h"
 #include "Logger.h"
+#include "Debug.h"
 
 ClientCurrentMatchHandler::ClientCurrentMatchHandler(Chimp::Engine& engine,
 	Chimp::IClient& client) :
@@ -11,11 +12,13 @@ ClientCurrentMatchHandler::ClientCurrentMatchHandler(Chimp::Engine& engine,
 	m_MatchStartListener = m_Client.GetEventHandler().Subscribe(Networking::CLIENT_MATCH_START,
 		[this](const Chimp::NetworkPacket* event) { HandleMatchStart(event); });
 
+#ifdef DEBUG_AUTOSTART_WITH_1_PLAYER
 	ClientMatchStartPacket matchStartPacket; // TODO: Remove this
 	matchStartPacket.PacketType = Networking::CLIENT_MATCH_START;
 	matchStartPacket.MatchId = 1;
 	matchStartPacket.OpponentId = 2;
-//	HandleMatchStart(&matchStartPacket); 
+	HandleMatchStart(&matchStartPacket); 
+#endif
 }
 
 ClientCurrentMatchHandler::~ClientCurrentMatchHandler()
