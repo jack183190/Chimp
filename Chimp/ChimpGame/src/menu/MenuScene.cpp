@@ -14,16 +14,8 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
 	if (renderer == nullptr) {
-		// Shader
-		Chimp::ShaderFilePaths shaderFilePaths = {};
-		{
-			shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
-			shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
-		}
-		auto shader = m_Engine.GetResourceManager().LoadShader(shaderFilePaths);
-
 		// Our renderer
-		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);
+		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine);
 
 #ifdef DEBUG_AUTOHOST_AUTOCONNECT
 		Networking::GetServer()->Start(m_ConnectionInfo);
@@ -44,6 +36,7 @@ MenuScene::~MenuScene()
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
 {
+
 }
 
 void MenuScene::OnDeactivate()

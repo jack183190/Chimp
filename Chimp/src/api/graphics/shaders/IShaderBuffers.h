@@ -7,12 +7,15 @@ namespace Chimp {
 	class IBuffer;
 
 	struct ShaderBuffer {
+		// Represents a buffer bound to a shader, data will be sent into a uniform block (or similar if not opengl)
+		// buffer - the buffer to bind
+		// name - the name of the buffer in the shader
 		ShaderBuffer(std::shared_ptr<IBuffer> buffer, const std::string& name)
 			: Buffer(buffer), Name(name), Index(0) {}
 
 		std::shared_ptr<IBuffer> Buffer;
 		std::string Name;
-		size_t Index;
+		size_t Index; // Don't worry about this, it will be set by the shader
 	};
 
 	// Represents the buffers bound to a shader

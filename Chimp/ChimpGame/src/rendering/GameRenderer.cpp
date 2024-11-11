@@ -3,16 +3,23 @@
 using namespace Chimp;
 
 GameRenderer::GameRenderer(
-	Engine& engine,
-	std::shared_ptr<IShader> shader) :
+	Engine& engine) :
 	m_Engine(engine),
-	m_Camera(&engine.GetRenderingManager().GetRenderer().GetDefaultCamera()),
-	m_Shader(shader)
+	m_Camera(&engine.GetRenderingManager().GetRenderer().GetDefaultCamera())
 {
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
+	// COMPILE SHADER
+	Chimp::ShaderFilePaths shaderFilePaths = {};
+	{
+		// GAME_SRC defined by ChimpGame cmake
+		shaderFilePaths.Vertex = GAME_SRC + std::string("/assets/shaders/default.vert");
+		shaderFilePaths.Fragment = GAME_SRC + std::string("/assets/shaders/default.frag");
+	}
+	m_Shader = m_Engine.GetResourceManager().LoadShader(shaderFilePaths);
+
 	// CAMERA BUFFER
-	std::shared_ptr<Chimp::IBuffer> m_CameraBuffer = renderingManager.CreateBuffer(
+	std::shared_ptr<Chimp::IBuffer> cameraBuffer = renderingManager.CreateBuffer(
 		sizeof(Chimp::Matrix),
 		1,
 		{
@@ -21,10 +28,10 @@ GameRenderer::GameRenderer(
 		},
 		Chimp::BindTarget::SHADER_BUFFER
 	);
-	m_CameraBufferId = m_Shader->GetShaderBuffers().AddBuffer({ m_CameraBuffer, "Camera" });
+	m_CameraBufferId = m_Shader->GetShaderBuffers().AddBuffer({ cameraBuffer, "Camera" });
 
 	// MODEL BUFFER
-	std::shared_ptr<Chimp::IBuffer> m_ModelBuffer = renderingManager.CreateBuffer(
+	std::shared_ptr<Chimp::IBuffer> modelBuffer = renderingManager.CreateBuffer(
 		sizeof(Chimp::Matrix),
 		1,
 		{
@@ -33,7 +40,7 @@ GameRenderer::GameRenderer(
 		},
 		Chimp::BindTarget::SHADER_BUFFER
 	);
-	m_ModelBufferId = m_Shader->GetShaderBuffers().AddBuffer({ m_ModelBuffer, "Model" });
+	m_ModelBufferId = m_Shader->GetShaderBuffers().AddBuffer({ modelBuffer, "Model" });
 }
 
 void GameRenderer::SetCamera(Camera* camera)

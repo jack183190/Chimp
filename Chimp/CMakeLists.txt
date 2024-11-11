@@ -45,7 +45,7 @@ execute_process(
 # STB
 add_compile_definitions(CHIMP_STB=1)
 execute_process(
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat stb https://github.com/nothings/stb.git master
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat stb https://github.com/nothings/stb.git 5c205738c191bcb0abc65c4febfa9bd25ff35234
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -54,7 +54,7 @@ add_compile_definitions(CHIMP_FLECS=1)
 FetchContent_Declare(
     flecs
     GIT_REPOSITORY https://github.com/SanderMertens/flecs.git
-    GIT_TAG master
+    GIT_TAG b3ad03c391a268234c54270ccf3793c5b6ad6312
 )
 FetchContent_MakeAvailable(flecs)
 target_link_libraries(Chimp PRIVATE flecs::flecs_static)

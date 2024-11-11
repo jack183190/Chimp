@@ -6,8 +6,7 @@
 class GameRenderer
 {
 public:
-	GameRenderer(Chimp::Engine& engine, 
-		std::shared_ptr<Chimp::IShader> shader);
+	GameRenderer(Chimp::Engine& engine);
 	
 public:
 	void SetCamera(Chimp::Camera* camera);

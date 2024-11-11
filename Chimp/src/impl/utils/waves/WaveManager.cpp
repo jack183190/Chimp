@@ -13,6 +13,10 @@ namespace Chimp {
 	}
 
 	std::unique_ptr<WaveManager> WaveManager::Builder::Build(float delayAfterWaves) {
+		if (!m_WaveManager) {
+			Loggers::WaveManager().Error("Attempted to build wave manager twice");
+			return nullptr;
+		}
 		if (m_WaveManager->m_Waves.empty()) {
 			Loggers::WaveManager().Warning("WaveManager created with no waves");
 		}

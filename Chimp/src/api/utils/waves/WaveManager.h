@@ -4,6 +4,7 @@
 
 namespace Chimp {
 	// Wave manager contains a vector of waves, and handles updating waves, and starting new waves.
+	// You cannot restart the waves without creating a new wave manager.
 	class WaveManager {
 	public:
 		// Factory class for wave manager
@@ -13,7 +14,7 @@ namespace Chimp {
 		public:
 			// Add a wave to the wave manager
 			Builder& AddWave(std::unique_ptr<Wave> wave);
-			// Build the wave manager
+			// Build the wave manager, don't attempt to use the builder after calling this
 			std::unique_ptr<WaveManager> Build(float delayAfterWaves = 1.0f);
 		private:
 			std::unique_ptr<WaveManager> m_WaveManager;

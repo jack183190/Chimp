@@ -1,5 +1,5 @@
 # How to implement game!!
-
+TODO: Depth buffer
 TODO: Collisions
 TODO: Different maps
 

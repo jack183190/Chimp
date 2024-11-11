@@ -1,4 +1,5 @@
 #include "api/utils/waves/Wave.h"
+#include "Loggers.h"
 
 namespace Chimp {
 	bool Wave::Update(Engine& engine)
@@ -38,6 +39,10 @@ namespace Chimp {
 
 	void Wave::Delay(float seconds)
 	{
+		if (seconds <= 0.0f) [[unlikely]] {
+			Loggers::WaveManager().Warning("Attempted to delay wave by " + std::to_string(seconds) + " seconds.");
+			return;
+		}
 		m_Commands.push(std::make_unique<DelayWaveCommand>(seconds));
 	}
 
