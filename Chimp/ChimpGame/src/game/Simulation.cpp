@@ -17,7 +17,7 @@ Simulation::Simulation(Chimp::Engine& engine,
 		{
 			{ m_Position.x, m_Position.y, 10.0f },
 			{ 0.0f, 0.0f, 0.0f },
-			{ m_Engine.GetWindow().GetSize().x / 2.0f, m_Engine.GetWindow().GetSize().y, 1.0f}
+			{ m_Engine.GetWindow().GetSize().x / 2.0f, m_Engine.GetWindow().GetSize().y, 500.0f}
 		}
 	);
 

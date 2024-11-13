@@ -18,11 +18,14 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameRenderer);
+
+	LoadModels();
 }
 
 GameScene::~GameScene()
 {
 	GameRenderer::UnloadSprites(m_Engine, m_LoadedSprites);
+	UnloadModels();
 }
 
 void GameScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
@@ -51,6 +54,13 @@ void GameScene::OnRender()
 
 	m_PlayerSimulation->Render();
 	m_OpponentSimulation->Render();
+
+	auto& model = m_Engine.GetResourceManager().GetModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
+	Chimp::Transform transform;
+	transform.Translation = { 600,-250,-50 };
+	transform.Scale = { 100,100,100 };
+	transform.Rotation = { 0,0.8,6 };
+	m_GameRenderer->Render(model, transform.CreateTransformMatrix());
 }
 
 void GameScene::OnRenderUI()
@@ -73,4 +83,18 @@ bool GameScene::ShouldExit(Chimp::Engine& engine) const
 {
 	return m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::ESCAPE)
 		|| Scene::ShouldExit(engine);
+}
+
+void GameScene::LoadModels()
+{
+	Chimp::IModelImporter::Settings settings;
+	settings.FlipUVs = false;
+	settings.IncludeNormals = false;
+	settings.IncludeTextureCoordinates = true;
+
+	m_Engine.GetResourceManager().LoadModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj", settings);
+}
+
+void GameScene::UnloadModels()
+{
 }

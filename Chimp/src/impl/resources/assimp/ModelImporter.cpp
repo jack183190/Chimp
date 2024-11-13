@@ -14,6 +14,9 @@ namespace Chimp {
 		unsigned int importFlags = 0;
 		importFlags |= aiProcess_Triangulate;
 		importFlags |= aiProcess_FlipUVs && settings.FlipUVs;
+		importFlags |= aiProcess_JoinIdenticalVertices;
+		importFlags |= aiProcess_FixInfacingNormals;
+		importFlags |= aiProcess_FindInvalidData;
 		auto model = m_Importer.ReadFile(path, importFlags);
 
 		if (!model || model->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !model->mRootNode) {

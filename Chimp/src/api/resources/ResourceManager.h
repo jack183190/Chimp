@@ -26,7 +26,8 @@ namespace Chimp {
 		void UnloadTexture(const std::string& path);
 
 		// Load a model from a file, won't load same model twice, loads associated assets, see IModelImporter for more info
-		[[nodiscard]] Mesh& LoadModel(const std::string& path, const IModelImporter::Settings& settings = {});
+		Mesh& LoadModel(const std::string& path, const IModelImporter::Settings& settings = {});
+		[[nodiscard]] Mesh& GetModel(const std::string& path);
 		// Unload a model, this will unload all associated assets
 		void UnloadModel(const std::string& path);
 

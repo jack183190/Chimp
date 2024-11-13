@@ -133,6 +133,12 @@ namespace Chimp::GL {
 		glDebugMessageCallback(glDebugOutput, nullptr);
 #endif
 
+		// Depth testing
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+
+		glCullFace(GL_BACK);
+
 		Loggers::Rendering().Info("Initialized OpenGL Renderer.");
 		Loggers::Rendering().Info(" OpenGL Version: " + std::string((const char*)glGetString(GL_VERSION)));
 		Loggers::Rendering().Info(" GLSL Version: " + std::string((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));

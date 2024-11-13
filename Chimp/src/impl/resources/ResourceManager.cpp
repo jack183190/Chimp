@@ -78,6 +78,16 @@ namespace Chimp {
 		return *m_Models[path]->Mesh;
 	}
 
+	Mesh& ResourceManager::GetModel(const std::string& path)
+	{
+		auto it = m_Models.find(path);
+		if (it == m_Models.end())
+		{
+			Loggers::Resources().Error("Model not loaded: " + path);
+		}
+		return *it->second->Mesh;
+	}
+
 	void ResourceManager::UnloadModel(const std::string& path)
 	{
 		auto it = m_Models.find(path);
