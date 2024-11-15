@@ -19,6 +19,13 @@ namespace Chimp {
 			m_Queue.pop();
 		}
 
+		OptionalReference<T> PeekAndPop() {
+			std::lock_guard<std::mutex> lock(m_Mutex);
+			OptionalReference<T> front(m_Queue.empty() ? nullptr : &m_Queue.front());
+			m_Queue.pop();
+			return front;
+		}
+
 		// Pop all elements from the queue and call the callback with each element
 		void PopAll(std::function<void(const T&)> callback) {
 			std::lock_guard<std::mutex> lock(m_Mutex);
@@ -31,6 +38,12 @@ namespace Chimp {
 		void Push(const T& value) {
 			std::lock_guard<std::mutex> lock(m_Mutex);
 			m_Queue.push(value);
+		}
+
+		template <typename... Args>
+		void EmplaceBack(Args&&... args) {
+			std::lock_guard<std::mutex> lock(m_Mutex);
+			m_Queue.emplace(std::forward<Args>(args)...);
 		}
 
 		// Transfer all elements from the source queue to the back of this queue, maintaining the order
