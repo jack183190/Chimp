@@ -1,7 +1,8 @@
 #include "BloonManager.h"
 
-BloonManager::BloonManager(Chimp::ECS& ecs,
-	Chimp::Engine& engine,
+BloonManager::BloonManager(
+	Chimp::Engine& engine, 
+	Chimp::ECS& ecs,
 	Chimp::Vector2f simulationPosition) :
 	m_ECS(ecs),
 	m_Engine(engine),

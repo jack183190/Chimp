@@ -8,8 +8,9 @@ Simulation::Simulation(Chimp::Engine& engine,
 	m_GameRenderer(gameRenderer),
 	m_Position(position),
 	m_HealthSystem(m_ECS),
-	m_BloonManager(m_ECS, m_Engine, m_Position),
-	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager))
+	m_BloonManager(m_Engine, m_ECS, m_Position),
+	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager)),
+	m_TowerManager(m_Engine, m_ECS, m_Position)
 {
 	Entities::CreateBaseEntity(
 		m_ECS,
@@ -29,6 +30,7 @@ void Simulation::Update()
 	m_HealthSystem.Update();
 	m_BloonManager.Update();
 	m_WaveManager->Update();
+	m_TowerManager.Update();
 }
 
 void Simulation::Render()
@@ -53,4 +55,9 @@ bool Simulation::HasLost() const
 Chimp::WaveManager& Simulation::GetWaveManager()
 {
 	return *m_WaveManager;
+}
+
+TowerManager& Simulation::GetTowerManager()
+{
+	return m_TowerManager;
 }

@@ -46,6 +46,11 @@ void GameScene::OnUpdate()
 	m_WaveStartHandler->Update();
 
 	m_MatchWinLoseHandler->Update();
+
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::T)) {
+		// place test tower
+		m_PlayerSimulation->GetTowerManager().PlaceTower(TowerType::MONKEY, { 100, -250 });
+	}
 }
 
 void GameScene::OnRender()
@@ -54,13 +59,6 @@ void GameScene::OnRender()
 
 	m_PlayerSimulation->Render();
 	m_OpponentSimulation->Render();
-
-	auto& model = m_Engine.GetResourceManager().GetModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
-	Chimp::Transform transform;
-	transform.Translation = { 600,-250,-50 };
-	transform.Scale = { 100,100,100 };
-	transform.Rotation = { 0,0.8,6 };
-	m_GameRenderer->Render(model, transform.CreateTransformMatrix());
 }
 
 void GameScene::OnRenderUI()

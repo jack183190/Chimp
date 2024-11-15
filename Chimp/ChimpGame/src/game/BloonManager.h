@@ -4,7 +4,7 @@
 
 class BloonManager {
 public:
-	BloonManager(Chimp::ECS& ecs, Chimp::Engine& engine, Chimp::Vector2f simulationPosition);
+	BloonManager(Chimp::Engine& engine, Chimp::ECS& ecs, Chimp::Vector2f simulationPosition);
 
 	void Update();
 	void RenderUI();

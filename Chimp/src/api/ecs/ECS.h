@@ -47,13 +47,20 @@ namespace Chimp {
 
 	public:
 
+		// Get number of alive entities
+		[[nodiscard]] size_t GetEntityCount() {
+			return m_EntityCount;
+		}
+
 		// Create an entity with no components
 		EntityId CreateEntity() {
+			m_EntityCount++;
 			return m_World.entity();
 		}
 
 		// Remove an entity from the world
 		void RemoveEntity(EntityId entity) {
+			m_EntityCount--;
 			entity.destruct();
 		}
 
@@ -96,6 +103,7 @@ namespace Chimp {
 
 	private:
 		flecs::world m_World;
+		size_t m_EntityCount = 0;
 	};
 #endif
 }

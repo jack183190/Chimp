@@ -66,6 +66,13 @@ namespace Chimp {
 		Vector3f Rotation = Vector3f(0.0f, 0.0f, 0.0f);
 		Vector3f Scale = Vector3f(1.0f, 1.0f, 1.0f);
 
+		Transform(Vector3f translation = { 0,0,0 }, Vector3f rotation = { 0,0,0 }, Vector3f scale = { 1,1,1 }) :
+			Translation{ translation }, Rotation{ rotation }, Scale{ scale } {
+		}
+		Transform(Vector2f translation) :
+			Transform({ translation.x, translation.y, 0 }) {
+		}
+
 		Matrix CreateTransformMatrix(Vector3f translationOffset = {0,0,0}) const {
 			return CreateTranslationMatrix(Translation + translationOffset) *
 				CreateRotationMatrixYawPitchRoll(Rotation) *

@@ -6,6 +6,7 @@
 #include "entities/health/HealthSystem.h"
 #include "BloonManager.h"
 #include "waves/WaveManagerBuilder.h"
+#include "towers/TowerManager.h"
 
 class Simulation {
 public:
@@ -19,6 +20,7 @@ public:
 
 	bool HasLost() const;
 	Chimp::WaveManager& GetWaveManager();
+	TowerManager& GetTowerManager();
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::Vector2f m_Position;
@@ -27,4 +29,5 @@ private:
 	HealthSystem m_HealthSystem;
 	BloonManager m_BloonManager;
 	std::unique_ptr<Chimp::WaveManager> m_WaveManager;
+	TowerManager m_TowerManager;
 };
