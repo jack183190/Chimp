@@ -38,6 +38,8 @@ void GameScene::OnDeactivate()
 
 void GameScene::OnUpdate()
 {
+	auto mousePos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
+
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
 
 	m_PlayerSimulation->Update();
@@ -49,7 +51,9 @@ void GameScene::OnUpdate()
 
 	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::T)) {
 		// place test tower
-		m_PlayerSimulation->GetTowerManager().PlaceTower(TowerType::MONKEY, { 100, -250 });
+		auto towerPos = Chimp::ComponentMax({ 0,0 }, mousePos - m_PlayerSimulation->GetPosition());
+		towerPos.y *= -1;
+		m_PlayerSimulation->GetTowerManager().PlaceTower(TowerType::MONKEY, towerPos);
 	}
 }
 

@@ -19,11 +19,15 @@ namespace Chimp {
 			m_Queue.pop();
 		}
 
-		OptionalReference<T> PeekAndPop() {
+		std::unique_ptr<T> PeekAndPop() {
 			std::lock_guard<std::mutex> lock(m_Mutex);
-			OptionalReference<T> front(m_Queue.empty() ? nullptr : &m_Queue.front());
+			if (m_Queue.empty()) {
+				return nullptr;
+			}
+
+			auto val = std::make_unique<T>(std::move(m_Queue.front()));
 			m_Queue.pop();
-			return front;
+			return val;
 		}
 
 		// Pop all elements from the queue and call the callback with each element

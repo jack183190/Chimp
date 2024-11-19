@@ -21,6 +21,7 @@ public:
 	bool HasLost() const;
 	Chimp::WaveManager& GetWaveManager();
 	TowerManager& GetTowerManager();
+	Chimp::Vector2f GetPosition() const;
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::Vector2f m_Position;

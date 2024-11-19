@@ -41,6 +41,10 @@ namespace Chimp {
 				return m_Components.size();
 			}
 
+			ComponentTuple GetByIndex(size_t index) {
+				return m_Components[index];
+			}
+
 		private:
 			std::vector<ComponentTuple> m_Components;
 		};

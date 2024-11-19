@@ -25,7 +25,8 @@ namespace Chimp {
 		m_ResourceManager(*this),
 		m_Window(CreateWindow()),
 		m_ImageLoader(CreateImageLoader()),
-		m_RenderingManager(CreateRenderingManager())
+		m_RenderingManager(CreateRenderingManager()),
+		m_ThreadPool(std::thread::hardware_concurrency() - 1)
 	{
 		m_ResourceManager.InitModelImporter();
 
@@ -62,6 +63,11 @@ namespace Chimp {
 	SceneManager& Engine::GetSceneManager()
 	{
 		return *m_SceneManager;
+	}
+
+	ThreadPool& Engine::GetThreadPool()
+	{
+		return m_ThreadPool;
 	}
 
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)

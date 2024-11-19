@@ -1,18 +1,21 @@
 #include "TowerManager.h"
 
 TowerManager::TowerManager(
-	Chimp::Engine& engine, 
+	Chimp::Engine& engine,
 	Chimp::ECS& ecs,
-	Chimp::Vector2f simulationPosition) : 
+	Chimp::Vector2f simulationPosition) :
 	m_Engine(engine),
 	m_ECS(ecs),
-	m_SimulationPosition(simulationPosition)
+	m_SimulationPosition(simulationPosition),
+	m_TowerTargetSystem(engine, ecs),
+	m_TowerRotationSystem(engine, ecs)
 {
 }
 
 void TowerManager::Update()
 {
-
+	m_TowerTargetSystem.Update();
+	m_TowerRotationSystem.Update();
 }
 
 Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f position)

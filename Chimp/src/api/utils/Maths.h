@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <array>
 #include <../vendor/glm/glm/glm.hpp>
 #include <../vendor/glm/glm/gtc/matrix_transform.hpp>
@@ -73,7 +74,7 @@ namespace Chimp {
 			Transform({ translation.x, translation.y, 0 }) {
 		}
 
-		Matrix CreateTransformMatrix(Vector3f translationOffset = {0,0,0}) const {
+		Matrix CreateTransformMatrix(Vector3f translationOffset = { 0,0,0 }) const {
 			return CreateTranslationMatrix(Translation + translationOffset) *
 				CreateRotationMatrixYawPitchRoll(Rotation) *
 				CreateScaleMatrix(Scale);
@@ -90,7 +91,7 @@ namespace Chimp {
 	}
 	inline	Vector2f Lerp(Vector2f a, Vector2f b, float t) {
 		return Vector2f(
-			Lerp(a.x, b.x, t), 
+			Lerp(a.x, b.x, t),
 			Lerp(a.y, b.y, t)
 		);
 	}
@@ -122,5 +123,138 @@ namespace Chimp {
 	}
 	inline float GetDistanceBetween(Vector4f a, Vector4f b) {
 		return glm::distance(a, b);
+	}
+
+	// Get squared distance between two points
+	inline float GetSquaredDistanceBetween(float a, float b) {
+		return (a - b) * (a - b);
+	}
+	inline float GetSquaredDistanceBetween(Vector2f a, Vector2f b) {
+		const auto diff = a - b;
+		return glm::dot(diff, diff);
+	}
+	inline float GetSquaredDistanceBetween(Vector3f a, Vector3f b) {
+		const auto diff = a - b;
+		return glm::dot(diff, diff);
+	}
+	inline float GetSquaredDistanceBetween(Vector4f a, Vector4f b) {
+		const auto diff = a - b;
+		return glm::dot(diff, diff);
+	}
+
+	// Returns minimum components of two values (e.g (2,3) and (1,4) would return (1,3))
+	inline float ComponentMin(float a, float b) {
+		return std::min(a, b);
+	}
+	inline Vector2f ComponentMin(Vector2f a, Vector2f b) {
+		return Vector2f(
+			ComponentMin(a.x, b.x),
+			ComponentMin(a.y, b.y)
+		);
+	}
+	inline Vector3f ComponentMin(Vector3f a, Vector3f b) {
+		return Vector3f(
+			ComponentMin(a.x, b.x),
+			ComponentMin(a.y, b.y),
+			ComponentMin(a.z, b.z)
+		);
+	}
+	inline Vector4f ComponentMin(Vector4f a, Vector4f b) {
+		return Vector4f(
+			ComponentMin(a.x, b.x),
+			ComponentMin(a.y, b.y),
+			ComponentMin(a.z, b.z),
+			ComponentMin(a.w, b.w)
+		);
+	}
+
+	// Returns maximum components of two values
+	inline float ComponentMax(float a, float b) {
+		return std::max(a, b);
+	}
+	inline Vector2f ComponentMax(Vector2f a, Vector2f b) {
+		return Vector2f(
+			ComponentMax(a.x, b.x),
+			ComponentMax(a.y, b.y)
+		);
+	}
+	inline Vector3f ComponentMax(Vector3f a, Vector3f b) {
+		return Vector3f(
+			ComponentMax(a.x, b.x),
+			ComponentMax(a.y, b.y),
+			ComponentMax(a.z, b.z)
+		);
+	}
+	inline Vector4f ComponentMax(Vector4f a, Vector4f b) {
+		return Vector4f(
+			ComponentMax(a.x, b.x),
+			ComponentMax(a.y, b.y),
+			ComponentMax(a.z, b.z),
+			ComponentMax(a.w, b.w)
+		);
+	}
+
+	// Clamp components of a value between a minimum and maximum
+	inline float ComponentClamp(float value, float min, float max) {
+		return value < min ? min : value > max ? max : value;
+	}
+	inline Vector2f ComponentClamp(Vector2f value, Vector2f min, Vector2f max) {
+		return Vector2f(
+			ComponentClamp(value.x, min.x, max.x),
+			ComponentClamp(value.y, min.y, max.y)
+		);
+	}
+	inline Vector3f ComponentClamp(Vector3f value, Vector3f min, Vector3f max) {
+		return Vector3f(
+			ComponentClamp(value.x, min.x, max.x),
+			ComponentClamp(value.y, min.y, max.y),
+			ComponentClamp(value.z, min.z, max.z)
+		);
+	}
+	inline Vector4f ComponentClamp(Vector4f value, Vector4f min, Vector4f max) {
+		return Vector4f(
+			ComponentClamp(value.x, min.x, max.x),
+			ComponentClamp(value.y, min.y, max.y),
+			ComponentClamp(value.z, min.z, max.z),
+			ComponentClamp(value.w, min.w, max.w)
+		);
+	}
+
+	// Find closest position to a target
+	// target - The target position
+	// positions - The positions to compare, cannot be empty
+	// Returns the index of the closest position
+	[[nodiscard]] inline size_t FindClosest(Vector2f target, const std::vector<Vector2f>& positions) {
+		assert(!positions.empty());
+		size_t closestIndex = 0;
+		float closestDistance = GetSquaredDistanceBetween(target, positions[closestIndex]);
+		for (size_t i = closestIndex + 1; i < positions.size(); ++i) {
+			float distance = GetSquaredDistanceBetween(target, positions[i]);
+			if (distance < closestDistance) {
+				closestIndex = i;
+				closestDistance = distance;
+			}
+		}
+		return closestIndex;
+	}
+
+	// Arc tangent of two values
+	// returns angle in radians
+	[[nodiscard]] inline float Atan2(float y, float x) {
+		return glm::atan(y, x);
+	}
+	[[nodiscard]] inline float Atan2(Vector2f direction) {
+		return glm::atan(direction.y, direction.x);
+	}
+
+	// Dot product
+	[[nodiscard]] inline float Dot(Vector2f a, Vector2f b) {
+		return glm::dot(a, b);
+	}
+	[[nodiscard]] inline float Dot(Vector3f a, Vector3f b) {
+		return glm::dot(a, b);
+	}
+	[[nodiscard]] inline float Dot(Vector4f a, Vector4f b) {
+		return glm::dot(a, b);
 	}
 }

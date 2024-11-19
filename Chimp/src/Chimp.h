@@ -18,5 +18,6 @@
 #include "api/utils/RawArray.h"
 #include "api/utils/ThreadQueue.h"
 #include "api/utils/UpdateSubscriber.h"
+#include "api/utils/InPlaceOptional.h"
 #include "api/utils/waves/WaveManager.h"
 #include "api/threading/ThreadPool.h"

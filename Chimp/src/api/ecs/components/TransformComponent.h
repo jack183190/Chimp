@@ -37,6 +37,18 @@ namespace Chimp {
 			m_Transform.Rotation = rotation;
 			UpdateTransform();
 		}
+		void SetYaw(const float yaw) {
+			m_Transform.Rotation.y = yaw;
+			UpdateTransform();
+		}
+		void SetPitch(const float pitch) {
+			m_Transform.Rotation.x = pitch;
+			UpdateTransform();
+		}
+		void SetRoll(const float roll) {
+			m_Transform.Rotation.z = roll;
+			UpdateTransform();
+		}
 		void SetScale(const Vector3f& scale) {
 			m_Transform.Scale = scale;
 			UpdateTransform();

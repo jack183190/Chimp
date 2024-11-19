@@ -5,6 +5,7 @@
 #include "health/HealthComponent.h"
 #include "EntityIdComponent.h"
 #include "bloons/MoveableComponent.h"
+#include "bloons/BloonComponent.h"
 
 namespace Bloons {
 	constexpr size_t NUM_BLOON_TYPES = 3;

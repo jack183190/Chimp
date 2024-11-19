@@ -28,8 +28,8 @@ namespace Chimp {
 		ConstOptionalReference() : m_Value(nullptr) {}
 		ConstOptionalReference(const T* value) : m_Value(value) {}
 
-		const T* operator->() { return m_Value; }
-		const T& operator*() { return *m_Value; }
+		const T* operator->() const { return m_Value; }
+		const T& operator*() const { return *m_Value; }
 
 		bool HasValue() const { return m_Value != nullptr; }
 

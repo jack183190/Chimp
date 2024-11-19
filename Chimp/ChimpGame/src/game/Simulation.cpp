@@ -61,3 +61,8 @@ TowerManager& Simulation::GetTowerManager()
 {
 	return m_TowerManager;
 }
+
+Chimp::Vector2f Simulation::GetPosition() const
+{
+	return m_Position;
+}

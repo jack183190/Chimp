@@ -1,4 +1,5 @@
 #include "BloonManager.h"
+#include "Debug.h"
 
 BloonManager::BloonManager(
 	Chimp::Engine& engine, 
@@ -54,9 +55,7 @@ bool BloonManager::HasLost() const
 void BloonManager::HandleMovement(float dt)
 {
 	auto view = m_ECS.GetEntitiesWithComponents<MoveableComponent, HealthComponent, Chimp::TransformComponent>();
-#ifndef NDEBUG
-	dt *= 10.0f;
-#endif
+	dt *= DEBUG_BLOON_SPEED_MULTIPLIER;
 	for (auto& [moveable, health, transform] : view) {
 		moveable.DistanceTravelled += dt * moveable.Speed;
 
@@ -66,7 +65,7 @@ void BloonManager::HandleMovement(float dt)
 		transform.SetTranslationXY(point);
 
 		// Reached end of path?
-		if (!afterPath)continue;
+		if (!afterPath) continue;
 
 		m_Lives -= health.Health;
 		health.Health = 0;

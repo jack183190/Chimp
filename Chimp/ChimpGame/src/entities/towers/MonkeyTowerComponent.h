@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "TowerComponent.h"
 
 struct MonkeyTowerComponent {
 	bool Padding;
