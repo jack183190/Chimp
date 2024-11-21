@@ -39,9 +39,9 @@ void GameScene::OnDeactivate()
 }
 
 void GameScene::OnUpdate()
-{
+{/*
 	m_PlayerSimulation->Update();
-	m_OpponentSimulation->Update();
+	m_OpponentSimulation->Update();*/
 
 	m_WaveStartHandler->Update();
 

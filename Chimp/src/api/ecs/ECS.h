@@ -11,7 +11,7 @@
 #endif
 
 namespace Chimp {
-
+	static int a = 0;
 #ifdef CHIMP_FLECS
 	typedef flecs::entity EntityId;
 	class ECS {
@@ -26,10 +26,16 @@ namespace Chimp {
 		private:
 			using ComponentTuple = std::tuple<Components&...>;
 			View(flecs::world& world) {
-				world.system<Components...>().each([this](Components&... components) {
+				auto system = world.system<Components...>().each([this](Components&... components) {
 					m_Components.emplace_back(components...);
-					}).run();
+					});
+				
+				system.run();
+				system.destruct();
 			}
+
+		public:
+			~View() = default;
 
 		public:
 			using iterator = typename std::vector<ComponentTuple>::iterator;
