@@ -25,7 +25,7 @@ Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f positio
 	position += m_SimulationPosition;
 
 	switch (type) {
-	case TowerType::MONKEY:
+	case TOWER_TYPE_DART_MONKEY:
 		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj"), position);
 	default:
 		assert(false);

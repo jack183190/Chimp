@@ -14,6 +14,7 @@ public:
 	Simulation(Chimp::Engine& engine, 
 		std::shared_ptr<GameRenderer> gameRenderer,
 		Chimp::Vector2f position,
+		Chimp::Vector2f size,
 		bool isPlayerSimulation);
 
 	void Update();
@@ -27,6 +28,7 @@ public:
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::Vector2f m_Position;
+	Chimp::Vector2f m_Size;
 	Chimp::ECS m_ECS;
 	std::shared_ptr<GameRenderer> m_GameRenderer;
 	HealthSystem m_HealthSystem;

@@ -4,10 +4,12 @@
 Simulation::Simulation(Chimp::Engine& engine,
 	std::shared_ptr<GameRenderer> gameRenderer,
 	Chimp::Vector2f position,
+	Chimp::Vector2f size,
 	bool isPlayerSimulation)
 	: m_Engine(engine),
 	m_GameRenderer(gameRenderer),
 	m_Position(position),
+	m_Size(size),
 	m_HealthSystem(m_ECS),
 	m_BloonManager(m_Engine, m_ECS, m_Position),
 	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager)),
@@ -15,7 +17,7 @@ Simulation::Simulation(Chimp::Engine& engine,
 	m_IsPlayerSimulation(isPlayerSimulation)
 {
 	if (isPlayerSimulation) {
-		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position);
+		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position, m_Size);
 	}
 
 	Entities::CreateBaseEntity(
@@ -51,6 +53,9 @@ void Simulation::Render()
 void Simulation::RenderUI()
 {
 	m_BloonManager.RenderUI();
+	if (m_TowerEditor) {
+		m_TowerEditor->RenderUI();
+	}
 }
 
 bool Simulation::HasLost() const

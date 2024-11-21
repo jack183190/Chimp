@@ -313,4 +313,60 @@ namespace Chimp {
 	[[nodiscard]] inline float Dot(Vector4f a, Vector4f b) {
 		return glm::dot(a, b);
 	}
+
+	// >
+	[[nodiscard]] inline bool IsGreaterThan(float a, float b) {
+		return a > b;
+	}
+	[[nodiscard]] inline bool IsGreaterThan(Vector2f a, Vector2f b) {
+		return glm::all(glm::greaterThan(a, b));
+	}
+	[[nodiscard]] inline bool IsGreaterThan(Vector3f a, Vector3f b) {
+		return glm::all(glm::greaterThan(a, b));
+	}
+	[[nodiscard]] inline bool IsGreaterThan(Vector4f a, Vector4f b) {
+		return glm::all(glm::greaterThan(a, b));
+	}
+
+	// >=
+	[[nodiscard]] inline bool IsGreaterThanOrEqual(float a, float b) {
+		return a >= b;
+	}
+	[[nodiscard]] inline bool IsGreaterThanOrEqual(Vector2f a, Vector2f b) {
+		return glm::all(glm::greaterThanEqual(a, b));
+	}
+	[[nodiscard]] inline bool IsGreaterThanOrEqual(Vector3f a, Vector3f b) {
+		return glm::all(glm::greaterThanEqual(a, b));
+	}
+	[[nodiscard]] inline bool IsGreaterThanOrEqual(Vector4f a, Vector4f b) {
+		return glm::all(glm::greaterThanEqual(a, b));
+	}
+
+	// <
+	[[nodiscard]] inline bool IsLessThan(float a, float b) {
+		return a < b;
+	}
+	[[nodiscard]] inline bool IsLessThan(Vector2f a, Vector2f b) {
+		return glm::all(glm::lessThan(a, b));
+	}
+	[[nodiscard]] inline bool IsLessThan(Vector3f a, Vector3f b) {
+		return glm::all(glm::lessThan(a, b));
+	}
+	[[nodiscard]] inline bool IsLessThan(Vector4f a, Vector4f b) {
+		return glm::all(glm::lessThan(a, b));
+	}
+
+	// <=
+	[[nodiscard]] inline bool IsLessThanOrEqual(float a, float b) {
+		return a <= b;
+	}
+	[[nodiscard]] inline bool IsLessThanOrEqual(Vector2f a, Vector2f b) {
+		return glm::all(glm::lessThanEqual(a, b));
+	}
+	[[nodiscard]] inline bool IsLessThanOrEqual(Vector3f a, Vector3f b) {
+		return glm::all(glm::lessThanEqual(a, b));
+	}
+	[[nodiscard]] inline bool IsLessThanOrEqual(Vector4f a, Vector4f b) {
+		return glm::all(glm::lessThanEqual(a, b));
+	}
 }

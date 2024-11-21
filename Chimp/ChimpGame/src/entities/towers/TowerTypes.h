@@ -2,6 +2,10 @@
 
 static constexpr float TOWER_Z = -50;
 
-enum class TowerType {
-	MONKEY
+typedef int TowerType;
+static constexpr TowerType TOWER_TYPE_DART_MONKEY = 0;
+static constexpr int NUM_TOWERS = 1;
+
+static const std::array<std::string, NUM_TOWERS> TOWER_ICONS = {
+	GAME_SRC + std::string("/assets/textures/Towers/Monkey.png")
 };
