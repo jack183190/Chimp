@@ -1,15 +1,15 @@
 #pragma once
 
 #include "stdafx.h"
-#include "OptionalReference.h"
+#include "api/utils/OptionalReference.h"
 
 namespace Chimp {
 	// Thread safe wrapper for a queue
 	template<typename T>
-	class ThreadQueue
+	class ThreadSafeQueue
 	{
 	public:
-		OptionalReference<T> Front() {
+		[[nodiscard]] OptionalReference<T> Front() {
 			std::lock_guard<std::mutex> lock(m_Mutex);
 			return OptionalReference<T>(m_Queue.empty() ? nullptr : &m_Queue.front());
 		}
@@ -19,7 +19,8 @@ namespace Chimp {
 			m_Queue.pop();
 		}
 
-		std::unique_ptr<T> PeekAndPop() {
+		// Pop the front element and return it
+		[[nodiscard]] std::unique_ptr<T> PeekAndPop() {
 			std::lock_guard<std::mutex> lock(m_Mutex);
 			if (m_Queue.empty()) {
 				return nullptr;

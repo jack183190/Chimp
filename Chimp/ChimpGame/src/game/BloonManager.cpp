@@ -26,6 +26,10 @@ void BloonManager::Update()
 		SpawnBloon(Bloons::BloonType::RED);
 	}
 
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::B)) {
+		SpawnBloon(Bloons::BloonType::BLUE);
+	}
+
 	float dt = m_Engine.GetTimeManager().GetDeltaTime();
 	HandleMovement(dt);
 }

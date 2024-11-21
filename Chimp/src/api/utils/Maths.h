@@ -27,6 +27,7 @@ namespace Chimp {
 
 	// Normalize a vector
 	[[nodiscard]] Vector3f VectorNormalized(const Vector3f& a);
+	[[nodiscard]] Vector2f VectorNormalized(const Vector2f& a);
 
 	// Create an identity matrix
 	[[nodiscard]] Matrix CreateIdentityMatrix();
@@ -142,6 +143,34 @@ namespace Chimp {
 		return glm::dot(diff, diff);
 	}
 
+	// Get length of a vector
+	inline float Length(float a) {
+		return std::abs(a);
+	}
+	inline float Length(Vector2f a) {
+		return glm::length(a);
+	}
+	inline float Length(Vector3f a) {
+		return glm::length(a);
+	}
+	inline float Length(Vector4f a) {
+		return glm::length(a);
+	}
+
+	// Squared length of a vector
+	inline float SquaredLength(float a) {
+		return a * a;
+	}
+	inline float SquaredLength(Vector2f a) {
+		return glm::dot(a, a);
+	}
+	inline float SquaredLength(Vector3f a) {
+		return glm::dot(a, a);
+	}
+	inline float SquaredLength(Vector4f a) {
+		return glm::dot(a, a);
+	}
+
 	// Returns minimum components of two values (e.g (2,3) and (1,4) would return (1,3))
 	inline float ComponentMin(float a, float b) {
 		return std::min(a, b);
@@ -191,6 +220,33 @@ namespace Chimp {
 			ComponentMax(a.y, b.y),
 			ComponentMax(a.z, b.z),
 			ComponentMax(a.w, b.w)
+		);
+	}
+
+	// Multiply components of two values
+	// e.g (2,3) and (1,4) would return (2,12)
+	inline float ComponentMultiply(float a, float b) {
+		return a * b;
+	}
+	inline Vector2f ComponentMultiply(Vector2f a, Vector2f b) {
+		return Vector2f(
+			ComponentMultiply(a.x, b.x),
+			ComponentMultiply(a.y, b.y)
+		);
+	}
+	inline Vector3f ComponentMultiply(Vector3f a, Vector3f b) {
+		return Vector3f(
+			ComponentMultiply(a.x, b.x),
+			ComponentMultiply(a.y, b.y),
+			ComponentMultiply(a.z, b.z)
+		);
+	}
+	inline Vector4f ComponentMultiply(Vector4f a, Vector4f b) {
+		return Vector4f(
+			ComponentMultiply(a.x, b.x),
+			ComponentMultiply(a.y, b.y),
+			ComponentMultiply(a.z, b.z),
+			ComponentMultiply(a.w, b.w)
 		);
 	}
 

@@ -41,7 +41,7 @@ namespace Chimp {
 				return m_Components.size();
 			}
 
-			ComponentTuple GetByIndex(size_t index) {
+			ComponentTuple& GetByIndex(size_t index) {
 				return m_Components[index];
 			}
 

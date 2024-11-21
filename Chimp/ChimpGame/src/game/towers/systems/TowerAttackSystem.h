@@ -3,10 +3,10 @@
 #include "stdafx.h"
 #include "game/Entities.h"
 
-class TowerRotationSystem
+class TowerAttackSystem
 {
 public:
-	TowerRotationSystem(Chimp::Engine& engine, Chimp::ECS& ecs);
+	TowerAttackSystem(Chimp::Engine& engine, Chimp::ECS& ecs);
 
 	void Update();
 

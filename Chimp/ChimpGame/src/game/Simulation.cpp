@@ -3,15 +3,21 @@
 
 Simulation::Simulation(Chimp::Engine& engine,
 	std::shared_ptr<GameRenderer> gameRenderer,
-	Chimp::Vector2f position)
+	Chimp::Vector2f position,
+	bool isPlayerSimulation)
 	: m_Engine(engine),
 	m_GameRenderer(gameRenderer),
 	m_Position(position),
 	m_HealthSystem(m_ECS),
 	m_BloonManager(m_Engine, m_ECS, m_Position),
 	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager)),
-	m_TowerManager(m_Engine, m_ECS, m_Position)
+	m_TowerManager(m_Engine, m_ECS, m_Position),
+	m_IsPlayerSimulation(isPlayerSimulation)
 {
+	if (isPlayerSimulation) {
+		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position);
+	}
+
 	Entities::CreateBaseEntity(
 		m_ECS,
 		m_Engine.GetResourceManager().GetMeshStorage().GetMesh("MapBackground"),
@@ -21,8 +27,6 @@ Simulation::Simulation(Chimp::Engine& engine,
 			{ m_Engine.GetWindow().GetSize().x / 2.0f, m_Engine.GetWindow().GetSize().y, 500.0f}
 		}
 	);
-
-	//m_WaveManager->SetWaveAutoStart(true);
 }
 
 void Simulation::Update()
@@ -31,6 +35,12 @@ void Simulation::Update()
 	m_BloonManager.Update();
 	m_WaveManager->Update();
 	m_TowerManager.Update();
+	if (m_TowerEditor) {
+		m_TowerEditor->Update();
+	}
+	if (!m_IsPlayerSimulation) {
+		Networking::GetClient()->GetHandlers().TowerPlaceListener->Update(m_TowerManager);
+	}
 }
 
 void Simulation::Render()

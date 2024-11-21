@@ -2,8 +2,9 @@
 
 #include "stdafx.h"
 #include "game/Entities.h"
-#include "systems/TowerRotationSystem.h"
+#include "systems/TowerAttackSystem.h"
 #include "systems/TowerTargetSystem.h"
+#include "systems/TowerProjectileSystem.h"
 
 class TowerManager {
 public:
@@ -22,5 +23,6 @@ private:
 	Chimp::ECS& m_ECS;
 	Chimp::Vector2f m_SimulationPosition;
 	TowerTargetSystem m_TowerTargetSystem;
-	TowerRotationSystem m_TowerRotationSystem;
+	TowerAttackSystem m_TowerRotationSystem;
+	TowerProjectileSystem m_TowerProjectileSystem;
 };

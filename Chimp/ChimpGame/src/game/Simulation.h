@@ -7,12 +7,14 @@
 #include "BloonManager.h"
 #include "waves/WaveManagerBuilder.h"
 #include "towers/TowerManager.h"
+#include "towers/TowerEditor.h"
 
 class Simulation {
 public:
 	Simulation(Chimp::Engine& engine, 
 		std::shared_ptr<GameRenderer> gameRenderer,
-		Chimp::Vector2f position);
+		Chimp::Vector2f position,
+		bool isPlayerSimulation);
 
 	void Update();
 	void Render();
@@ -31,4 +33,6 @@ private:
 	BloonManager m_BloonManager;
 	std::unique_ptr<Chimp::WaveManager> m_WaveManager;
 	TowerManager m_TowerManager;
+	std::unique_ptr<TowerEditor> m_TowerEditor;
+	bool m_IsPlayerSimulation;
 };

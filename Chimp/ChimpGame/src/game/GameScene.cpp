@@ -7,13 +7,14 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_Engine(engine),
 	m_GameRenderer(gameRenderer)
 {
+	m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, "Dart", "Dart.png"));
 	m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, "MapBackground", "MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
 		m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, Bloons::BloonIds[i], Bloons::TexturePaths[i]));
 	}
 
-	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f });
-	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f });
+	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f }, false);
+	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, true);
 
 	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
 
@@ -38,23 +39,12 @@ void GameScene::OnDeactivate()
 
 void GameScene::OnUpdate()
 {
-	auto mousePos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
-
-	auto& clientHandlers = Networking::GetClient()->GetHandlers();
-
 	m_PlayerSimulation->Update();
 	m_OpponentSimulation->Update();
 
 	m_WaveStartHandler->Update();
 
 	m_MatchWinLoseHandler->Update();
-
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::T)) {
-		// place test tower
-		auto towerPos = Chimp::ComponentMax({ 0,0 }, mousePos - m_PlayerSimulation->GetPosition());
-		towerPos.y *= -1;
-		m_PlayerSimulation->GetTowerManager().PlaceTower(TowerType::MONKEY, towerPos);
-	}
 }
 
 void GameScene::OnRender()

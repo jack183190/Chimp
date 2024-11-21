@@ -26,6 +26,7 @@ void TowerTargetSystem::Update()
 	auto towersView = m_ECS.GetEntitiesWithComponents<TowerComponent, Chimp::TransformComponent>();
 
 	// Find closest bloon to each tower
+	std::vector<std::function<void()>> tasks;
 	for (size_t i = 0; i < towersView.Size(); i++) {
 		auto task = [i, &towersView, &bloonPositions, &bloonIds]() {
 			auto [tower, towerTransform] = towersView.GetByIndex(i);
@@ -35,6 +36,8 @@ void TowerTargetSystem::Update()
 				tower.Target = bloonIds[closestBloonIndex];
 			}
 			};
-		task();
+		tasks.push_back(task);
 	}
+
+	m_Engine.GetThreadPool().WaitUntilTasksExecuted(tasks);
 }

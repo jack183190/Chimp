@@ -11,6 +11,11 @@ namespace Chimp {
 		return glm::normalize(a);
 	}
 
+	Vector2f VectorNormalized(const Vector2f& a)
+	{
+		return glm::normalize(a);
+	}
+
 	Matrix CreateIdentityMatrix()
 	{
 		return glm::identity<Matrix>();
