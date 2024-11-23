@@ -37,7 +37,7 @@ void TowerAttackSystem::Update()
 				transform.GetTranslation(),
 				Chimp::ComponentMultiply(Chimp::VectorNormalized(direction), { 100, 100 }),
 				upgrades.GetDamage(tower.AttackDamage),
-				Chimp::PI * 2 - angle
+				angle - Chimp::PI / 2
 			);
 		}
 	}
