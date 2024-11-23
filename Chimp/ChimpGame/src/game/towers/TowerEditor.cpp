@@ -80,6 +80,7 @@ void TowerEditor::RenderUI()
 	if (m_SelectionSystem.IsTowerSelected()) {
 		auto selectedTower = m_SelectionSystem.GetSelectedTower();
 		auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
+		auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
 		assert(upgrades.HasValue());
 
 		// REMOVE BUTTON
@@ -103,6 +104,7 @@ void TowerEditor::RenderUI()
 		ss << "Upgrade Damage: " << upgrades->GetDamageUpgradeCost() << "##upgradeDamage";
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
 			upgrades->NumDamageUpgrades += 1;
+			// todo worth, cost
 		}
 
 		// UPGRADE ATTACK SPEED BUTTON
@@ -112,6 +114,7 @@ void TowerEditor::RenderUI()
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
 			auto selectedTower = m_SelectionSystem.GetSelectedTower();
 			upgrades->NumAttackSpeedUpgrades += 1;
+			// todo worth, cost
 		}
 	}
 }

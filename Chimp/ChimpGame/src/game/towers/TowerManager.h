@@ -11,7 +11,8 @@ public:
 	TowerManager(
 		Chimp::Engine& engine, 
 		Chimp::ECS& ecs,
-		Chimp::Vector2f simulationPosition
+		Chimp::Vector2f simulationPosition,
+		Chimp::Vector2f simulationSize
 	);
 
 	void Update();

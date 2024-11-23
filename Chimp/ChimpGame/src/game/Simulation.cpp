@@ -13,7 +13,7 @@ Simulation::Simulation(Chimp::Engine& engine,
 	m_HealthSystem(m_ECS),
 	m_BloonManager(m_Engine, m_ECS, m_Position),
 	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager)),
-	m_TowerManager(m_Engine, m_ECS, m_Position),
+	m_TowerManager(m_Engine, m_ECS, m_Position, m_Size),
 	m_IsPlayerSimulation(isPlayerSimulation)
 {
 	if (isPlayerSimulation) {

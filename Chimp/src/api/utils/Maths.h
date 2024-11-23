@@ -28,10 +28,15 @@ namespace Chimp {
 
 		Rect(Vector2f position, Vector2f size) :
 			Position{ position }, Size{ size } {
+			assert(size.x >= 0 && size.y >= 0);
 		}
 
 		// Check if a point is inside the rectangle
 		[[nodiscard]] bool Contains(Vector2f point) const {
+			return point.x >= Position.x && point.x <= Position.x + Size.x &&
+				point.y >= Position.y && point.y <= Position.y + Size.y;
+		}
+		[[nodiscard]] bool Contains(Vector3f point) const {
 			return point.x >= Position.x && point.x <= Position.x + Size.x &&
 				point.y >= Position.y && point.y <= Position.y + Size.y;
 		}

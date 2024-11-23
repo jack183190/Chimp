@@ -1,7 +1,12 @@
 #include "TowerProjectileSystem.h"
 
-TowerProjectileSystem::TowerProjectileSystem(Chimp::Engine& engine, Chimp::ECS& ecs) :
-	m_Engine(engine), m_ECS(ecs)
+TowerProjectileSystem::TowerProjectileSystem(Chimp::Engine& engine,
+	Chimp::ECS& ecs,
+	Chimp::Vector2f simulationPosition,
+	Chimp::Vector2f simulationSize) :
+	m_Engine(engine),
+	m_ECS(ecs),
+	m_SimulationBounds(simulationPosition, simulationSize)
 {
 }
 
@@ -28,7 +33,8 @@ void TowerProjectileSystem::Update()
 		tasks.push_back([this, &bloonPositions, dt, &projectile, &projTransform, &projHealth, &bloons]() {
 			// Handle lifetimes
 			projectile.SecondsRemaining -= dt;
-			if (projectile.SecondsRemaining <= 0) {
+			const bool inBounds = m_SimulationBounds.Contains(Chimp::ComponentMultiply(projTransform.GetTranslation(), { 1, -1, 1 }));
+			if (projectile.SecondsRemaining <= 0 || !inBounds) {
 				projHealth.Health = 0;
 				return;
 			}
