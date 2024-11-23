@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 #include "TowerComponent.h"
+#include "WorthComponent.h"
+#include "UpgradableComponent.h"
 
 struct MonkeyTowerComponent {
 	bool Padding;

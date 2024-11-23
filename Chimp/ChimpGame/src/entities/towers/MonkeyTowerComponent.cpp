@@ -13,6 +13,8 @@ Chimp::EntityId Entities::CreateMonkeyTower(Chimp::ECS& ecs, Chimp::Mesh& mesh, 
 
 	ecs.SetComponent(ent, MonkeyTowerComponent{});
 	ecs.SetComponent(ent, TowerComponent{ TOWER_TYPE_DART_MONKEY });
+	ecs.SetComponent(ent, WorthComponent{ TOWER_COSTS[TOWER_TYPE_DART_MONKEY] });
+	ecs.SetComponent(ent, UpgradableComponent{});
 
 	return ent;
 }

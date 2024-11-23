@@ -10,9 +10,9 @@ TowerAttackSystem::TowerAttackSystem(Chimp::Engine& engine,
 
 void TowerAttackSystem::Update()
 {
-	auto towersView = m_ECS.GetEntitiesWithComponents<TowerComponent, Chimp::TransformComponent>();
+	auto towersView = m_ECS.GetEntitiesWithComponents<TowerComponent, UpgradableComponent, Chimp::TransformComponent>();
 
-	for (auto& [tower, transform] : towersView) {
+	for (auto& [tower, upgrades, transform] : towersView) {
 		if (tower.Target.Empty()) {
 			continue;
 		}
@@ -28,7 +28,7 @@ void TowerAttackSystem::Update()
 		transform.SetRoll(angle - Chimp::PI / 2);
 
 		// Fire the tower
-		tower.SecondsUntilNextAttack -= m_Engine.GetTimeManager().GetDeltaTime() * DEBUG_TOWER_ATTACK_SPEED_MULTIPLIER;
+		tower.SecondsUntilNextAttack -= m_Engine.GetTimeManager().GetDeltaTime() * DEBUG_TOWER_ATTACK_SPEED_MULTIPLIER * upgrades.GetAttackSpeedMultiplier();
 		if (tower.SecondsUntilNextAttack <= 0) {
 			tower.SecondsUntilNextAttack = tower.AttackInterval;
 			Entities::CreateProjectile(
@@ -36,7 +36,7 @@ void TowerAttackSystem::Update()
 				m_Engine.GetResourceManager().GetMeshStorage().GetMesh("Dart"),
 				transform.GetTranslation(),
 				Chimp::ComponentMultiply(Chimp::VectorNormalized(direction), { 100, 100 }),
-				tower.AttackDamage,
+				upgrades.GetDamage(tower.AttackDamage),
 				Chimp::PI * 2 - angle
 			);
 		}

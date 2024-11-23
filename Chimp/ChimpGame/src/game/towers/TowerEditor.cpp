@@ -78,18 +78,40 @@ void TowerEditor::RenderUI()
 	m_SelectionSystem.RenderUI();
 
 	if (m_SelectionSystem.IsTowerSelected()) {
+		auto selectedTower = m_SelectionSystem.GetSelectedTower();
+		auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
+		assert(upgrades.HasValue());
+
 		// REMOVE BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
 		if (ImGui::Button("Sell Tower##removeTower", ImVec2(100, 50))) {
-			auto selectedTower = m_SelectionSystem.GetSelectedTower();
 			m_ECS.RemoveEntity(selectedTower);
 			m_SelectionSystem.DeselectTower();
+			return;
 		}
 
 		// DESELECT BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y - 60 });
 		if (ImGui::Button("Deselect Tower##deselectTower", ImVec2(100, 50))) {
 			m_SelectionSystem.DeselectTower();
+			return;
+		}
+
+		// UPGRADE DAMAGE BUTTON
+		ImGui::SetCursorPos({ iconPosition.x + 60 + 110, iconPosition.y });
+		std::stringstream ss;
+		ss << "Upgrade Damage: " << upgrades->GetDamageUpgradeCost() << "##upgradeDamage";
+		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
+			upgrades->NumDamageUpgrades += 1;
+		}
+
+		// UPGRADE ATTACK SPEED BUTTON
+		ImGui::SetCursorPos({ iconPosition.x + 60 + 110, iconPosition.y - 60 });
+		ss.str("");
+		ss << "Upgrade Attack Speed: " << upgrades->GetAttackSpeedUpgradeCost() << "##upgradeAttackSpeed";
+		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
+			auto selectedTower = m_SelectionSystem.GetSelectedTower();
+			upgrades->NumAttackSpeedUpgrades += 1;
 		}
 	}
 }

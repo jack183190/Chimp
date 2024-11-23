@@ -9,3 +9,6 @@ static constexpr int NUM_TOWERS = 1;
 static const std::array<std::string, NUM_TOWERS> TOWER_ICONS = {
 	GAME_SRC + std::string("/assets/textures/Towers/Monkey.png")
 };
+static const std::array<int, NUM_TOWERS> TOWER_COSTS = {
+	200
+};

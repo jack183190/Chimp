@@ -1,4 +1,6 @@
 #include "GameRenderer.h"
+#include "entities/EntityIdComponent.h"
+#include "entities/health/HealthComponent.h"
 
 using namespace Chimp;
 
@@ -99,9 +101,16 @@ void GameRenderer::RenderWorld(Chimp::ECS& ecs)
 		};
 	std::vector<Renderable> renderQueue;
 
-	auto view = ecs.GetEntitiesWithComponents<TransformComponent, MeshComponent>();
-	for (auto& [transform, mesh] : view)
+	auto view = ecs.GetEntitiesWithComponents<TransformComponent, EntityIdComponent, MeshComponent>();
+	for (auto& [transform, id, mesh] : view)
 	{
+		// if has health, dont render if dead
+		auto health = ecs.GetComponent<HealthComponent>(id.Id);
+		if (health.HasValue() && health->Health <= 0)
+		{
+			continue;
+		}
+
 		Renderable renderable;
 		renderable.TransformMatrix = transform.GetTransformMatrix();
 		assert(mesh.Mesh != nullptr);
