@@ -20,9 +20,9 @@ void TowerAttackSystem::Update()
 		// Look at nearest bloon
 		const auto& bloonTransform = m_ECS.GetComponent<Chimp::TransformComponent>(tower.Target.Value());
 		const auto bloonPos = bloonTransform->GetTranslation()
-			+ Chimp::Dot({ 0.5, -0.5, 0 }, bloonTransform->GetScale());
+			+ Chimp::ComponentMultiply({ 0.5, -0.5, 0 }, bloonTransform->GetScale());
 		const auto& towerPos = transform.GetTranslation()
-			+ Chimp::Dot({ 0.5, -0.5, 0 }, transform.GetScale());
+			+ Chimp::ComponentMultiply({ 0.5, -0.5, 0 }, transform.GetScale());
 		Chimp::Vector2f direction = { bloonPos.x - towerPos.x, bloonPos.y - towerPos.y };
 		const auto angle = Chimp::Atan2(direction);
 		transform.SetRoll(angle - Chimp::PI / 2);
