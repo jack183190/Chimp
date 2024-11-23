@@ -22,6 +22,27 @@ namespace Chimp {
 
 	constexpr float PI = glm::pi<float>();
 
+	struct Rect {
+		Vector2f Position;
+		Vector2f Size;
+
+		Rect(Vector2f position, Vector2f size) :
+			Position{ position }, Size{ size } {
+		}
+
+		// Check if a point is inside the rectangle
+		[[nodiscard]] bool Contains(Vector2f point) const {
+			return point.x >= Position.x && point.x <= Position.x + Size.x &&
+				point.y >= Position.y && point.y <= Position.y + Size.y;
+		}
+
+		// Scale the rectangle around its center
+		void Scale(float scale) {
+			Position -= Size * (scale - 1.0f) / 2.0f;
+			Size *= scale;
+		}
+	};
+
 	// Cross product of two vectors
 	[[nodiscard]] Vector3f VectorCrossProduct(const Vector3f& a, const Vector3f& b);
 

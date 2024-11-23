@@ -10,12 +10,21 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	m_Engine(engine),
 	m_ECS(ecs),
 	m_SimulationPosition(simulationPosition),
-	m_SimulationSize(simulationSize)
+	m_SimulationSize(simulationSize),
+	m_SelectionSystem(engine, ecs, simulationPosition)
 {
 }
 
 void TowerEditor::Update()
 {
+	if (m_IsPlacing) {
+		m_SelectionSystem.DeselectTower();
+	}
+	else {
+		m_SelectionSystem.Update();
+	}
+
+	// Handle placing towers
 	auto mousePos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
 	if (m_Engine.GetWindow().GetInputManager().IsMouseButtonPressed(Chimp::Mouse::LEFT)
 		&& m_IsPlacing
@@ -64,6 +73,25 @@ void TowerEditor::RenderUI()
 			ImGui::Image(icon, ImVec2(50, 50));
 		}
 	}
+
+	// DRAW SELECTED TOWER UI
+	m_SelectionSystem.RenderUI();
+
+	if (m_SelectionSystem.IsTowerSelected()) {
+		// REMOVE BUTTON
+		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
+		if (ImGui::Button("Sell Tower##removeTower", ImVec2(100, 50))) {
+			auto selectedTower = m_SelectionSystem.GetSelectedTower();
+			m_ECS.RemoveEntity(selectedTower);
+			m_SelectionSystem.DeselectTower();
+		}
+
+		// DESELECT BUTTON
+		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y - 60 });
+		if (ImGui::Button("Deselect Tower##deselectTower", ImVec2(100, 50))) {
+			m_SelectionSystem.DeselectTower();
+		}
+	}
 }
 
 void TowerEditor::Place(TowerType type, Chimp::Vector2f position)
@@ -74,8 +102,8 @@ void TowerEditor::Place(TowerType type, Chimp::Vector2f position)
 	packet.Position = position;
 	packet.Type = type;
 
-	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();
 #ifndef DEBUG_AUTOSTART_WITH_1_PLAYER
+	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();
 	Networking::GetClient()->GetClient().SendPacketToClient(opponentId, packet);
 #endif
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TowerManager.h"
+#include "systems/TowerSelectionSystem.h"
 
 class TowerEditor {
 public:
@@ -24,4 +25,5 @@ private:
 	Chimp::Vector2f m_SimulationSize;
 	bool m_IsPlacing = false;
 	TowerType m_PlacingType;
+	TowerSelectionSystem m_SelectionSystem;
 };
