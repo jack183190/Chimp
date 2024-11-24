@@ -21,6 +21,8 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameRenderer);
 
+	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager());
+
 	LoadModels();
 }
 
@@ -46,6 +48,10 @@ void GameScene::OnUpdate()
 	m_WaveStartHandler->Update();
 
 	m_MatchWinLoseHandler->Update();
+
+	m_BloonSpawner->Update();
+
+	Networking::GetClient()->GetHandlers().BloonListener->Update(m_PlayerSimulation->GetBloonManager());
 }
 
 void GameScene::OnRender()
@@ -69,6 +75,8 @@ void GameScene::OnRenderUI()
 	ImGui::SetWindowFontScale(2.5f);
 	ImGui::Text("Wave: %d", m_PlayerSimulation->GetWaveManager().GetWave());
 	ImGui::SetWindowFontScale(1.0f);
+
+	m_BloonSpawner->RenderUI();
 	ImGui::End();
 }
 

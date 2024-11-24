@@ -12,6 +12,7 @@
 #include "api/utils/UpdateSubscriber.h"
 #include "scenes/SceneManager.h"
 #include "api/threading/ThreadPool.h"
+#include "api/utils/TaskScheduler.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -30,6 +31,10 @@ namespace Chimp {
 		[[nodiscard]] UpdateSubscriber& GetUpdateSubscriber();
 		[[nodiscard]] SceneManager& GetSceneManager();
 		[[nodiscard]] ThreadPool& GetThreadPool();
+
+		// Task scheduler for running tasks at specific times
+		// This instance is updated automatically at the end of each update phase.
+		[[nodiscard]] TaskScheduler& GetTaskScheduler();
 
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
@@ -61,5 +66,6 @@ namespace Chimp {
 		std::unique_ptr<IRenderingManager> m_RenderingManager;
 		std::unique_ptr<SceneManager> m_SceneManager; // initialized in MainLoop
 		ThreadPool m_ThreadPool;
+		TaskScheduler m_TaskScheduler;
 	};
 }

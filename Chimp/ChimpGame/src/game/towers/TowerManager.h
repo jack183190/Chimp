@@ -22,6 +22,7 @@ public:
 	Chimp::EntityId PlaceTower(TowerType type, Chimp::Vector2f position);
 	Chimp::EntityId PlaceTowerWithNetworkId(TowerType type, Chimp::Vector2f position, NetworkId id);
 	void RemoveTowerWithNetworkId(NetworkId id);
+	void UpgradeTowerWithNetworkId(NetworkId id, UpgradeType type);
 
 private:
 	Chimp::Engine& m_Engine;

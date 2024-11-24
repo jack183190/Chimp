@@ -82,3 +82,8 @@ Chimp::Vector2f Simulation::GetPosition() const
 {
 	return m_Position;
 }
+
+BloonManager& Simulation::GetBloonManager()
+{
+	return m_BloonManager;
+}

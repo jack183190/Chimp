@@ -21,12 +21,22 @@ TowerListener::TowerListener(Chimp::IClient& client)
 			m_RemovePackets.push(*removePacket);
 		}
 	);
+
+	m_UpgradeListener = m_Client.GetEventHandler().Subscribe(
+		Networking::CLIENT_TOWER_UPGRADE,
+		[this](const Chimp::NetworkPacket* packet) {
+			const auto upgradePacket = static_cast<const ClientTowerUpgradePacket*>(packet);
+			assert(upgradePacket);
+			m_UpgradePackets.push(*upgradePacket);
+		}
+	);
 }
 
 TowerListener::~TowerListener()
 {
 	m_Client.GetEventHandler().Unsubscribe(m_PlaceListener);
 	m_Client.GetEventHandler().Unsubscribe(m_RemoveListener);
+	m_Client.GetEventHandler().Unsubscribe(m_UpgradeListener);
 }
 
 void TowerListener::Update(TowerManager& opponentTowerManager)
@@ -41,5 +51,11 @@ void TowerListener::Update(TowerManager& opponentTowerManager)
 		const auto& packet = m_RemovePackets.front();
 		opponentTowerManager.RemoveTowerWithNetworkId(packet.TowerId);
 		m_RemovePackets.pop();
+	}
+
+	while (!m_UpgradePackets.empty()) {
+		const auto& packet = m_UpgradePackets.front();
+		opponentTowerManager.UpgradeTowerWithNetworkId(packet.TowerId, packet.UpgradeType);
+		m_UpgradePackets.pop();
 	}
 }

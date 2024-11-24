@@ -1,4 +1,5 @@
 #include "TowerManager.h"
+#include "Logger.h"
 
 TowerManager::TowerManager(
 	Chimp::Engine& engine,
@@ -35,6 +36,7 @@ Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f positio
 	case TOWER_TYPE_DART_MONKEY:
 		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj"), position);
 	default:
+		GetLogger().Error("Unknown tower type when placing tower: " + std::to_string(type));
 		assert(false);
 		break;
 	}
@@ -57,4 +59,17 @@ void TowerManager::RemoveTowerWithNetworkId(NetworkId id)
 			return;
 		}
 	}
+	GetLogger().Warning("Failed to remove tower with network id: " + std::to_string(id));
+}
+
+void TowerManager::UpgradeTowerWithNetworkId(NetworkId id, UpgradeType type)
+{
+	auto view = m_ECS.GetEntitiesWithComponents<NetworkedIdentifierComponent, UpgradableComponent>();
+	for (auto& [idComp, upgrade] : view) {
+		if (idComp.Id == id) {
+			upgrade.Upgrade(type);
+			return;
+		}
+	}
+	GetLogger().Warning("Failed to upgrade tower with network id: " + std::to_string(id));
 }

@@ -16,5 +16,7 @@ private:
 	Chimp::EventListener m_PlaceListener;
 	std::queue<ClientTowerRemovePacket> m_RemovePackets;
 	Chimp::EventListener m_RemoveListener;
+	std::queue<ClientTowerUpgradePacket> m_UpgradePackets;
+	Chimp::EventListener m_UpgradeListener;
 	Chimp::IClient& m_Client;
 };

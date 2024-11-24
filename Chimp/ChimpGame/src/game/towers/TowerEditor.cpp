@@ -102,8 +102,7 @@ void TowerEditor::RenderUI()
 		std::stringstream ss;
 		ss << "Upgrade Damage: " << upgrades->GetDamageUpgradeCost() << "##upgradeDamage";
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
-			upgrades->NumDamageUpgrades += 1;
-			// todo worth, cost
+			UpgradeSelectedTower(UpgradeType::ATTACK_DAMAGE);
 		}
 
 		// UPGRADE ATTACK SPEED BUTTON
@@ -111,9 +110,7 @@ void TowerEditor::RenderUI()
 		ss.str("");
 		ss << "Upgrade Attack Speed: " << upgrades->GetAttackSpeedUpgradeCost() << "##upgradeAttackSpeed";
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
-			auto selectedTower = m_SelectionSystem.GetSelectedTower();
-			upgrades->NumAttackSpeedUpgrades += 1;
-			// todo worth, cost
+			UpgradeSelectedTower(UpgradeType::ATTACK_SPEED);
 		}
 	}
 }
@@ -151,6 +148,30 @@ void TowerEditor::RemoveSelectedTower()
 	ClientTowerRemovePacket packet;
 	packet.PacketType = Networking::CLIENT_TOWER_REMOVE;
 	packet.TowerId = towerId;
+
+#ifndef DEBUG_AUTOSTART_WITH_1_PLAYER
+	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();
+	Networking::GetClient()->GetClient().SendPacketToClient(opponentId, packet);
+#endif
+}
+
+void TowerEditor::UpgradeSelectedTower(UpgradeType type)
+{
+	if (!m_SelectionSystem.IsTowerSelected()) {
+		return;
+	}
+
+	auto selectedTower = m_SelectionSystem.GetSelectedTower();
+	auto towerId = m_ECS.GetComponent<NetworkedIdentifierComponent>(selectedTower)->Id;
+
+	auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
+	upgrades->Upgrade(type); // todo cost, worth
+
+	// Packet
+	ClientTowerUpgradePacket packet;
+	packet.PacketType = Networking::CLIENT_TOWER_UPGRADE;
+	packet.TowerId = towerId;
+	packet.UpgradeType = type;
 
 #ifndef DEBUG_AUTOSTART_WITH_1_PLAYER
 	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();

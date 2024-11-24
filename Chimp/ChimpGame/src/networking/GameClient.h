@@ -6,6 +6,7 @@
 #include "client/GameWinListener.h"
 #include "client/WaveStartListener.h"
 #include "client/TowerListener.h"
+#include "client/BloonListener.h"
 
 struct ClientHandlers {
 	// not null ptrs (instantiated in Connect)
@@ -13,6 +14,7 @@ struct ClientHandlers {
 	std::unique_ptr<GameWinListener> WinListener; 
 	std::unique_ptr<WaveStartListener> WaveListener;
 	std::unique_ptr<TowerListener> TowerListener;
+	std::unique_ptr<BloonListener> BloonListener;
 };
 
 class GameClient

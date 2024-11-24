@@ -11,6 +11,7 @@ namespace Chimp {
 			m_Engine.GetWindow().Update();
 			m_Engine.GetSceneManager().Update();
 			m_Engine.GetUpdateSubscriber().Update();
+			m_Engine.GetTaskScheduler().Update();
 
 			m_Engine.GetWindow().UpdateEnd();
 

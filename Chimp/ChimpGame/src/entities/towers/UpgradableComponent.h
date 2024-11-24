@@ -1,5 +1,10 @@
 #pragma once
 
+enum class UpgradeType {
+	ATTACK_SPEED,
+	ATTACK_DAMAGE
+};
+
 struct UpgradableComponent {
 	int NumAttackSpeedUpgrades = 0;
 	int NumDamageUpgrades = 0;
@@ -18,5 +23,19 @@ struct UpgradableComponent {
 
 	int GetDamage(int base) const {
 		return base + NumDamageUpgrades;
+	}
+
+	void Upgrade(UpgradeType type) {
+		switch (type) {
+		case UpgradeType::ATTACK_SPEED:
+			NumAttackSpeedUpgrades++;
+			break;
+		case UpgradeType::ATTACK_DAMAGE:
+			NumDamageUpgrades++;
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
 };

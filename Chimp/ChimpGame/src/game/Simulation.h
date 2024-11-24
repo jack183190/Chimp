@@ -4,7 +4,7 @@
 #include "rendering/GameRenderer.h"
 #include "Entities.h"
 #include "entities/health/HealthSystem.h"
-#include "BloonManager.h"
+#include "bloons/BloonManager.h"
 #include "waves/WaveManagerBuilder.h"
 #include "towers/TowerManager.h"
 #include "towers/TowerEditor.h"
@@ -25,6 +25,7 @@ public:
 	Chimp::WaveManager& GetWaveManager();
 	TowerManager& GetTowerManager();
 	Chimp::Vector2f GetPosition() const;
+	BloonManager& GetBloonManager();
 private:
 	Chimp::Engine& m_Engine;
 	Chimp::Vector2f m_Position;

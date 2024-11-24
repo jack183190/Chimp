@@ -19,3 +19,6 @@ TowerListener class (opponent simulation) listens for tower place, remove, upgra
 
 TowerEditor class (player simulation) handles ui for a player placing, removing, upgrading towers
 TowerEditor is responsible for sending packets so that the other client TowerListener can receive them
+
+BloonSpawner class handles ui for sending bloons to opponent, also handles sending them to opponent simulation on client end, and sending packets
+BloonListener class handles receiving packets and sending the bloons

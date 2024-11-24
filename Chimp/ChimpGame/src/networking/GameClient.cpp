@@ -20,6 +20,7 @@ void GameClient::Connect(Chimp::ConnectionInfo connectionInfo)
 		m_Handlers->WinListener = std::make_unique<GameWinListener>(*m_Client);
 		m_Handlers->WaveListener = std::make_unique<WaveStartListener>(*m_Client);
 		m_Handlers->TowerListener = std::make_unique<TowerListener>(*m_Client);
+		m_Handlers->BloonListener = std::make_unique<BloonListener>(*m_Client);
 		GetLogger().Info("Connected to server with client id " + std::to_string(m_Client->GetId()));
 	}
 }

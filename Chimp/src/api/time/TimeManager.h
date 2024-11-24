@@ -16,9 +16,11 @@ namespace Chimp {
 
 	public:
 		float GetDeltaTime() const;
+		float GetSecondsRunning() const;
 
 	private:
 		std::chrono::steady_clock::time_point m_FrameStartTime;
 		float m_DeltaTime;
+		float m_SecondsRunning;
 	};
 }

@@ -17,6 +17,7 @@ public:
 private:
 	void Place(TowerType type, Chimp::Vector2f position);
 	void RemoveSelectedTower();
+	void UpgradeSelectedTower(UpgradeType type);
 
 private:
 	TowerManager& m_TowerManager;
