@@ -5,6 +5,7 @@
 #include "systems/TowerAttackSystem.h"
 #include "systems/TowerTargetSystem.h"
 #include "systems/TowerProjectileSystem.h"
+#include "systems/TowerUpgradeDisplaySystem.h"
 
 class TowerManager {
 public:
@@ -16,6 +17,7 @@ public:
 	);
 
 	void Update();
+	void RenderUI();
 
 	Chimp::EntityId PlaceTower(TowerType type, Chimp::Vector2f position);
 	Chimp::EntityId PlaceTowerWithNetworkId(TowerType type, Chimp::Vector2f position, NetworkId id);
@@ -28,4 +30,5 @@ private:
 	TowerTargetSystem m_TowerTargetSystem;
 	TowerAttackSystem m_TowerRotationSystem;
 	TowerProjectileSystem m_TowerProjectileSystem;
+	TowerUpgradeDisplaySystem m_TowerUpgradeDisplaySystem;
 };

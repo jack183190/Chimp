@@ -56,6 +56,7 @@ void Simulation::RenderUI()
 	if (m_TowerEditor) {
 		m_TowerEditor->RenderUI();
 	}
+	m_TowerManager.RenderUI();
 }
 
 bool Simulation::HasLost() const

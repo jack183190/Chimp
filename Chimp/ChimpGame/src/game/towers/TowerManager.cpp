@@ -10,7 +10,8 @@ TowerManager::TowerManager(
 	m_SimulationPosition(simulationPosition),
 	m_TowerTargetSystem(engine, ecs),
 	m_TowerRotationSystem(engine, ecs),
-	m_TowerProjectileSystem(engine, ecs, simulationPosition, simulationSize)
+	m_TowerProjectileSystem(engine, ecs, simulationPosition, simulationSize),
+	m_TowerUpgradeDisplaySystem(engine, ecs)
 {
 }
 
@@ -19,6 +20,11 @@ void TowerManager::Update()
 	m_TowerTargetSystem.Update();
 	m_TowerRotationSystem.Update();
 	m_TowerProjectileSystem.Update();
+}
+
+void TowerManager::RenderUI()
+{
+	m_TowerUpgradeDisplaySystem.RenderUI();
 }
 
 Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f position)
