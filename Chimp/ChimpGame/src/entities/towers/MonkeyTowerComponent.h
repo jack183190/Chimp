@@ -4,6 +4,7 @@
 #include "TowerComponent.h"
 #include "WorthComponent.h"
 #include "UpgradableComponent.h"
+#include "entities/NetworkedIdentifierComponent.h"
 
 struct MonkeyTowerComponent {
 	bool Padding;

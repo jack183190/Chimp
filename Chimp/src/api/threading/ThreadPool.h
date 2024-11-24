@@ -29,10 +29,13 @@ namespace Chimp {
 		// Run a vector of tasks asynchronously and but block until all tasks are finished
 		void WaitUntilTasksExecuted(const std::vector<std::function<void()>>& tasks);
 
+		[[nodiscard]] size_t GetNumThreads() const { return m_NumThreads; }
+
 	private:
 		void WorkerThreadLogic();
 
 	private:
+		size_t m_NumThreads;
 		std::vector<std::thread> m_Threads;
 		ThreadSafeQueue<TaskDescription> m_Tasks;
 		bool m_IsBeingDestroyed = false;

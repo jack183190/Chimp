@@ -86,8 +86,7 @@ void TowerEditor::RenderUI()
 		// REMOVE BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
 		if (ImGui::Button("Sell Tower##removeTower", ImVec2(100, 50))) {
-			m_ECS.RemoveEntity(selectedTower);
-			m_SelectionSystem.DeselectTower();
+			RemoveSelectedTower();
 			return;
 		}
 
@@ -121,11 +120,37 @@ void TowerEditor::RenderUI()
 
 void TowerEditor::Place(TowerType type, Chimp::Vector2f position)
 {
-	m_TowerManager.PlaceTower(type, position);
+	auto entityId = m_TowerManager.PlaceTower(type, position);
+	auto towerId = m_ECS.GetComponent<NetworkedIdentifierComponent>(entityId)->Id;
+
 	ClientTowerPlacePacket packet;
 	packet.PacketType = Networking::CLIENT_TOWER_PLACE;
 	packet.Position = position;
 	packet.Type = type;
+	packet.TowerId = towerId;
+
+#ifndef DEBUG_AUTOSTART_WITH_1_PLAYER
+	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();
+	Networking::GetClient()->GetClient().SendPacketToClient(opponentId, packet);
+#endif
+}
+
+void TowerEditor::RemoveSelectedTower()
+{
+	if (!m_SelectionSystem.IsTowerSelected()) {
+		return;
+	}
+
+	auto selectedTower = m_SelectionSystem.GetSelectedTower();
+	auto towerId = m_ECS.GetComponent<NetworkedIdentifierComponent>(selectedTower)->Id;
+
+	auto health = m_ECS.GetMutableComponent<HealthComponent>(selectedTower);
+	health->Health = 0;
+	m_SelectionSystem.DeselectTower();
+
+	ClientTowerRemovePacket packet;
+	packet.PacketType = Networking::CLIENT_TOWER_REMOVE;
+	packet.TowerId = towerId;
 
 #ifndef DEBUG_AUTOSTART_WITH_1_PLAYER
 	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();

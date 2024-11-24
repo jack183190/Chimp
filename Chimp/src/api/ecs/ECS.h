@@ -29,13 +29,27 @@ namespace Chimp {
 				auto system = world.system<Components...>().each([this](Components&... components) {
 					m_Components.emplace_back(components...);
 					});
-				
+
 				system.run();
 				system.destruct();
 			}
 
+			View(std::vector<ComponentTuple>&& components) : m_Components(std::move(components)) {}
+
 		public:
 			~View() = default;
+
+			// Remove all entities from the view that do not satisfy the predicate
+			void WithPredicate(const std::function<bool(ComponentTuple&)> &predicate) {
+				for (auto it = m_Components.begin(); it != m_Components.end();) {
+					if (!predicate(*it)) {
+						it = m_Components.erase(it);
+					}
+					else {
+						++it;
+					}
+				}
+			}
 
 		public:
 			using iterator = typename std::vector<ComponentTuple>::iterator;

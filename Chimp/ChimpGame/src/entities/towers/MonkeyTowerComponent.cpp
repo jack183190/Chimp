@@ -1,6 +1,7 @@
 #include "MonkeyTowerComponent.h"
 #include "entities/BaseEntity.h"
 #include "entities/towers/TowerTypes.h"
+#include "entities/health/HealthComponent.h"
 
 Chimp::EntityId Entities::CreateMonkeyTower(Chimp::ECS& ecs, Chimp::Mesh& mesh, Chimp::Vector2f position)
 {
@@ -12,9 +13,11 @@ Chimp::EntityId Entities::CreateMonkeyTower(Chimp::ECS& ecs, Chimp::Mesh& mesh, 
 	));
 
 	ecs.SetComponent(ent, MonkeyTowerComponent{});
+	ecs.SetComponent(ent, HealthComponent{});
 	ecs.SetComponent(ent, TowerComponent{ TOWER_TYPE_DART_MONKEY });
 	ecs.SetComponent(ent, WorthComponent{ TOWER_COSTS[TOWER_TYPE_DART_MONKEY] });
 	ecs.SetComponent(ent, UpgradableComponent{});
+	ecs.SetComponent(ent, NetworkedIdentifierComponent{});
 
 	return ent;
 }

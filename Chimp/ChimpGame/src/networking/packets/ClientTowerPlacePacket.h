@@ -6,4 +6,5 @@
 struct ClientTowerPlacePacket : public Chimp::NetworkPacket {
 	Chimp::Vector2f Position;
 	TowerType Type;
+	NetworkId TowerId;
 };

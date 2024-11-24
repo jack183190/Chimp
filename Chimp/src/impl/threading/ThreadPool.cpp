@@ -15,7 +15,8 @@ namespace Chimp {
 	}
 
 	ThreadPool::ThreadPool(size_t numThreads) :
-		m_IsBeingDestroyed(false)
+		m_IsBeingDestroyed(false),
+		m_NumThreads(numThreads)
 	{
 		m_Threads.reserve(numThreads);
 		for (size_t i = 0; i < numThreads; ++i) {

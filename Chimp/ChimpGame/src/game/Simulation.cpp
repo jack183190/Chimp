@@ -41,7 +41,7 @@ void Simulation::Update()
 		m_TowerEditor->Update();
 	}
 	if (!m_IsPlayerSimulation) {
-		Networking::GetClient()->GetHandlers().TowerPlaceListener->Update(m_TowerManager);
+		Networking::GetClient()->GetHandlers().TowerListener->Update(m_TowerManager);
 	}
 }
 

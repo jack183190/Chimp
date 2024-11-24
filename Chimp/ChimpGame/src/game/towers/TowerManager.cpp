@@ -33,3 +33,22 @@ Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f positio
 		break;
 	}
 }
+
+Chimp::EntityId TowerManager::PlaceTowerWithNetworkId(TowerType type, Chimp::Vector2f position, NetworkId id)
+{
+	auto entId = PlaceTower(type, position);
+	auto networkId = m_ECS.GetMutableComponent<NetworkedIdentifierComponent>(entId);
+	networkId->Id = id;
+	return entId;
+}
+
+void TowerManager::RemoveTowerWithNetworkId(NetworkId id)
+{
+	auto view = m_ECS.GetEntitiesWithComponents<NetworkedIdentifierComponent, HealthComponent>();
+	for (auto& [idComp, health] : view) {
+		if (idComp.Id == id) {
+			health.Health = 0;
+			return;
+		}
+	}
+}

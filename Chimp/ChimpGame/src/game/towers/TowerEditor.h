@@ -16,6 +16,7 @@ public:
 
 private:
 	void Place(TowerType type, Chimp::Vector2f position);
+	void RemoveSelectedTower();
 
 private:
 	TowerManager& m_TowerManager;
