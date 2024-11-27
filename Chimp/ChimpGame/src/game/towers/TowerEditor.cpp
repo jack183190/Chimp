@@ -5,13 +5,15 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	Chimp::Engine& engine,
 	Chimp::ECS& ecs,
 	Chimp::Vector2f simulationPosition,
-	Chimp::Vector2f simulationSize) :
+	Chimp::Vector2f simulationSize,
+	MoneyManager& moneyManager) :
 	m_TowerManager(towerManager),
 	m_Engine(engine),
 	m_ECS(ecs),
 	m_SimulationPosition(simulationPosition),
 	m_SimulationSize(simulationSize),
-	m_SelectionSystem(engine, ecs, simulationPosition)
+	m_SelectionSystem(engine, ecs, simulationPosition),
+	m_MoneyManager(moneyManager)
 {
 }
 
@@ -24,6 +26,9 @@ void TowerEditor::Update()
 		m_SelectionSystem.Update();
 	}
 
+	// Prevent placing if no money
+	m_IsPlacing = m_IsPlacing && m_MoneyManager.HasMoney(TOWER_COSTS[m_PlacingType]);
+
 	// Handle placing towers
 	auto mousePos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
 	if (m_Engine.GetWindow().GetInputManager().IsMouseButtonPressed(Chimp::Mouse::LEFT)
@@ -33,6 +38,7 @@ void TowerEditor::Update()
 		auto towerPos = Chimp::ComponentMax({ 0,0 }, mousePos - m_SimulationPosition);
 		towerPos.y *= -1;
 		Place(m_PlacingType, towerPos);
+		m_MoneyManager.RemoveMoney(TOWER_COSTS[m_PlacingType]);
 		m_IsPlacing = false;
 	}
 }
@@ -46,7 +52,7 @@ void TowerEditor::RenderUI()
 
 	// DESELECT BUTTON
 	if (m_IsPlacing) {
-		ImGui::SetCursorPos({iconPosition.x - 100, iconPosition.y});
+		ImGui::SetCursorPos({ iconPosition.x - 100, iconPosition.y });
 		intptr_t deselect = (intptr_t)m_Engine.GetResourceManager().LoadTexture(GAME_SRC + std::string("/assets/textures/X.png")).GetId();
 		if (ImGui::ImageButton("##close", deselect, ImVec2(50, 50))) {
 			m_IsPlacing = false;
@@ -56,12 +62,18 @@ void TowerEditor::RenderUI()
 	for (TowerType type = 0; type < NUM_TOWERS; type++) {
 		intptr_t icon = (intptr_t)m_Engine.GetResourceManager().LoadTexture(TOWER_ICONS[type]).GetId();
 
-		// DRAW SELECT BUTTON
+		// DRAW SELECT TOWER TO PLACE BUTTON
 		ImGui::SetCursorPos(iconPosition);
 		std::string label = "##tower" + std::to_string(type);
+		if (!m_MoneyManager.HasMoney(TOWER_COSTS[type])) {
+			ImGui::BeginDisabled();
+		}
 		if (ImGui::ImageButton(label.c_str(), icon, ImVec2(50, 50))) {
 			m_IsPlacing = true;
 			m_PlacingType = type;
+		}
+		if (!m_MoneyManager.HasMoney(TOWER_COSTS[type])) {
+			ImGui::EndDisabled();
 		}
 
 		iconPosition.x += 60.0f;
@@ -80,12 +92,13 @@ void TowerEditor::RenderUI()
 	if (m_SelectionSystem.IsTowerSelected()) {
 		auto selectedTower = m_SelectionSystem.GetSelectedTower();
 		auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
-		auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
 		assert(upgrades.HasValue());
 
 		// REMOVE BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
-		if (ImGui::Button("Sell Tower##removeTower", ImVec2(100, 50))) {
+		const int worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth * WorthComponent::SELL_MULTIPLIER;
+		const std::string removeButtonLabel = "Sell +$" + std::to_string(worth) + "##removeTower";
+		if (ImGui::Button(removeButtonLabel.c_str(), ImVec2(100, 50))) {
 			RemoveSelectedTower();
 			return;
 		}
@@ -101,16 +114,30 @@ void TowerEditor::RenderUI()
 		ImGui::SetCursorPos({ iconPosition.x + 60 + 110, iconPosition.y });
 		std::stringstream ss;
 		ss << "Upgrade Damage: " << upgrades->GetDamageUpgradeCost() << "##upgradeDamage";
+		 bool canNotAfford = !m_MoneyManager.HasMoney(upgrades->GetDamageUpgradeCost());
+		 if (canNotAfford) {
+			ImGui::BeginDisabled();
+		}
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
 			UpgradeSelectedTower(UpgradeType::ATTACK_DAMAGE);
+		}
+		if (canNotAfford) {
+			ImGui::EndDisabled();
 		}
 
 		// UPGRADE ATTACK SPEED BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60 + 110, iconPosition.y - 60 });
 		ss.str("");
 		ss << "Upgrade Attack Speed: " << upgrades->GetAttackSpeedUpgradeCost() << "##upgradeAttackSpeed";
+		  canNotAfford = !m_MoneyManager.HasMoney(upgrades->GetAttackSpeedUpgradeCost());
+		if (canNotAfford) {
+			ImGui::BeginDisabled();
+		}
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
 			UpgradeSelectedTower(UpgradeType::ATTACK_SPEED);
+		}
+		if (canNotAfford) {
+			ImGui::EndDisabled();
 		}
 	}
 }
@@ -145,6 +172,9 @@ void TowerEditor::RemoveSelectedTower()
 	health->Health = 0;
 	m_SelectionSystem.DeselectTower();
 
+	auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
+	m_MoneyManager.AddMoney(worth * WorthComponent::SELL_MULTIPLIER);
+
 	ClientTowerRemovePacket packet;
 	packet.PacketType = Networking::CLIENT_TOWER_REMOVE;
 	packet.TowerId = towerId;
@@ -165,7 +195,11 @@ void TowerEditor::UpgradeSelectedTower(UpgradeType type)
 	auto towerId = m_ECS.GetComponent<NetworkedIdentifierComponent>(selectedTower)->Id;
 
 	auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
-	upgrades->Upgrade(type); // todo cost, worth
+	auto worthComponent = m_ECS.GetMutableComponent<WorthComponent>(selectedTower);
+	worthComponent->Worth += upgrades->GetUpgradeCost(type);
+	m_MoneyManager.RemoveMoney(upgrades->GetUpgradeCost(type));
+
+	upgrades->Upgrade(type); 
 
 	// Packet
 	ClientTowerUpgradePacket packet;

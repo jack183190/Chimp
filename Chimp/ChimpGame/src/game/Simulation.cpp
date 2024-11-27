@@ -5,7 +5,8 @@ Simulation::Simulation(Chimp::Engine& engine,
 	std::shared_ptr<GameRenderer> gameRenderer,
 	Chimp::Vector2f position,
 	Chimp::Vector2f size,
-	bool isPlayerSimulation)
+	bool isPlayerSimulation,
+	MoneyManager& moneyManager)
 	: m_Engine(engine),
 	m_GameRenderer(gameRenderer),
 	m_Position(position),
@@ -14,10 +15,11 @@ Simulation::Simulation(Chimp::Engine& engine,
 	m_BloonManager(m_Engine, m_ECS, m_Position),
 	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager)),
 	m_TowerManager(m_Engine, m_ECS, m_Position, m_Size),
-	m_IsPlayerSimulation(isPlayerSimulation)
+	m_IsPlayerSimulation(isPlayerSimulation),
+	m_MoneyManager(moneyManager)
 {
 	if (isPlayerSimulation) {
-		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position, m_Size);
+		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position, m_Size, m_MoneyManager);
 	}
 
 	Entities::CreateBaseEntity(

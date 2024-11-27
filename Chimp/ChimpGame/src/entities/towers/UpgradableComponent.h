@@ -38,4 +38,16 @@ struct UpgradableComponent {
 			break;
 		}
 	}
+
+	int GetUpgradeCost(UpgradeType type) const {
+		switch (type) {
+		case UpgradeType::ATTACK_SPEED:
+			return GetAttackSpeedUpgradeCost();
+		case UpgradeType::ATTACK_DAMAGE:
+			return GetDamageUpgradeCost();
+		default:
+			assert(false);
+			return 0;
+		}
+	}
 };

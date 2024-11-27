@@ -2,6 +2,7 @@
 
 #include "TowerManager.h"
 #include "systems/TowerSelectionSystem.h"
+#include "game/MoneyManager.h"
 
 class TowerEditor {
 public:
@@ -9,7 +10,8 @@ public:
 		Chimp::Engine& engine,
 		Chimp::ECS& ecs,
 		Chimp::Vector2f simulationPosition,
-		Chimp::Vector2f simulationSize);
+		Chimp::Vector2f simulationSize,
+		MoneyManager& moneyManager);
 
 	void Update();
 	void RenderUI();
@@ -28,4 +30,5 @@ private:
 	bool m_IsPlacing = false;
 	TowerType m_PlacingType;
 	TowerSelectionSystem m_SelectionSystem;
+	MoneyManager &m_MoneyManager;
 };
