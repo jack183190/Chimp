@@ -6,6 +6,7 @@
 #include "waves/WaveStartHandler.h"
 #include "match_end/MatchWinLoseHandler.h"
 #include "bloons/BloonSpawner.h"
+#include "MoneyManager.h"
 
 class GameScene : public Chimp::Scene {
 public:
@@ -33,4 +34,6 @@ private:
 	std::unique_ptr<WaveStartHandler> m_WaveStartHandler;
 	std::unique_ptr<MatchWinLoseHandler> m_MatchWinLoseHandler;
 	std::unique_ptr<BloonSpawner> m_BloonSpawner;
+	MoneyManager m_MoneyManager;
+	Chimp::Timer m_GameRunningTimer;
 };

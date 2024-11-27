@@ -43,6 +43,7 @@
 #include <optional>
 #include <utility>
 #include <regex>
+#include <format>
 
 // OpenGL
 #ifdef CHIMP_OPENGL

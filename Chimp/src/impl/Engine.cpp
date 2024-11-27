@@ -71,6 +71,11 @@ namespace Chimp {
 		return m_ThreadPool;
 	}
 
+	ImGuiHelper& Engine::GetImGuiHelper()
+	{
+		return m_ImGuiHelper;
+	}
+
 	TaskScheduler& Engine::GetTaskScheduler()
 	{
 		return m_TaskScheduler;

@@ -32,4 +32,10 @@ namespace Chimp::Loggers {
 		static Logger logger("ChimpWaveManager", LogLevel::INFO);
 		return logger;
 	}
+
+	static Logger& TimeManager()
+	{
+		static Logger logger("ChimpTimeManager", LogLevel::WARNING);
+		return logger;
+	}
 }

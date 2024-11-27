@@ -13,6 +13,7 @@
 #include "scenes/SceneManager.h"
 #include "api/threading/ThreadPool.h"
 #include "api/utils/TaskScheduler.h"
+#include "api/utils/ImGuiHelper.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -31,6 +32,7 @@ namespace Chimp {
 		[[nodiscard]] UpdateSubscriber& GetUpdateSubscriber();
 		[[nodiscard]] SceneManager& GetSceneManager();
 		[[nodiscard]] ThreadPool& GetThreadPool();
+		[[nodiscard]] ImGuiHelper& GetImGuiHelper();
 
 		// Task scheduler for running tasks at specific times
 		// This instance is updated automatically at the end of each update phase.
@@ -67,5 +69,6 @@ namespace Chimp {
 		std::unique_ptr<SceneManager> m_SceneManager; // initialized in MainLoop
 		ThreadPool m_ThreadPool;
 		TaskScheduler m_TaskScheduler;
+		ImGuiHelper m_ImGuiHelper;
 	};
 }
