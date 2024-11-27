@@ -1,6 +1,8 @@
 #include "ClientCurrentMatchHandler.h"
 #include "networking/packets/Packets.h"
 #include "networking/Networking.h"
+#include "Logger.h"
+#include "Debug.h"
 
 ClientCurrentMatchHandler::ClientCurrentMatchHandler(Chimp::Engine& engine,
 	Chimp::IClient& client) :
@@ -9,6 +11,14 @@ ClientCurrentMatchHandler::ClientCurrentMatchHandler(Chimp::Engine& engine,
 {
 	m_MatchStartListener = m_Client.GetEventHandler().Subscribe(Networking::CLIENT_MATCH_START,
 		[this](const Chimp::NetworkPacket* event) { HandleMatchStart(event); });
+
+#ifdef DEBUG_AUTOSTART_WITH_1_PLAYER
+	ClientMatchStartPacket matchStartPacket; // TODO: Remove this
+	matchStartPacket.PacketType = Networking::CLIENT_MATCH_START;
+	matchStartPacket.MatchId = 1;
+	matchStartPacket.OpponentId = 2;
+	HandleMatchStart(&matchStartPacket); 
+#endif
 }
 
 ClientCurrentMatchHandler::~ClientCurrentMatchHandler()
@@ -22,9 +32,18 @@ void ClientCurrentMatchHandler::Update()
 
 void ClientCurrentMatchHandler::HandleMatchStart(const Chimp::NetworkPacket* event)
 {
+	if (IsInMatch()) {
+		std::cout << "Already in a match, dropping match start packet" << std::endl;
+		GetLogger().Error("Already in a match, dropping match start packet");
+		return;
+	}
+
 	auto matchStartPacket =
 		static_cast<const ClientMatchStartPacket*>(event);
 	assert(matchStartPacket != nullptr);
 
-	std::cout << "Match started with opponent " << matchStartPacket->OpponentId << std::endl;
+	m_MatchId = matchStartPacket->MatchId;
+	m_OpponentId = matchStartPacket->OpponentId;
+
+	GetLogger().Info("Match started with opponent " + std::to_string(m_OpponentId));
 }

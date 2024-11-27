@@ -4,17 +4,23 @@
 #include "api/window/IWindow.h"
 #include "api/graphics/IRenderingManager.h"
 #include "api/graphics/images/IImageLoader.h"
-#include "api/assets/AssetManager.h"
+#include "api/resources/ResourceManager.h"
 #include "api/networking/EventHandler.h"
 #include "api/networking/IServer.h"
 #include "api/networking/IClient.h"
 #include "api/logging/Logger.h"
 #include "api/utils/UpdateSubscriber.h"
+#include "scenes/SceneManager.h"
+#include "api/threading/ThreadPool.h"
+#include "api/utils/TaskScheduler.h"
+#include "api/utils/ImGuiHelper.h"
 
 namespace Chimp {
 	class EntryPoint;
+	class MainLoop;
 	class Engine {
 		friend class EntryPoint;
+		friend class MainLoop;
 	private:
 		Engine();
 
@@ -22,8 +28,15 @@ namespace Chimp {
 		[[nodiscard]] TimeManager& GetTimeManager();
 		[[nodiscard]] IWindow& GetWindow();
 		[[nodiscard]] IRenderingManager& GetRenderingManager();
-		[[nodiscard]] AssetManager& GetAssetManager();
+		[[nodiscard]] ResourceManager& GetResourceManager();
 		[[nodiscard]] UpdateSubscriber& GetUpdateSubscriber();
+		[[nodiscard]] SceneManager& GetSceneManager();
+		[[nodiscard]] ThreadPool& GetThreadPool();
+		[[nodiscard]] ImGuiHelper& GetImGuiHelper();
+
+		// Task scheduler for running tasks at specific times
+		// This instance is updated automatically at the end of each update phase.
+		[[nodiscard]] TaskScheduler& GetTaskScheduler();
 
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
@@ -47,11 +60,15 @@ namespace Chimp {
 		[[nodiscard]] std::unique_ptr<IImageLoader> CreateImageLoader() const;
 
 	private:
-		AssetManager m_AssetManager;
+		ResourceManager m_ResourceManager;
 		TimeManager m_TimeManager;
 		UpdateSubscriber m_UpdateSubscriber;
 		std::unique_ptr<IWindow> m_Window;
 		std::unique_ptr<IImageLoader> m_ImageLoader; // must be above rendering manager
 		std::unique_ptr<IRenderingManager> m_RenderingManager;
+		std::unique_ptr<SceneManager> m_SceneManager; // initialized in MainLoop
+		ThreadPool m_ThreadPool;
+		TaskScheduler m_TaskScheduler;
+		ImGuiHelper m_ImGuiHelper;
 	};
 }

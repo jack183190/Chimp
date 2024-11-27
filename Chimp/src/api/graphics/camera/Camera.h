@@ -9,8 +9,8 @@ namespace Chimp {
 	// Updating any property of the camera will automatically update the view / projection matrix
 	class Camera : public ICamera {
 	public:
-		// Create a camera positioned at (0, 0, 0) where +z is forward and +y is up and +x is right
-		// The view will be a 16x9 viewport positioned at (0, 0) with a clipping plane of 0.0 to 1000.0
+		// Create a camera positioned at (0, 0, -1) where +z is forward and -y is up and +x is right
+		// The view will be a 1280x720 viewport positioned at (0, 0) with a clipping plane of 0.0 to 1000.0
 		Camera();
 		~Camera() = default;
 

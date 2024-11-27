@@ -11,6 +11,11 @@ namespace Chimp {
 		return glm::normalize(a);
 	}
 
+	Vector2f VectorNormalized(const Vector2f& a)
+	{
+		return glm::normalize(a);
+	}
+
 	Matrix CreateIdentityMatrix()
 	{
 		return glm::identity<Matrix>();
@@ -24,6 +29,13 @@ namespace Chimp {
 	Matrix CreateScaleMatrix(Vector3f scale)
 	{
 		return glm::scale(CreateIdentityMatrix(), scale);
+	}
+
+	Matrix CreateRotationMatrixYawPitchRoll(Vector3f yawPitchRoll)
+	{
+		return glm::rotate(CreateIdentityMatrix(), yawPitchRoll.x, Vector3f(0.0f, 1.0f, 0.0f)) *
+			glm::rotate(CreateIdentityMatrix(), yawPitchRoll.y, Vector3f(1.0f, 0.0f, 0.0f)) *
+			glm::rotate(CreateIdentityMatrix(), yawPitchRoll.z, Vector3f(0.0f, 0.0f, 1.0f));
 	}
 
 	std::array<Vector3f, 3> GetForwardUpRightVectors(const Vector3f yawPitchRoll)

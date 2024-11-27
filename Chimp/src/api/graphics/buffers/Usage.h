@@ -3,9 +3,9 @@
 namespace Chimp {
 	struct Usage {
 		enum class UpdateFrequency {
-			VERY_OCCASIONAL,
-			OCCASIONAL,
-			OFTEN
+			VERY_OCCASIONAL, // Less than once per frame
+			OCCASIONAL, // Once per frame
+			OFTEN // Multiple times per frame
 		};
 
 		enum class Access {

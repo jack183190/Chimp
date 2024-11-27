@@ -6,6 +6,7 @@
 
 namespace Chimp {
 	class ITexture {
+		DISABLE_COPY(ITexture);
 	protected:
 		// Represents a texture (2D buffer) on the GPU.
 		ITexture(const TextureSlot slot, 
@@ -26,6 +27,9 @@ namespace Chimp {
 
 		// Get the slot the texture is bound to
 		[[nodiscard]] TextureSlot GetSlot() const;
+
+		// Get the id of the texture
+		[[nodiscard]] virtual void* GetId() const = 0;
 
 	protected:
 		// Get the properties of the texture

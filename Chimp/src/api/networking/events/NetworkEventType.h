@@ -14,7 +14,7 @@ namespace Chimp {
 		static constexpr NetworkPacketType CLIENT_DISCONNECTED = -6;
 		static constexpr NetworkPacketType CLIENT_REQUEST_RESPONSE = -7;
 		static constexpr NetworkPacketType SERVER_RESPONDING_TO_CLIENT = -8;
-		static constexpr NetworkPacketType SERVER_REQUEST_RESPONSE = -8;
+		static constexpr NetworkPacketType SERVER_REQUEST_RESPONSE = -9;
 		static constexpr NetworkPacketType CLIENT_RESPONDING_TO_SERVER = -10;
 		static constexpr NetworkPacketType SERVER_CLIENT_CONNECTED = -11;
 		static constexpr NetworkPacketType SERVER_CLIENT_DISCONNECTED = -12;

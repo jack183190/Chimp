@@ -85,7 +85,6 @@ namespace Chimp {
 
 	void Client::ImplSendPacketToServer(const NetworkPacket& packet, int channel)
 	{
-		// todo multithreading support here
 		assert(IsValid());
 
 		const auto packetSize = PacketTypeRegistry::GetPacketSize(packet.PacketType);

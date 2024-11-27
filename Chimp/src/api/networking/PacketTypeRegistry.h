@@ -2,6 +2,7 @@
 
 #include "events/NetworkEventType.h"
 #include "stdafx.h"
+#include "Loggers.h"
 
 namespace Chimp {
 	class Engine;
@@ -21,7 +22,11 @@ namespace Chimp {
 		static void RegisterPacketType(NetworkPacketType type) {
 			size_t typeSize = sizeof(T);
 			std::function<std::unique_ptr<NetworkPacket>()> factoryFunc = []() { return std::unique_ptr<NetworkPacket>(static_cast<NetworkPacket*>(new T())); };
-			
+			auto iter = GetInstance().m_PacketTypeMap.find(type);
+			if (iter != GetInstance().m_PacketTypeMap.end()) {
+				Loggers::Network().Warning("Registered packet with type " + std::to_string(type) + " already exists, overwriting...");
+			}
+
 			GetInstance().m_PacketTypeMap[type] = std::make_tuple(typeSize, factoryFunc);
 		}
 

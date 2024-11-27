@@ -1,6 +1,9 @@
 #include "MenuScene.h"
+#include "game/GameScene.h"
+#include "Debug.h"
 
-MenuScene::MenuScene(Chimp::Engine& engine)
+MenuScene::MenuScene(Chimp::Engine& engine,
+	std::shared_ptr<GameRenderer> renderer)
 	: m_Engine(engine),
 	m_ConnectionInfo({})
 {
@@ -10,16 +13,20 @@ MenuScene::MenuScene(Chimp::Engine& engine)
 
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
-	// Shader
-	Chimp::ShaderFilePaths shaderFilePaths = {};
-	{
-		shaderFilePaths.Vertex = GAME_SRC + std::string("/shaders/default.vert");
-		shaderFilePaths.Fragment = GAME_SRC + std::string("/shaders/default.frag");
-	}
-	auto shader = m_Engine.GetAssetManager().LoadShader(shaderFilePaths);
+	if (renderer == nullptr) {
+		// Our renderer
+		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine);
 
-	// Our renderer
-	m_GameRenderer = std::make_shared<GameRenderer>(m_Engine, shader);
+#ifdef DEBUG_AUTOHOST_AUTOCONNECT
+		Networking::GetServer()->Start(m_ConnectionInfo);
+		Networking::GetClient()->Connect(m_ConnectionInfo);
+#endif
+	}
+	else {
+		m_GameRenderer = renderer;
+		Networking::GetServer()->Shutdown();
+		Networking::GetClient()->Disconnect();
+	}
 }
 
 MenuScene::~MenuScene()
@@ -29,6 +36,7 @@ MenuScene::~MenuScene()
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
 {
+
 }
 
 void MenuScene::OnDeactivate()
@@ -37,6 +45,13 @@ void MenuScene::OnDeactivate()
 
 void MenuScene::OnUpdate()
 {
+	if (!Networking::GetClient()->IsConnected()) return;
+	auto& clientHandlers = Networking::GetClient()->GetHandlers();
+	
+	if (clientHandlers.CurrentMatchHandler->IsInMatch()) {
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameRenderer));
+	}
+	
 }
 
 void MenuScene::OnRender()

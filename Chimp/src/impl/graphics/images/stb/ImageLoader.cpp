@@ -19,7 +19,7 @@ namespace Chimp::STB {
 #ifndef NDEBUG
 		if (!image->IsValid())
 		{
-			Loggers::Resources().Error("Failed to load image: " + path);
+			Loggers::Resources().Error("Failed to load image: " + path + " ( " + stbi_failure_reason() + " )");
 		}
 		else {
 			Loggers::Resources().Info("--------------------------");

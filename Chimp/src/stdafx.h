@@ -42,6 +42,8 @@
 #include <random>
 #include <optional>
 #include <utility>
+#include <regex>
+#include <format>
 
 // OpenGL
 #ifdef CHIMP_OPENGL
@@ -57,6 +59,13 @@
 // STB
 #ifdef CHIMP_STB
 #include <../vendor/stb/stb_image.h>
+#endif
+
+// ASSIMP
+#ifdef CHIMP_ASSIMP
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #endif
 
 // IMGUI
