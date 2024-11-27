@@ -1,8 +1,8 @@
 #pragma once
 
-//#define DEBUG_AUTOHOST_AUTOCONNECT 0
+#define DEBUG_AUTOHOST_AUTOCONNECT 0
 // Autostart prevents some packets being sent btw
-//#define DEBUG_AUTOSTART_WITH_1_PLAYER 0
+#define DEBUG_AUTOSTART_WITH_1_PLAYER 0
 #define DEBUG_DISABLE_WAVE_SPAWNING 0
 
 // Keep these, just set to 1 if not using

@@ -14,8 +14,8 @@ GameScene::GameScene(Chimp::Engine& engine,
 	}
 
 	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
-	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false);
-	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true);
+	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager);
+	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager);
 
 	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
 

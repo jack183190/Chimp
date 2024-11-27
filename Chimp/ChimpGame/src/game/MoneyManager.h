@@ -4,6 +4,7 @@
 
 class MoneyManager {
 public:
+	DISABLE_COPY(MoneyManager);
 	MoneyManager();
 	~MoneyManager() = default;
 
@@ -31,9 +32,9 @@ public:
 	void Update();
 
 public:
-	constexpr static int StartingMoney = 650;
+	constexpr static int StartingMoney = 400;
 	constexpr static int StartingIncome = 100;
-	constexpr static float IncomeInterval = 6.0f;
+	constexpr static float IncomeInterval = 8.0f;
 private:
 	int Money = StartingMoney;
 	int Income = StartingIncome;

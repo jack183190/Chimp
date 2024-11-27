@@ -15,7 +15,8 @@ public:
 		std::shared_ptr<GameRenderer> gameRenderer,
 		Chimp::Vector2f position,
 		Chimp::Vector2f size,
-		bool isPlayerSimulation);
+		bool isPlayerSimulation,
+		MoneyManager& moneyManager);
 
 	void Update();
 	void Render();
@@ -38,4 +39,5 @@ private:
 	TowerManager m_TowerManager;
 	std::unique_ptr<TowerEditor> m_TowerEditor;
 	bool m_IsPlayerSimulation;
+	MoneyManager& m_MoneyManager;
 };
