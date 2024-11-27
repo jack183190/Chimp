@@ -38,7 +38,7 @@ void BloonManager::RenderUI()
 {
 	ImGui::SetCursorPos({ m_SimulationPosition.x, m_SimulationPosition.y });
 	std::string livesStr = "Lives: " + std::to_string(m_Lives);
-	ImGui::ProgressBar((float)m_Lives / MAX_LIVES, { 200, 20 }, livesStr.c_str());
+	ImGui::ProgressBar((float)m_Lives / StartingLives, { 200, 20 }, livesStr.c_str());
 }
 
 void BloonManager::SpawnBloon(Bloons::BloonType type)
