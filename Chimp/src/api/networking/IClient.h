@@ -4,7 +4,7 @@
 #include "ConnectionInfo.h"
 #include "EventHandler.h"
 #include "events/NetworkEventType.h"
-#include "api/utils/ThreadQueue.h"
+#include "api/threading/ThreadSafeQueue.h"
 #include "PacketResponseFunc.h"
 
 namespace Chimp {
@@ -75,10 +75,10 @@ namespace Chimp {
 
 	protected:
 		const ConnectionInfo m_ServerInfo;
-		ThreadQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
+		ThreadSafeQueue<std::tuple<NetworkPacketType, std::shared_ptr<NetworkPacket>>> m_EventQueue;
 		unsigned int m_ConnectionId = INVALID_ID;
 		std::unordered_map<NetworkPacketType, PacketResponseFunc> m_PacketResponseHandlers;
-		ThreadQueue<std::function<void()>> m_QueuedPacketsToSend;
+		ThreadSafeQueue<std::function<void()>> m_QueuedPacketsToSend;
 		bool m_SendQueuedPackets = false;
 		bool m_FailedToConnect = false;
 		bool m_WasDisconnected = false;

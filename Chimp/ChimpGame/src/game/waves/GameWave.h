@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "game/Entities.h"
-#include "game/BloonManager.h"
+#include "game/bloons/BloonManager.h"
 
 class GameWave : public Chimp::Wave
 {

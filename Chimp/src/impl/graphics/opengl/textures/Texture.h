@@ -12,6 +12,8 @@ namespace Chimp::GL {
 
 		void Bind() const override;
 		void Unbind() const override;
+
+		void* GetId() const override;
 	private:
 		GLuint m_TextureId;
 	};

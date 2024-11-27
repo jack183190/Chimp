@@ -1,15 +1,15 @@
 #pragma once
 
 #include "stdafx.h"
-#include "OptionalReference.h"
+#include "api/utils/OptionalReference.h"
 
 namespace Chimp {
 	// Thread safe wrapper for a queue
 	template<typename T>
-	class ThreadQueue
+	class ThreadSafeQueue
 	{
 	public:
-		OptionalReference<T> Front() {
+		[[nodiscard]] OptionalReference<T> Front() {
 			std::lock_guard<std::mutex> lock(m_Mutex);
 			return OptionalReference<T>(m_Queue.empty() ? nullptr : &m_Queue.front());
 		}
@@ -17,6 +17,18 @@ namespace Chimp {
 		void Pop() {
 			std::lock_guard<std::mutex> lock(m_Mutex);
 			m_Queue.pop();
+		}
+
+		// Pop the front element and return it
+		[[nodiscard]] std::unique_ptr<T> PeekAndPop() {
+			std::lock_guard<std::mutex> lock(m_Mutex);
+			if (m_Queue.empty()) {
+				return nullptr;
+			}
+
+			auto val = std::make_unique<T>(std::move(m_Queue.front()));
+			m_Queue.pop();
+			return val;
 		}
 
 		// Pop all elements from the queue and call the callback with each element
@@ -31,6 +43,12 @@ namespace Chimp {
 		void Push(const T& value) {
 			std::lock_guard<std::mutex> lock(m_Mutex);
 			m_Queue.push(value);
+		}
+
+		template <typename... Args>
+		void EmplaceBack(Args&&... args) {
+			std::lock_guard<std::mutex> lock(m_Mutex);
+			m_Queue.emplace(std::forward<Args>(args)...);
 		}
 
 		// Transfer all elements from the source queue to the back of this queue, maintaining the order

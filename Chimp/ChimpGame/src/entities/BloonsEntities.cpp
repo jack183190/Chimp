@@ -11,8 +11,8 @@ namespace Entities {
 			});
 
 		ecs.SetComponent<HealthComponent>(entity, HealthComponent{ Bloons::HealthValues[(size_t)type]});
-		ecs.SetComponent<EntityIdComponent>(entity, EntityIdComponent{ entity });
 		ecs.SetComponent<MoveableComponent>(entity, MoveableComponent{ Bloons::SpeedValues[(size_t)type]});
+		ecs.SetComponent<BloonComponent>(entity, BloonComponent{});
 
 		return entity;
 	}

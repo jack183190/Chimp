@@ -1,7 +1,9 @@
 #include "BloonManager.h"
+#include "Debug.h"
 
-BloonManager::BloonManager(Chimp::ECS& ecs,
-	Chimp::Engine& engine,
+BloonManager::BloonManager(
+	Chimp::Engine& engine, 
+	Chimp::ECS& ecs,
 	Chimp::Vector2f simulationPosition) :
 	m_ECS(ecs),
 	m_Engine(engine),
@@ -22,6 +24,10 @@ void BloonManager::Update()
 {
 	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::R)) {
 		SpawnBloon(Bloons::BloonType::RED);
+	}
+
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::B)) {
+		SpawnBloon(Bloons::BloonType::BLUE);
 	}
 
 	float dt = m_Engine.GetTimeManager().GetDeltaTime();
@@ -53,9 +59,7 @@ bool BloonManager::HasLost() const
 void BloonManager::HandleMovement(float dt)
 {
 	auto view = m_ECS.GetEntitiesWithComponents<MoveableComponent, HealthComponent, Chimp::TransformComponent>();
-#ifndef NDEBUG
-	dt *= 10.0f;
-#endif
+	dt *= DEBUG_BLOON_SPEED_MULTIPLIER;
 	for (auto& [moveable, health, transform] : view) {
 		moveable.DistanceTravelled += dt * moveable.Speed;
 
@@ -65,7 +69,7 @@ void BloonManager::HandleMovement(float dt)
 		transform.SetTranslationXY(point);
 
 		// Reached end of path?
-		if (!afterPath)continue;
+		if (!afterPath) continue;
 
 		m_Lives -= health.Health;
 		health.Health = 0;

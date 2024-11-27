@@ -7,17 +7,21 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_Engine(engine),
 	m_GameRenderer(gameRenderer)
 {
+	m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, "Dart", "Dart.png"));
 	m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, "MapBackground", "MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
 		m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, Bloons::BloonIds[i], Bloons::TexturePaths[i]));
 	}
 
-	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f });
-	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f });
+	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
+	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false);
+	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true);
 
 	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameRenderer);
+
+	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager());
 
 	LoadModels();
 }
@@ -38,14 +42,16 @@ void GameScene::OnDeactivate()
 
 void GameScene::OnUpdate()
 {
-	auto& clientHandlers = Networking::GetClient()->GetHandlers();
-
 	m_PlayerSimulation->Update();
 	m_OpponentSimulation->Update();
 
 	m_WaveStartHandler->Update();
 
 	m_MatchWinLoseHandler->Update();
+
+	m_BloonSpawner->Update();
+
+	Networking::GetClient()->GetHandlers().BloonListener->Update(m_PlayerSimulation->GetBloonManager());
 }
 
 void GameScene::OnRender()
@@ -54,13 +60,6 @@ void GameScene::OnRender()
 
 	m_PlayerSimulation->Render();
 	m_OpponentSimulation->Render();
-
-	auto& model = m_Engine.GetResourceManager().GetModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
-	Chimp::Transform transform;
-	transform.Translation = { 600,-250,-50 };
-	transform.Scale = { 100,100,100 };
-	transform.Rotation = { 0,0.8,6 };
-	m_GameRenderer->Render(model, transform.CreateTransformMatrix());
 }
 
 void GameScene::OnRenderUI()
@@ -76,6 +75,8 @@ void GameScene::OnRenderUI()
 	ImGui::SetWindowFontScale(2.5f);
 	ImGui::Text("Wave: %d", m_PlayerSimulation->GetWaveManager().GetWave());
 	ImGui::SetWindowFontScale(1.0f);
+
+	m_BloonSpawner->RenderUI();
 	ImGui::End();
 }
 

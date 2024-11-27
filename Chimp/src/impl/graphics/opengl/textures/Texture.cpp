@@ -43,4 +43,9 @@ namespace Chimp::GL {
 		glActiveTexture(GL_TEXTURE0 + GetSlot());
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
+	void* Texture::GetId() const
+	{
+		return (void*)m_TextureId;
+	}
 }

@@ -28,6 +28,9 @@ namespace Chimp {
 		// Get the slot the texture is bound to
 		[[nodiscard]] TextureSlot GetSlot() const;
 
+		// Get the id of the texture
+		[[nodiscard]] virtual void* GetId() const = 0;
+
 	protected:
 		// Get the properties of the texture
 		[[nodiscard]] const TextureProperties& GetProperties() const;

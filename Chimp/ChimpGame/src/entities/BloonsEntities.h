@@ -5,6 +5,7 @@
 #include "health/HealthComponent.h"
 #include "EntityIdComponent.h"
 #include "bloons/MoveableComponent.h"
+#include "bloons/BloonComponent.h"
 
 namespace Bloons {
 	constexpr size_t NUM_BLOON_TYPES = 3;
@@ -34,7 +35,7 @@ namespace Bloons {
 		150.0f
 	};
 	constexpr BloonType HealthToBloonType(int health) {
-		if (health == 1) {
+		if (health <= 1) {
 			return BloonType::RED;
 		}
 		else if (health == 2) {
