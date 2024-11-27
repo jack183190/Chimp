@@ -92,12 +92,13 @@ void TowerEditor::RenderUI()
 	if (m_SelectionSystem.IsTowerSelected()) {
 		auto selectedTower = m_SelectionSystem.GetSelectedTower();
 		auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
-		auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
 		assert(upgrades.HasValue());
 
 		// REMOVE BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
-		if (ImGui::Button("Sell Tower##removeTower", ImVec2(100, 50))) {
+		const int worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth * WorthComponent::SELL_MULTIPLIER;
+		const std::string removeButtonLabel = "Sell +$" + std::to_string(worth) + "##removeTower";
+		if (ImGui::Button(removeButtonLabel.c_str(), ImVec2(100, 50))) {
 			RemoveSelectedTower();
 			return;
 		}
@@ -113,16 +114,30 @@ void TowerEditor::RenderUI()
 		ImGui::SetCursorPos({ iconPosition.x + 60 + 110, iconPosition.y });
 		std::stringstream ss;
 		ss << "Upgrade Damage: " << upgrades->GetDamageUpgradeCost() << "##upgradeDamage";
+		 bool canNotAfford = !m_MoneyManager.HasMoney(upgrades->GetDamageUpgradeCost());
+		 if (canNotAfford) {
+			ImGui::BeginDisabled();
+		}
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
 			UpgradeSelectedTower(UpgradeType::ATTACK_DAMAGE);
+		}
+		if (canNotAfford) {
+			ImGui::EndDisabled();
 		}
 
 		// UPGRADE ATTACK SPEED BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60 + 110, iconPosition.y - 60 });
 		ss.str("");
 		ss << "Upgrade Attack Speed: " << upgrades->GetAttackSpeedUpgradeCost() << "##upgradeAttackSpeed";
+		  canNotAfford = !m_MoneyManager.HasMoney(upgrades->GetAttackSpeedUpgradeCost());
+		if (canNotAfford) {
+			ImGui::BeginDisabled();
+		}
 		if (ImGui::Button(ss.str().c_str(), ImVec2(200, 50))) {
 			UpgradeSelectedTower(UpgradeType::ATTACK_SPEED);
+		}
+		if (canNotAfford) {
+			ImGui::EndDisabled();
 		}
 	}
 }
@@ -157,6 +172,9 @@ void TowerEditor::RemoveSelectedTower()
 	health->Health = 0;
 	m_SelectionSystem.DeselectTower();
 
+	auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
+	m_MoneyManager.AddMoney(worth * WorthComponent::SELL_MULTIPLIER);
+
 	ClientTowerRemovePacket packet;
 	packet.PacketType = Networking::CLIENT_TOWER_REMOVE;
 	packet.TowerId = towerId;
@@ -177,7 +195,11 @@ void TowerEditor::UpgradeSelectedTower(UpgradeType type)
 	auto towerId = m_ECS.GetComponent<NetworkedIdentifierComponent>(selectedTower)->Id;
 
 	auto upgrades = m_ECS.GetMutableComponent<UpgradableComponent>(selectedTower);
-	upgrades->Upgrade(type); // todo cost, worth
+	auto worthComponent = m_ECS.GetMutableComponent<WorthComponent>(selectedTower);
+	worthComponent->Worth += upgrades->GetUpgradeCost(type);
+	m_MoneyManager.RemoveMoney(upgrades->GetUpgradeCost(type));
+
+	upgrades->Upgrade(type); 
 
 	// Packet
 	ClientTowerUpgradePacket packet;
