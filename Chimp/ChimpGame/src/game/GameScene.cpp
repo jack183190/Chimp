@@ -21,7 +21,7 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameRenderer);
 
-	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager());
+	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager);
 
 	LoadModels();
 

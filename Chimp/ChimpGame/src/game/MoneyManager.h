@@ -26,17 +26,17 @@ public:
 	[[nodiscard]] int GetIncome() const;
 
 	// Add or remove income
-	void AddToIncome(int amount);
-	void RemoveFromIncome(int amount);
+	void AddToIncome(float amount);
+	void RemoveFromIncome(float amount);
 
 	void Update();
 
 public:
-	constexpr static int StartingMoney = 400;
+	constexpr static int StartingMoney = 350;
 	constexpr static int StartingIncome = 100;
 	constexpr static float IncomeInterval = 8.0f;
 private:
 	int Money = StartingMoney;
-	int Income = StartingIncome;
+	float Income = StartingIncome;
 	Chimp::Timer m_IncomeTimer;
 };

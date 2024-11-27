@@ -33,11 +33,11 @@ int MoneyManager::GetIncome() const {
 	return Income;
 }
 
-void MoneyManager::AddToIncome(int amount) {
+void MoneyManager::AddToIncome(float amount) {
 	Income += amount;
 }
 
-void MoneyManager::RemoveFromIncome(int amount) {
+void MoneyManager::RemoveFromIncome(float amount) {
 	Income -= amount;
 }
 

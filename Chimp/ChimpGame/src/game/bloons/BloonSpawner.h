@@ -3,10 +3,13 @@
 #include "stdafx.h"
 #include "BloonManager.h"
 #include "game/Entities.h"
+#include "game/MoneyManager.h"
 
 class BloonSpawner {
 public:
-	BloonSpawner(Chimp::Engine& engine, BloonManager& opponentBloonManager);
+	BloonSpawner(Chimp::Engine& engine, 
+		BloonManager& opponentBloonManager,
+		MoneyManager& moneyManager);
 
 	void Update();
 	void RenderUI();
@@ -18,4 +21,5 @@ private:
 	Chimp::Engine& m_Engine;
 	BloonManager& m_OpponentBloonManager;
 	float m_BloonSendsDisabledTime = 0;
+	MoneyManager& m_MoneyManager;
 };
