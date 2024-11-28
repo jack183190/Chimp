@@ -8,12 +8,12 @@ namespace Chimp {
 
 	Mesh::Builder& Mesh::Builder::AddSection(
 		std::unique_ptr<IElementArray> elementArray,
-		ITexture* texture
+		std::optional<TextureDependency> texture
 	)
 	{
 		return AddSection(std::make_unique<Section>(Section{
 			std::move(elementArray),
-			texture
+			std::move(texture)
 			}));
 	}
 

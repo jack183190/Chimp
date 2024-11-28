@@ -1,4 +1,4 @@
-#include "api/resources/ShaderResourceContainer.h"
+#include "api/resources/containers/ShaderResourceContainer.h"
 #include "api/Engine.h"
 
 namespace Chimp {

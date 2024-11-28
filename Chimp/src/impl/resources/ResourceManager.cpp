@@ -9,8 +9,9 @@
 namespace Chimp {
 	ResourceManager::ResourceManager(Engine& engine)
 		: m_Engine(engine),
-		m_MeshStorage(engine),
-		m_Shaders(engine)
+		m_MeshStorage(engine, *this),
+		m_Shaders(engine),
+		m_Textures(engine)
 	{
 	}
 
@@ -19,30 +20,9 @@ namespace Chimp {
 		return m_Shaders;
 	}
 
-	ITexture& ResourceManager::LoadTexture(const std::string& path)
+	ResourceContainer<std::string, ITexture>& ResourceManager::GetTextures()
 	{
-		auto it = m_Textures.find(path);
-		if (it != m_Textures.end())
-		{
-			return *it->second;
-		}
-
-		std::unique_ptr<ITexture> texture = m_Engine.GetRenderingManager().CreateTextureFromImage(path);
-		if (!texture)
-		{
-			Loggers::Resources().Error("Failed to load texture: " + path);
-		}
-		m_Textures[path] = std::move(texture);
-		return *m_Textures[path];
-	}
-
-	void ResourceManager::UnloadTexture(const std::string& path)
-	{
-		auto it = m_Textures.find(path);
-		if (it != m_Textures.end())
-		{
-			m_Textures.erase(it);
-		}
+		return m_Textures;
 	}
 
 	Mesh& ResourceManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
@@ -51,16 +31,16 @@ namespace Chimp {
 		auto it = m_Models.find(path);
 		if (it != m_Models.end())
 		{
-			return *it->second->Mesh;
+			return *it->second;
 		}
 
-		std::unique_ptr<IModelImporter::ImportedMesh> importedMesh = m_ModelImporter->LoadModel(path, settings);
-		if (!importedMesh)
+		auto mesh = m_ModelImporter->LoadModel(path, settings);
+		if (!mesh)
 		{
 			Loggers::Resources().Error("Failed to load model: " + path);
 		}
-		m_Models[path] = std::move(importedMesh);
-		return *m_Models[path]->Mesh;
+		m_Models[path] = std::move(mesh);
+		return *m_Models[path];
 	}
 
 	Mesh& ResourceManager::GetModel(const std::string& path)
@@ -70,7 +50,7 @@ namespace Chimp {
 		{
 			Loggers::Resources().Error("Model not loaded: " + path);
 		}
-		return *it->second->Mesh;
+		return *it->second;
 	}
 
 	void ResourceManager::UnloadModel(const std::string& path)
@@ -90,7 +70,7 @@ namespace Chimp {
 	void ResourceManager::InitModelImporter()
 	{
 #ifdef CHIMP_ASSIMP
-		m_ModelImporter = std::unique_ptr<ModelImporter>(new ModelImporter(m_Engine.GetRenderingManager()));
+		m_ModelImporter = std::unique_ptr<ModelImporter>(new ModelImporter(m_Engine.GetRenderingManager(), *this));
 #else
 		Loggers::Resources().Error("No model importer available, can't load models.");
 #endif

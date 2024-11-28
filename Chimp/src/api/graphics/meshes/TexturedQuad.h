@@ -1,6 +1,7 @@
 #pragma once
 
 #include "api/graphics/IRenderingManager.h"
+#include "api/resources/ResourceDependency.h"
 
 namespace Chimp {
 	class TexturedQuad {
@@ -16,7 +17,7 @@ namespace Chimp {
 		// texture - The texture to use
 		static std::unique_ptr<Mesh> Create(
 			IRenderingManager& renderingManager,
-			ITexture& texture
+			const TextureDependency& texture
 		);
 	};
 }

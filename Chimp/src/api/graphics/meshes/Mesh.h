@@ -2,6 +2,8 @@
 
 #include "../shaders/IShader.h"
 #include "../buffers/IElementArray.h"
+#include "api/resources/ResourceDependency.h"
+#include "api/utils/OptionalReference.h"
 
 namespace Chimp {
 	// A mesh consists of several Mesh::Section objects, each with an element array and a shader.
@@ -12,7 +14,7 @@ namespace Chimp {
 		// Section of a mesh
 		struct Section {
 			std::unique_ptr<IElementArray> ElementArray;
-			ITexture* Texture = nullptr;
+			std::optional<TextureDependency> Texture = std::nullopt;
 		};
 
 		// Builder
@@ -24,7 +26,7 @@ namespace Chimp {
 			// Add a section to the mesh
 			Builder& AddSection(
 				std::unique_ptr<IElementArray> elementArray,
-				ITexture* texture
+				std::optional<TextureDependency> texture = std::nullopt
 			);
 			Builder& AddSection(std::unique_ptr<Section> section);
 

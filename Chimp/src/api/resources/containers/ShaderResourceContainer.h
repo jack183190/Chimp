@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ResourceContainer.h"
+#include "api/resources/ResourceContainer.h"
 #include "api/graphics/shaders/IShader.h"
 #include "api/graphics/shaders/ShaderTypes.h"
 #include "Loggers.h"

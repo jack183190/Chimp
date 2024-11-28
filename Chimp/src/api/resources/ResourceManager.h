@@ -7,7 +7,8 @@
 #include "api/utils/OptionalReference.h"
 #include "IModelImporter.h"
 #include "MeshStorage.h"
-#include "ShaderResourceContainer.h"
+#include "containers/ShaderResourceContainer.h"
+#include "containers/TextureResourceContainer.h"
 
 
 namespace Chimp {
@@ -22,9 +23,7 @@ namespace Chimp {
 	public:
 		[[nodiscard]] ResourceContainer<ShaderFilePaths, IShader>& GetShaders();
 
-		// Load a texture, if it's already loaded, it will return the existing texture
-		[[nodiscard]] ITexture& LoadTexture(const std::string& path);
-		void UnloadTexture(const std::string& path);
+		[[nodiscard]] ResourceContainer<std::string, ITexture>& GetTextures();
 
 		// Load a model from a file, won't load same model twice, loads associated assets, see IModelImporter for more info
 		Mesh& LoadModel(const std::string& path, const IModelImporter::Settings& settings = {});
@@ -47,9 +46,8 @@ namespace Chimp {
 		MeshStorage m_MeshStorage;
 
 		ShaderResourceContainer m_Shaders;
+		TextureResourceContainer m_Textures;
 
-		std::unordered_map<std::string, std::unique_ptr<ITexture>> m_Textures;
-
-		std::unordered_map<std::string, std::unique_ptr<IModelImporter::ImportedMesh>> m_Models;
+		std::unordered_map<std::string, std::unique_ptr<Mesh>> m_Models;
 	};
 }

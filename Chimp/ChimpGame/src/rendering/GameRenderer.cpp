@@ -79,10 +79,10 @@ void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transfor
 	for (const auto& section : mesh)
 	{
 		// Send the texture
-		assert(section.Texture != nullptr);
+		assert(section.Texture); // This shader doesn't support no texture
 		m_Shader->SetTextureSampler(
 			"u_ActiveTexture",
-			*section.Texture
+			section.Texture->GetResource()
 		);
 
 		// Draw the section
