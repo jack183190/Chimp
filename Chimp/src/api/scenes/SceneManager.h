@@ -29,7 +29,9 @@ namespace Chimp {
 		void RenderUI();
 
 		// If m_NextScene is not nullptr, switch to it
-		void CheckForSceneChange();
+		// Returns true if a scene change occurred
+		// Returns false if no scene change occurred
+		bool CheckForSceneChange();
 
 	private:
 		std::unique_ptr<Scene> m_CurrentScene;

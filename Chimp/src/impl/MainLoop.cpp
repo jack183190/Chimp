@@ -26,7 +26,9 @@ namespace Chimp {
 
 			m_Engine.GetWindow().SwapBuffers();
 
-			m_Engine.GetSceneManager().CheckForSceneChange();
+			if (m_Engine.GetSceneManager().CheckForSceneChange()) [[unlikely]] {
+				m_Engine.GetResourceManager().UnloadUnusedResources();
+				}
 		}
 	}
 }

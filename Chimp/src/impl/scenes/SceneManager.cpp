@@ -32,14 +32,16 @@ namespace Chimp {
 		m_CurrentScene->OnRenderUI();
 	}
 
-	void SceneManager::CheckForSceneChange()
+	bool SceneManager::CheckForSceneChange()
 	{
 		if (m_NextScene != nullptr) [[unlikely]] {
 			m_CurrentScene->OnDeactivate();
 			std::unique_ptr<Scene> previousScene = std::move(m_CurrentScene);
 			m_CurrentScene = std::move(m_NextScene);
 			m_CurrentScene->OnActivate(std::move(previousScene));
+			return true;
 		}
+		return false;
 	}
 
 

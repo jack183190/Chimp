@@ -31,7 +31,7 @@ namespace Chimp {
 		[[nodiscard]] MeshStorage& GetMeshStorage();
 
 		// Unload all assets with 0 references
-		void UnloadUnused();
+		void UnloadUnusedResources();
 
 	private:
 		void InitModelImporter();

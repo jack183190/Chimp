@@ -49,7 +49,7 @@ namespace Chimp {
 		m_Models.m_ModelImporter = m_ModelImporter.get();
 	}
 
-	void ResourceManager::UnloadUnused()
+	void ResourceManager::UnloadUnusedResources()
 	{
 		m_Shaders.UnloadUnused();
 	}
