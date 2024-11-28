@@ -14,16 +14,31 @@ namespace Chimp {
 		ResourceContainer(std::function<Resource<T>(const K&)> loadResourceFunc) : m_LoadResourceFunc(loadResourceFunc) {}
 		virtual ~ResourceContainer() = default;
 
-		// Depend on a resource, this loads it if it hasn't been loaded yet and increments the reference count
-		T& Depend(const K& path) {
-			if (m_Resources.find(path) == m_Resources.end()) {
-				m_Resources[path] = m_LoadResourceFunc(path);
-				assert(m_Resources[path].RefCount == 0);
+		// Depend on a resource, but its not required right now
+		void Depend(const K& path) {
+			auto iter = m_Resources.find(path);
+			if (iter == m_Resources.end()) {
+				m_DelayedDependencies.insert(path); // Load it later
+			}
+			else {
+				// Already loaded, depend on it
+				iter->second.RefCount++;
+			}
+		}
+
+		// Immediate depend on a resource, this loads it if it hasn't been loaded yet and increments the reference count
+		T& ImmediateDepend(const K& path) {
+			auto iter = m_Resources.find(path);
+			if (iter == m_Resources.end()) {
+				auto resource = m_LoadResourceFunc(path);
+				assert(resource.RefCount == 0);
+				iter = m_Resources.emplace(path, std::move(resource)).first; 
 			}
 
-			m_Resources[path].RefCount++;
-			return *m_Resources[path].Data;
+			iter->second.RefCount++;
+			return *iter->second.Data;
 		}
+
 
 		// Get a resource, does bad stuff if it doesn't exist, only call this if you are 100% sure it exists
 		[[nodiscard]] T& Get(const K& path) {
@@ -51,8 +66,17 @@ namespace Chimp {
 				}
 			}
 		}
+
+		// Load all delayed dependencies
+		void LoadDependencies() {
+			for (const auto& path : m_DelayedDependencies) {
+				ImmediateDepend(path);
+			}
+			m_DelayedDependencies.clear();
+		}
 	private:
 		std::unordered_map<K, Resource<T>> m_Resources;
 		std::function<Resource<T>(const K&)> m_LoadResourceFunc;
+		std::unordered_set<K> m_DelayedDependencies;
 	};
 }

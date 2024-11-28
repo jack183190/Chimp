@@ -22,11 +22,11 @@ private:
 	Chimp::Engine& m_Engine;
 	Chimp::Path<Chimp::Vector2f> m_Path;
 	Chimp::Vector2f m_SimulationPosition;
-	static constexpr unsigned int StartingLives =
+	static constexpr  int StartingLives =
 #ifdef DEBUG_LOTS_OF_LIVES
 		10000;
 #else
 		100;
 #endif
-	unsigned int m_Lives = StartingLives;
+	int m_Lives = StartingLives;
 };

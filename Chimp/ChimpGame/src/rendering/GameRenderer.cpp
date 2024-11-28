@@ -17,7 +17,7 @@ GameRenderer::GameRenderer(
 		m_ShaderFilePaths.Vertex = GAME_SRC + std::string("/assets/shaders/default.vert");
 		m_ShaderFilePaths.Fragment = GAME_SRC + std::string("/assets/shaders/default.frag");
 	}
-	m_Shader = m_Engine.GetResourceManager().GetShaders().Depend(m_ShaderFilePaths);
+	m_Shader = m_Engine.GetResourceManager().GetShaders().ImmediateDepend(m_ShaderFilePaths);
 
 	// CAMERA BUFFER
 	std::shared_ptr<Chimp::IBuffer> cameraBuffer = renderingManager.CreateBuffer(

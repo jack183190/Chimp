@@ -52,5 +52,14 @@ namespace Chimp {
 	void ResourceManager::UnloadUnusedResources()
 	{
 		m_Shaders.UnloadUnused();
+		m_Textures.UnloadUnused();
+		m_Models.UnloadUnused();
+	}
+	
+	void ResourceManager::LoadRequiredResources()
+	{
+		m_Shaders.LoadDependencies();
+		m_Textures.LoadDependencies();
+		m_Models.LoadDependencies();
 	}
 }

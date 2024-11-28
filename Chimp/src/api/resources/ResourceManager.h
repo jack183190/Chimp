@@ -33,6 +33,9 @@ namespace Chimp {
 		// Unload all assets with 0 references
 		void UnloadUnusedResources();
 
+		// Load required assets
+		void LoadRequiredResources();
+
 	private:
 		void InitModelImporter();
 
