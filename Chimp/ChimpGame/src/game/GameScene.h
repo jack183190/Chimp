@@ -13,6 +13,7 @@ public:
 	GameScene(Chimp::Engine& engine, std::shared_ptr<GameRenderer> gameRenderer);
 	~GameScene();
 
+	void OnInit() override;
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;
 	void OnDeactivate() override;
 	void OnUpdate() override;

@@ -35,10 +35,14 @@ GameScene::~GameScene()
 	UnloadModels();
 }
 
-void GameScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
+void GameScene::OnInit()
 {
 	m_PlayerSimulation->Init();
 	m_OpponentSimulation->Init();
+}
+
+void GameScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
+{
 }
 
 void GameScene::OnDeactivate()
