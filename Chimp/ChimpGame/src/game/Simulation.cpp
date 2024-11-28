@@ -21,10 +21,13 @@ Simulation::Simulation(Chimp::Engine& engine,
 	if (isPlayerSimulation) {
 		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position, m_Size, m_MoneyManager);
 	}
+}
 
+void Simulation::Init()
+{
 	Entities::CreateBaseEntity(
 		m_ECS,
-		m_Engine.GetResourceManager().GetMeshStorage().GetMesh("MapBackground"),
+		m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + std::string("/assets/textures/MapBackground.png")),
 		{
 			{ m_Position.x, m_Position.y, 10.0f },
 			{ 0.0f, 0.0f, 0.0f },

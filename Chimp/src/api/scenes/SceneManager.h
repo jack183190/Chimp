@@ -7,9 +7,11 @@ namespace Chimp {
 	class SceneManager {
 		friend class MainLoop;
 	private:
-		SceneManager(std::unique_ptr<Scene> entryScene);
+		SceneManager(std::unique_ptr<Scene> entryScene, Chimp::Engine& engine);
 
 	public:
+		~SceneManager();
+
 		// Switch to the new scene after the current frame
 		// newScene cannot be nullptr
 		void QueueSceneChange(std::unique_ptr<Scene> newScene);
@@ -36,5 +38,6 @@ namespace Chimp {
 	private:
 		std::unique_ptr<Scene> m_CurrentScene;
 		std::unique_ptr<Scene> m_NextScene;
+		Chimp::Engine& m_Engine;
 	};
 }

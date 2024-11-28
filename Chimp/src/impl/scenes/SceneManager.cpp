@@ -1,9 +1,18 @@
 #include "api/scenes/SceneManager.h"
+#include "api/Engine.h"
 
 namespace Chimp {
-	SceneManager::SceneManager(std::unique_ptr<Scene> entryScene) 
-		: m_CurrentScene(std::move(entryScene)) {
-		
+	SceneManager::SceneManager(std::unique_ptr<Scene> entryScene, Chimp::Engine& engine)
+		: m_CurrentScene(std::move(entryScene)),
+		m_Engine(engine) {
+		m_Engine.GetResourceManager().LoadRequiredResources();
+		m_CurrentScene->OnActivate(nullptr);
+	}
+	
+	SceneManager::~SceneManager()
+	{
+		m_CurrentScene->OnDeactivate();
+		m_Engine.GetResourceManager().UnloadUnusedResources();
 	}
 
 	void SceneManager::QueueSceneChange(std::unique_ptr<Scene> newScene)
@@ -38,6 +47,8 @@ namespace Chimp {
 			m_CurrentScene->OnDeactivate();
 			std::unique_ptr<Scene> previousScene = std::move(m_CurrentScene);
 			m_CurrentScene = std::move(m_NextScene);
+			m_Engine.GetResourceManager().UnloadUnusedResources();
+			m_Engine.GetResourceManager().LoadRequiredResources();
 			m_CurrentScene->OnActivate(std::move(previousScene));
 			return true;
 		}

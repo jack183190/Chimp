@@ -7,10 +7,11 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_Engine(engine),
 	m_GameRenderer(gameRenderer)
 {
-	m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, "Dart", "Dart.png"));
-	m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, "MapBackground", "MapBackground.png"));
+	auto& sprites = m_Engine.GetResourceManager().GetSprites();
+	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
+	sprites.Depend(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
-		m_LoadedSprites.push_back(GameRenderer::LoadSprite(m_Engine, Bloons::BloonIds[i], Bloons::TexturePaths[i]));
+		sprites.Depend(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
 	}
 
 	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
@@ -30,12 +31,14 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 GameScene::~GameScene()
 {
-	GameRenderer::UnloadSprites(m_Engine, m_LoadedSprites);
+
 	UnloadModels();
 }
 
 void GameScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
 {
+	m_PlayerSimulation->Init();
+	m_OpponentSimulation->Init();
 }
 
 void GameScene::OnDeactivate()

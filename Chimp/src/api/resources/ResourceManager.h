@@ -10,6 +10,7 @@
 #include "containers/ShaderResourceContainer.h"
 #include "containers/TextureResourceContainer.h"
 #include "containers/ModelResourceContainer.h"
+#include "containers/SpriteResourceContainer.h"
 
 namespace Chimp {
 	class Engine;
@@ -26,6 +27,8 @@ namespace Chimp {
 		[[nodiscard]] ResourceContainer<std::string, ITexture>& GetTextures();
 
 		[[nodiscard]] ModelResourceContainer& GetModels();
+
+		[[nodiscard]] SpriteResourceContainer& GetSprites();
 
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
@@ -47,5 +50,6 @@ namespace Chimp {
 		ShaderResourceContainer m_Shaders;
 		TextureResourceContainer m_Textures;
 		ModelResourceContainer m_Models;
+		SpriteResourceContainer m_Sprites;
 	};
 }
