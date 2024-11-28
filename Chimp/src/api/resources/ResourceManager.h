@@ -9,7 +9,7 @@
 #include "MeshStorage.h"
 #include "containers/ShaderResourceContainer.h"
 #include "containers/TextureResourceContainer.h"
-
+#include "containers/ModelResourceContainer.h"
 
 namespace Chimp {
 	class Engine;
@@ -25,11 +25,7 @@ namespace Chimp {
 
 		[[nodiscard]] ResourceContainer<std::string, ITexture>& GetTextures();
 
-		// Load a model from a file, won't load same model twice, loads associated assets, see IModelImporter for more info
-		Mesh& LoadModel(const std::string& path, const IModelImporter::Settings& settings = {});
-		[[nodiscard]] Mesh& GetModel(const std::string& path);
-		// Unload a model, this will unload all associated assets
-		void UnloadModel(const std::string& path);
+		[[nodiscard]] ModelResourceContainer& GetModels();
 
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
@@ -47,7 +43,6 @@ namespace Chimp {
 
 		ShaderResourceContainer m_Shaders;
 		TextureResourceContainer m_Textures;
-
-		std::unordered_map<std::string, std::unique_ptr<Mesh>> m_Models;
+		ModelResourceContainer m_Models;
 	};
 }

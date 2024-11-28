@@ -100,7 +100,8 @@ void GameScene::LoadModels()
 	settings.IncludeNormals = false;
 	settings.IncludeTextureCoordinates = true;
 
-	m_Engine.GetResourceManager().LoadModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj", settings);
+	m_Engine.GetResourceManager().GetModels().ImportSettings = settings;
+	m_Engine.GetResourceManager().GetModels().Depend(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
 }
 
 void GameScene::UnloadModels()

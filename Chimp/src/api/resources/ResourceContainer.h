@@ -6,6 +6,7 @@
 namespace Chimp {
 	typedef std::string TextureResourcePath;
 	typedef ShaderFilePaths ShaderResourcePath;
+	typedef std::string ModelResourcePath;
 
 	template <typename K, typename T>
 	class ResourceContainer {
@@ -14,13 +15,19 @@ namespace Chimp {
 		virtual ~ResourceContainer() = default;
 
 		// Depend on a resource, this loads it if it hasn't been loaded yet and increments the reference count
-		[[nodiscard]] T& Depend(const K& path) {
+		T& Depend(const K& path) {
 			if (m_Resources.find(path) == m_Resources.end()) {
 				m_Resources[path] = m_LoadResourceFunc(path);
 				assert(m_Resources[path].RefCount == 0);
 			}
 
 			m_Resources[path].RefCount++;
+			return *m_Resources[path].Data;
+		}
+
+		// Get a resource, does bad stuff if it doesn't exist, only call this if you are 100% sure it exists
+		[[nodiscard]] T& Get(const K& path) {
+			assert(m_Resources.find(path) != m_Resources.end());
 			return *m_Resources[path].Data;
 		}
 

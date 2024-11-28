@@ -11,8 +11,10 @@ namespace Chimp {
 		: m_Engine(engine),
 		m_MeshStorage(engine, *this),
 		m_Shaders(engine),
-		m_Textures(engine)
+		m_Textures(engine),
+		m_Models(engine, *m_ModelImporter) // Technically bad but its ok trust me
 	{
+		InitModelImporter();
 	}
 
 	ResourceContainer<ShaderFilePaths, IShader>& ResourceManager::GetShaders()
@@ -25,41 +27,11 @@ namespace Chimp {
 		return m_Textures;
 	}
 
-	Mesh& ResourceManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
+	ModelResourceContainer& ResourceManager::GetModels()
 	{
-		assert(m_ModelImporter);
-		auto it = m_Models.find(path);
-		if (it != m_Models.end())
-		{
-			return *it->second;
-		}
-
-		auto mesh = m_ModelImporter->LoadModel(path, settings);
-		if (!mesh)
-		{
-			Loggers::Resources().Error("Failed to load model: " + path);
-		}
-		m_Models[path] = std::move(mesh);
-		return *m_Models[path];
-	}
-
-	Mesh& ResourceManager::GetModel(const std::string& path)
-	{
-		auto it = m_Models.find(path);
-		if (it == m_Models.end())
-		{
-			Loggers::Resources().Error("Model not loaded: " + path);
-		}
-		return *it->second;
-	}
-
-	void ResourceManager::UnloadModel(const std::string& path)
-	{
-		auto it = m_Models.find(path);
-		if (it != m_Models.end())
-		{
-			m_Models.erase(it);
-		}
+		assert(m_ModelImporter != nullptr);
+		assert(m_Models.m_ModelImporter.HasValue());
+		return m_Models;
 	}
 
 	MeshStorage& ResourceManager::GetMeshStorage()
@@ -74,6 +46,7 @@ namespace Chimp {
 #else
 		Loggers::Resources().Error("No model importer available, can't load models.");
 #endif
+		m_Models.m_ModelImporter = m_ModelImporter.get();
 	}
 
 	void ResourceManager::UnloadUnused()

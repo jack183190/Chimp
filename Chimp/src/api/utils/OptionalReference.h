@@ -47,4 +47,13 @@ namespace Chimp {
 
 	template <typename T>
 	using RawPtr = OptionalReference<T>;
+
+	template <typename T>
+	using ConstRawPtr = ConstOptionalReference<T>;
+
+	template <typename T>
+	using Reference = OptionalReference<T>;
+
+	template <typename T>
+	using ConstReference = ConstOptionalReference<T>;
 }
