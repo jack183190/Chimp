@@ -12,6 +12,7 @@ public:
 public:
 
 protected:
+	void OnInit() override;
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;
 	void OnDeactivate() override;
 

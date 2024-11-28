@@ -16,6 +16,11 @@ GameOverScene::~GameOverScene()
 {
 }
 
+void GameOverScene::OnInit()
+{
+
+}
+
 void GameOverScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
 {
 }
