@@ -7,6 +7,8 @@
 #include "api/utils/OptionalReference.h"
 #include "IModelImporter.h"
 #include "MeshStorage.h"
+#include "ShaderResourceContainer.h"
+
 
 namespace Chimp {
 	class Engine;
@@ -18,8 +20,7 @@ namespace Chimp {
 		ResourceManager(Engine& engine);
 
 	public:
-		// Load a shader, if it's already loaded, it will return the existing shader
-		[[nodiscard]] std::shared_ptr<IShader> LoadShader(const ShaderFilePaths& shaderFilePaths);
+		[[nodiscard]] ResourceContainer<ShaderFilePaths, IShader>& GetShaders();
 
 		// Load a texture, if it's already loaded, it will return the existing texture
 		[[nodiscard]] ITexture& LoadTexture(const std::string& path);
@@ -34,6 +35,9 @@ namespace Chimp {
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
 
+		// Unload all assets with 0 references
+		void UnloadUnused();
+
 	private:
 		void InitModelImporter();
 
@@ -42,8 +46,7 @@ namespace Chimp {
 		std::unique_ptr<IModelImporter> m_ModelImporter;
 		MeshStorage m_MeshStorage;
 
-		// Shaders are slow to compile but aren't expensive to store, so we'll just store them forever
-		std::unordered_map<ShaderFilePaths, std::shared_ptr<IShader>> m_Shaders;
+		ShaderResourceContainer m_Shaders;
 
 		std::unordered_map<std::string, std::unique_ptr<ITexture>> m_Textures;
 

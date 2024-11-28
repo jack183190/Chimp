@@ -7,6 +7,7 @@ class GameRenderer
 {
 public:
 	GameRenderer(Chimp::Engine& engine);
+	~GameRenderer();
 	
 public:
 	void SetCamera(Chimp::Camera* camera);
@@ -32,6 +33,7 @@ private:
 	Chimp::ShaderBufferId m_CameraBufferId;
 	Chimp::Camera* m_Camera;
 	Chimp::ShaderBufferId m_ModelBufferId;
-	std::shared_ptr<Chimp::IShader> m_Shader;
+	Chimp::OptionalReference<Chimp::IShader> m_Shader;
 	bool m_IsFrameBegun = false;
+	Chimp::ShaderFilePaths m_ShaderFilePaths = {};
 };

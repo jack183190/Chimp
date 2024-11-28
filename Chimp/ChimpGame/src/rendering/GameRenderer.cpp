@@ -12,13 +12,12 @@ GameRenderer::GameRenderer(
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
 	// COMPILE SHADER
-	Chimp::ShaderFilePaths shaderFilePaths = {};
 	{
 		// GAME_SRC defined by ChimpGame cmake
-		shaderFilePaths.Vertex = GAME_SRC + std::string("/assets/shaders/default.vert");
-		shaderFilePaths.Fragment = GAME_SRC + std::string("/assets/shaders/default.frag");
+		m_ShaderFilePaths.Vertex = GAME_SRC + std::string("/assets/shaders/default.vert");
+		m_ShaderFilePaths.Fragment = GAME_SRC + std::string("/assets/shaders/default.frag");
 	}
-	m_Shader = m_Engine.GetResourceManager().LoadShader(shaderFilePaths);
+	m_Shader = m_Engine.GetResourceManager().GetShaders().Depend(m_ShaderFilePaths);
 
 	// CAMERA BUFFER
 	std::shared_ptr<Chimp::IBuffer> cameraBuffer = renderingManager.CreateBuffer(
@@ -43,6 +42,11 @@ GameRenderer::GameRenderer(
 		Chimp::BindTarget::SHADER_BUFFER
 	);
 	m_ModelBufferId = m_Shader->GetShaderBuffers().AddBuffer({ modelBuffer, "Model" });
+}
+
+GameRenderer::~GameRenderer()
+{
+	m_Engine.GetResourceManager().GetShaders().Release(m_ShaderFilePaths);
 }
 
 void GameRenderer::SetCamera(Camera* camera)

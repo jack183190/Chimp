@@ -9,29 +9,14 @@
 namespace Chimp {
 	ResourceManager::ResourceManager(Engine& engine)
 		: m_Engine(engine),
-		m_MeshStorage(engine)
+		m_MeshStorage(engine),
+		m_Shaders(engine)
 	{
 	}
 
-	std::shared_ptr<IShader> ResourceManager::LoadShader(const ShaderFilePaths& shaderFilePaths)
+	ResourceContainer<ShaderFilePaths, IShader>& ResourceManager::GetShaders()
 	{
-		auto it = m_Shaders.find(shaderFilePaths);
-		if (it != m_Shaders.end())
-		{
-			return it->second;
-		}
-
-		std::shared_ptr<IShader> shader = m_Engine.GetRenderingManager().CompileShader(shaderFilePaths);
-		if (!shader->IsValid())
-		{
-			std::stringstream ss;
-			ss << "Failed to compile shader" << std::endl
-				<< "Vertex: " << shaderFilePaths.Vertex << std::endl
-				<< "Fragment: " << shaderFilePaths.Fragment << std::endl;
-			Loggers::Resources().Error(ss.str());
-		}
-		m_Shaders[shaderFilePaths] = shader;
-		return shader;
+		return m_Shaders;
 	}
 
 	ITexture& ResourceManager::LoadTexture(const std::string& path)
@@ -109,5 +94,10 @@ namespace Chimp {
 #else
 		Loggers::Resources().Error("No model importer available, can't load models.");
 #endif
+	}
+
+	void ResourceManager::UnloadUnused()
+	{
+		m_Shaders.UnloadUnused();
 	}
 }
