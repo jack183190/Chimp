@@ -14,11 +14,6 @@ namespace Bloons {
 		BLUE = 1,
 		GREEN = 2
 	};
-	const std::array<std::string, NUM_BLOON_TYPES> BloonIds = {
-		"Red",
-		"Blue",
-		"Green"
-	};
 	const std::array<std::string, NUM_BLOON_TYPES> TexturePaths = {
 		"Bloons/Red.png",
 		"Bloons/Blue.png",

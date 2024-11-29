@@ -17,6 +17,7 @@ public:
 		Chimp::Vector2f size,
 		bool isPlayerSimulation,
 		MoneyManager& moneyManager);
+	void Init();
 
 	void Update();
 	void Render();

@@ -10,6 +10,7 @@ public:
 		bool didWin);
 	~GameOverScene();
 
+	void OnInit() override;
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;
 	void OnDeactivate() override;
 	void OnUpdate() override;

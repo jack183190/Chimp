@@ -13,8 +13,13 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	m_SimulationPosition(simulationPosition),
 	m_SimulationSize(simulationSize),
 	m_SelectionSystem(engine, ecs, simulationPosition),
-	m_MoneyManager(moneyManager)
+	m_MoneyManager(moneyManager),
+	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_SRC + std::string("/assets/textures/X.png"))
 {
+	m_TowerIconTextures.reserve(NUM_TOWERS);
+	for (TowerType type = 0; type < NUM_TOWERS; type++) {
+		m_TowerIconTextures.push_back(Chimp::TextureDependency(engine.GetResourceManager().GetTextures(), TOWER_ICONS[type]));
+	}
 }
 
 void TowerEditor::Update()
@@ -53,14 +58,14 @@ void TowerEditor::RenderUI()
 	// DESELECT BUTTON
 	if (m_IsPlacing) {
 		ImGui::SetCursorPos({ iconPosition.x - 100, iconPosition.y });
-		intptr_t deselect = (intptr_t)m_Engine.GetResourceManager().LoadTexture(GAME_SRC + std::string("/assets/textures/X.png")).GetId();
+		intptr_t deselect = (intptr_t)m_DeselectTexture.GetResource().GetId();
 		if (ImGui::ImageButton("##close", deselect, ImVec2(50, 50))) {
 			m_IsPlacing = false;
 		}
 	}
 
 	for (TowerType type = 0; type < NUM_TOWERS; type++) {
-		intptr_t icon = (intptr_t)m_Engine.GetResourceManager().LoadTexture(TOWER_ICONS[type]).GetId();
+		intptr_t icon = (intptr_t)m_TowerIconTextures[type].GetResource().GetId();
 
 		// DRAW SELECT TOWER TO PLACE BUTTON
 		ImGui::SetCursorPos(iconPosition);

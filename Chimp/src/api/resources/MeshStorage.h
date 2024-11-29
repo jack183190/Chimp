@@ -16,16 +16,14 @@ namespace Chimp {
 	class MeshStorage {
 		friend class ResourceManager;
 	private:
-		MeshStorage(Engine& engine);
+		MeshStorage(Engine& engine, ResourceManager& resourceManager);
 	public:
 		// Store a mesh, asset manager will keep it until its unloaded
 		void StoreMesh(const std::string& id, std::unique_ptr<Mesh> mesh);
 		// Create and store a textured quad mesh
 		// id - id to store the mesh under
 		// texturePath - path to the texture to use, will be loaded if it isn't already in the asset manager
-		void CreateTexturedQuad(const std::string& id, const std::string& texturePath);
-		// texture - texture to use
-		void CreateTexturedQuad(const std::string& id, ITexture& texture);
+		void CreateTexturedQuad(const std::string& id, const TextureResourcePath& texturePath);
 		// Get mesh, bad stuff happens if you haven't stored it
 		[[nodiscard]] Mesh& GetMesh(const std::string& id);
 		// True if the mesh is stored
@@ -37,5 +35,6 @@ namespace Chimp {
 	private:
 		Engine& m_Engine;
 		std::unordered_map<std::string, std::unique_ptr<Mesh>> m_Meshes;
+		ResourceManager& m_ResourceManager;
 	};
 }

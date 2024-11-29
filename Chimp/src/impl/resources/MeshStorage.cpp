@@ -2,10 +2,12 @@
 #include "api/Engine.h"
 #include "Loggers.h"
 #include "api/graphics/meshes/TexturedQuad.h"
+#include "api/resources/ResourceManager.h"
+#include "api/resources/ResourceDependency.h"
 
 namespace Chimp {
-	MeshStorage::MeshStorage(Engine& engine)
-		: m_Engine(engine)
+	MeshStorage::MeshStorage(Engine& engine, ResourceManager& resourceManager)
+		: m_Engine(engine), m_ResourceManager(resourceManager)
 	{
 	}
 
@@ -19,16 +21,11 @@ namespace Chimp {
 		m_Meshes[id] = std::move(mesh);
 	}
 
-	void MeshStorage::CreateTexturedQuad(const std::string& id, const std::string& texturePath)
-	{
-		CreateTexturedQuad(id, m_Engine.GetResourceManager().LoadTexture(texturePath));
-	}
-
-	void MeshStorage::CreateTexturedQuad(const std::string& id, ITexture& texture)
+	void MeshStorage::CreateTexturedQuad(const std::string& id, const TextureResourcePath& texturePath)
 	{
 		auto mesh = TexturedQuad::Create(
 			m_Engine.GetRenderingManager(),
-			texture
+			TextureDependency{ m_ResourceManager.GetTextures(), texturePath }
 		);
 		StoreMesh(id, std::move(mesh));
 	}

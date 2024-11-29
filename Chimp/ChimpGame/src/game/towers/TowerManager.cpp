@@ -34,7 +34,7 @@ Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f positio
 
 	switch (type) {
 	case TOWER_TYPE_DART_MONKEY:
-		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModel(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj"), position);
+		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModels().Get(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj"), position);
 	default:
 		GetLogger().Error("Unknown tower type when placing tower: " + std::to_string(type));
 		assert(false);

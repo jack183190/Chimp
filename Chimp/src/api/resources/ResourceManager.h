@@ -7,6 +7,10 @@
 #include "api/utils/OptionalReference.h"
 #include "IModelImporter.h"
 #include "MeshStorage.h"
+#include "containers/ShaderResourceContainer.h"
+#include "containers/TextureResourceContainer.h"
+#include "containers/ModelResourceContainer.h"
+#include "containers/SpriteResourceContainer.h"
 
 namespace Chimp {
 	class Engine;
@@ -18,21 +22,22 @@ namespace Chimp {
 		ResourceManager(Engine& engine);
 
 	public:
-		// Load a shader, if it's already loaded, it will return the existing shader
-		[[nodiscard]] std::shared_ptr<IShader> LoadShader(const ShaderFilePaths& shaderFilePaths);
+		[[nodiscard]] ResourceContainer<ShaderFilePaths, IShader>& GetShaders();
 
-		// Load a texture, if it's already loaded, it will return the existing texture
-		[[nodiscard]] ITexture& LoadTexture(const std::string& path);
-		void UnloadTexture(const std::string& path);
+		[[nodiscard]] ResourceContainer<std::string, ITexture>& GetTextures();
 
-		// Load a model from a file, won't load same model twice, loads associated assets, see IModelImporter for more info
-		Mesh& LoadModel(const std::string& path, const IModelImporter::Settings& settings = {});
-		[[nodiscard]] Mesh& GetModel(const std::string& path);
-		// Unload a model, this will unload all associated assets
-		void UnloadModel(const std::string& path);
+		[[nodiscard]] ModelResourceContainer& GetModels();
+
+		[[nodiscard]] SpriteResourceContainer& GetSprites();
 
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
+
+		// Unload all assets with 0 references
+		void UnloadUnusedResources();
+
+		// Load required assets
+		void LoadRequiredResources();
 
 	private:
 		void InitModelImporter();
@@ -42,11 +47,9 @@ namespace Chimp {
 		std::unique_ptr<IModelImporter> m_ModelImporter;
 		MeshStorage m_MeshStorage;
 
-		// Shaders are slow to compile but aren't expensive to store, so we'll just store them forever
-		std::unordered_map<ShaderFilePaths, std::shared_ptr<IShader>> m_Shaders;
-
-		std::unordered_map<std::string, std::unique_ptr<ITexture>> m_Textures;
-
-		std::unordered_map<std::string, std::unique_ptr<IModelImporter::ImportedMesh>> m_Models;
+		ShaderResourceContainer m_Shaders;
+		TextureResourceContainer m_Textures;
+		ModelResourceContainer m_Models;
+		SpriteResourceContainer m_Sprites;
 	};
 }

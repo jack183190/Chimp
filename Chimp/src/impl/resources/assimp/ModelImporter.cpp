@@ -6,7 +6,7 @@
 #include "Loggers.h"
 
 namespace Chimp {
-	std::unique_ptr<IModelImporter::ImportedMesh> ModelImporter::LoadModel(const std::string& path, const Settings& settings)
+	std::unique_ptr<Mesh> ModelImporter::LoadModel(const std::string& path, const Settings& settings)
 	{
 		const GraphicsType INDEX_TYPE = GraphicsType::UNSIGNED_INT;
 		constexpr size_t VERTICES_PER_TRIANGLE = 3;
@@ -27,9 +27,6 @@ namespace Chimp {
 		const float FLOATS_PER_VERTEX = 3 + // Position
 			(settings.IncludeNormals ? 3 : 0) +
 			(settings.IncludeTextureCoordinates ? 2 : 0);
-
-		std::unique_ptr<ImportedMesh> importedMesh = std::make_unique<ImportedMesh>();
-		auto& texturesAssociatedWithModel = importedMesh->AssociatedTextures;
 
 		Mesh::Builder builder;
 		for (size_t meshIndex = 0; meshIndex < model->mNumMeshes; ++meshIndex) {
@@ -141,7 +138,7 @@ namespace Chimp {
 			);
 
 			// Get the texture
-			Chimp::ITexture* texture = nullptr;
+			std::optional<TextureDependency> texture = std::nullopt;
 			if (settings.IncludeTextureCoordinates) {
 				const aiMaterial* material = model->mMaterials[modelMesh->mMaterialIndex];
 				unsigned int textureCount = material->GetTextureCount(aiTextureType_DIFFUSE);
@@ -156,16 +153,12 @@ namespace Chimp {
 				material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
 				// this is actual path, may be relative to working dir, or absolute, doesn't matter to us though
 				std::string correctedTexturePath = GetPathRelativeToFile(texturePath.C_Str(), path);
-				texturesAssociatedWithModel.push_back(m_RenderingManager.CreateTextureFromImage(correctedTexturePath));
-				texture = texturesAssociatedWithModel.back().get();
-				assert(texture);
+				texture.emplace(m_ResourceManager.GetTextures(), correctedTexturePath);
 			}
 
-			builder.AddSection(std::move(elementArray), texture);
+			builder.AddSection(std::move(elementArray), std::move(texture));
 		}
 
-		importedMesh->AssociatedTextures.shrink_to_fit();
-		importedMesh->Mesh = builder.Build();
-		return std::move(importedMesh);
+		return builder.Build();
 	}
 }

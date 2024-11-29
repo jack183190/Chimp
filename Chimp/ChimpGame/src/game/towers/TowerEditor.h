@@ -31,4 +31,6 @@ private:
 	TowerType m_PlacingType;
 	TowerSelectionSystem m_SelectionSystem;
 	MoneyManager &m_MoneyManager;
+	Chimp::TextureDependency m_DeselectTexture;
+	std::vector<Chimp::TextureDependency> m_TowerIconTextures;
 };

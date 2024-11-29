@@ -16,6 +16,8 @@ namespace Chimp {
 		virtual bool ShouldExit(Chimp::Engine& engine) const;
 
 	protected:
+		virtual void OnInit() = 0;
+
 		// Called when the scene is activated, this may happen more than once
 		// OnDeactivate must be called between calls to OnActivate
 		// previousScene is the scene that was previously active, store for shop or pause scenes where the previous scenes data must be preserved.
@@ -32,5 +34,8 @@ namespace Chimp {
 
 		// Called when the scene should render UI
 		virtual void OnRenderUI() = 0;
+
+	private:
+		bool m_HasInitialized = false;
 	};
 }

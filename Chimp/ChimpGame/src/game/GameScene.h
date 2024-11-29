@@ -13,6 +13,7 @@ public:
 	GameScene(Chimp::Engine& engine, std::shared_ptr<GameRenderer> gameRenderer);
 	~GameScene();
 
+	void OnInit() override;
 	void OnActivate(std::unique_ptr<Chimp::Scene> previousScene) override;
 	void OnDeactivate() override;
 	void OnUpdate() override;
@@ -30,7 +31,6 @@ private:
 	std::shared_ptr<GameRenderer> m_GameRenderer;
 	std::unique_ptr<Simulation> m_OpponentSimulation;
 	std::unique_ptr<Simulation> m_PlayerSimulation;
-	std::vector<std::string> m_LoadedSprites;
 	std::unique_ptr<WaveStartHandler> m_WaveStartHandler;
 	std::unique_ptr<MatchWinLoseHandler> m_MatchWinLoseHandler;
 	std::unique_ptr<BloonSpawner> m_BloonSpawner;

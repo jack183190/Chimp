@@ -9,92 +9,35 @@
 namespace Chimp {
 	ResourceManager::ResourceManager(Engine& engine)
 		: m_Engine(engine),
-		m_MeshStorage(engine)
+		m_MeshStorage(engine, *this),
+		m_Shaders(engine),
+		m_Textures(engine),
+		m_Models(engine),
+		m_Sprites(engine, m_Textures)
 	{
+		InitModelImporter();
 	}
 
-	std::shared_ptr<IShader> ResourceManager::LoadShader(const ShaderFilePaths& shaderFilePaths)
+	ResourceContainer<ShaderFilePaths, IShader>& ResourceManager::GetShaders()
 	{
-		auto it = m_Shaders.find(shaderFilePaths);
-		if (it != m_Shaders.end())
-		{
-			return it->second;
-		}
-
-		std::shared_ptr<IShader> shader = m_Engine.GetRenderingManager().CompileShader(shaderFilePaths);
-		if (!shader->IsValid())
-		{
-			std::stringstream ss;
-			ss << "Failed to compile shader" << std::endl
-				<< "Vertex: " << shaderFilePaths.Vertex << std::endl
-				<< "Fragment: " << shaderFilePaths.Fragment << std::endl;
-			Loggers::Resources().Error(ss.str());
-		}
-		m_Shaders[shaderFilePaths] = shader;
-		return shader;
+		return m_Shaders;
 	}
 
-	ITexture& ResourceManager::LoadTexture(const std::string& path)
+	ResourceContainer<std::string, ITexture>& ResourceManager::GetTextures()
 	{
-		auto it = m_Textures.find(path);
-		if (it != m_Textures.end())
-		{
-			return *it->second;
-		}
-
-		std::unique_ptr<ITexture> texture = m_Engine.GetRenderingManager().CreateTextureFromImage(path);
-		if (!texture)
-		{
-			Loggers::Resources().Error("Failed to load texture: " + path);
-		}
-		m_Textures[path] = std::move(texture);
-		return *m_Textures[path];
+		return m_Textures;
 	}
 
-	void ResourceManager::UnloadTexture(const std::string& path)
+	ModelResourceContainer& ResourceManager::GetModels()
 	{
-		auto it = m_Textures.find(path);
-		if (it != m_Textures.end())
-		{
-			m_Textures.erase(it);
-		}
+		assert(m_ModelImporter != nullptr);
+		assert(m_Models.m_ModelImporter.HasValue());
+		return m_Models;
 	}
 
-	Mesh& ResourceManager::LoadModel(const std::string& path, const IModelImporter::Settings& settings)
+	SpriteResourceContainer& ResourceManager::GetSprites()
 	{
-		assert(m_ModelImporter);
-		auto it = m_Models.find(path);
-		if (it != m_Models.end())
-		{
-			return *it->second->Mesh;
-		}
-
-		std::unique_ptr<IModelImporter::ImportedMesh> importedMesh = m_ModelImporter->LoadModel(path, settings);
-		if (!importedMesh)
-		{
-			Loggers::Resources().Error("Failed to load model: " + path);
-		}
-		m_Models[path] = std::move(importedMesh);
-		return *m_Models[path]->Mesh;
-	}
-
-	Mesh& ResourceManager::GetModel(const std::string& path)
-	{
-		auto it = m_Models.find(path);
-		if (it == m_Models.end())
-		{
-			Loggers::Resources().Error("Model not loaded: " + path);
-		}
-		return *it->second->Mesh;
-	}
-
-	void ResourceManager::UnloadModel(const std::string& path)
-	{
-		auto it = m_Models.find(path);
-		if (it != m_Models.end())
-		{
-			m_Models.erase(it);
-		}
+		return m_Sprites;
 	}
 
 	MeshStorage& ResourceManager::GetMeshStorage()
@@ -105,9 +48,26 @@ namespace Chimp {
 	void ResourceManager::InitModelImporter()
 	{
 #ifdef CHIMP_ASSIMP
-		m_ModelImporter = std::unique_ptr<ModelImporter>(new ModelImporter(m_Engine.GetRenderingManager()));
+		m_ModelImporter = std::unique_ptr<ModelImporter>(new ModelImporter(m_Engine.GetRenderingManager(), *this));
 #else
 		Loggers::Resources().Error("No model importer available, can't load models.");
 #endif
+		m_Models.m_ModelImporter = m_ModelImporter.get();
+	}
+
+	void ResourceManager::UnloadUnusedResources()
+	{
+		m_Shaders.UnloadUnused();
+		m_Sprites.UnloadUnused();
+		m_Textures.UnloadUnused();
+		m_Models.UnloadUnused();
+	}
+	
+	void ResourceManager::LoadRequiredResources()
+	{
+		m_Shaders.LoadDependencies();
+		m_Sprites.LoadDependencies();
+		m_Textures.LoadDependencies();
+		m_Models.LoadDependencies();
 	}
 }

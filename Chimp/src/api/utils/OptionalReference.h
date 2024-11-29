@@ -10,6 +10,9 @@ namespace Chimp {
 		OptionalReference() : m_Value(nullptr) {}
 		OptionalReference(T* value) : m_Value(value) {}
 
+		void operator=(T* value) { m_Value = value; }
+		void operator=(T& value) { m_Value = &value; }
+
 		T* operator->() { return m_Value; }
 		T& operator*() { return *m_Value; }
 		T* operator&() { return m_Value; }
@@ -30,7 +33,7 @@ namespace Chimp {
 
 		const T* operator->() const {
 			assert(HasValue());
-			return m_Value; 
+			return m_Value;
 		}
 		const T& operator*() const { return *m_Value; }
 
@@ -44,4 +47,13 @@ namespace Chimp {
 
 	template <typename T>
 	using RawPtr = OptionalReference<T>;
+
+	template <typename T>
+	using ConstRawPtr = ConstOptionalReference<T>;
+
+	template <typename T>
+	using Reference = OptionalReference<T>;
+
+	template <typename T>
+	using ConstReference = ConstOptionalReference<T>;
 }

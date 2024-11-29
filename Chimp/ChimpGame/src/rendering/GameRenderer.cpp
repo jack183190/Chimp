@@ -12,13 +12,12 @@ GameRenderer::GameRenderer(
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
 	// COMPILE SHADER
-	Chimp::ShaderFilePaths shaderFilePaths = {};
 	{
 		// GAME_SRC defined by ChimpGame cmake
-		shaderFilePaths.Vertex = GAME_SRC + std::string("/assets/shaders/default.vert");
-		shaderFilePaths.Fragment = GAME_SRC + std::string("/assets/shaders/default.frag");
+		m_ShaderFilePaths.Vertex = GAME_SRC + std::string("/assets/shaders/default.vert");
+		m_ShaderFilePaths.Fragment = GAME_SRC + std::string("/assets/shaders/default.frag");
 	}
-	m_Shader = m_Engine.GetResourceManager().LoadShader(shaderFilePaths);
+	m_Shader = m_Engine.GetResourceManager().GetShaders().ImmediateDepend(m_ShaderFilePaths);
 
 	// CAMERA BUFFER
 	std::shared_ptr<Chimp::IBuffer> cameraBuffer = renderingManager.CreateBuffer(
@@ -43,6 +42,11 @@ GameRenderer::GameRenderer(
 		Chimp::BindTarget::SHADER_BUFFER
 	);
 	m_ModelBufferId = m_Shader->GetShaderBuffers().AddBuffer({ modelBuffer, "Model" });
+}
+
+GameRenderer::~GameRenderer()
+{
+	m_Engine.GetResourceManager().GetShaders().Release(m_ShaderFilePaths);
 }
 
 void GameRenderer::SetCamera(Camera* camera)
@@ -75,10 +79,10 @@ void GameRenderer::Render(const Chimp::Mesh& mesh, const Chimp::Matrix& transfor
 	for (const auto& section : mesh)
 	{
 		// Send the texture
-		assert(section.Texture != nullptr);
+		assert(section.Texture); // This shader doesn't support no texture
 		m_Shader->SetTextureSampler(
 			"u_ActiveTexture",
-			*section.Texture
+			section.Texture->GetResource()
 		);
 
 		// Draw the section
@@ -124,24 +128,5 @@ void GameRenderer::RenderWorld(Chimp::ECS& ecs)
 	for (const auto& renderable : renderQueue)
 	{
 		Render(*renderable.Mesh, renderable.TransformMatrix);
-	}
-}
-
-std::string GameRenderer::LoadSprite(Chimp::Engine& engine, const std::string& name, const std::string& path)
-{
-	engine.GetResourceManager().GetMeshStorage().CreateTexturedQuad(name, std::string(GAME_SRC) + "/assets/textures/" + path);
-	return name;
-}
-
-void GameRenderer::UnloadSprite(Chimp::Engine& engine, const std::string& name)
-{
-	engine.GetResourceManager().GetMeshStorage().DestroyStoredMesh(name);
-}
-
-void GameRenderer::UnloadSprites(Chimp::Engine& engine, const std::vector<std::string>& names)
-{
-	for (const auto& name : names)
-	{
-		engine.GetResourceManager().GetMeshStorage().DestroyStoredMesh(name);
 	}
 }
