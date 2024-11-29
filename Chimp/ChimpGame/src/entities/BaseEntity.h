@@ -8,7 +8,7 @@ namespace Entities {
 
 		ecs.SetComponent(entity, Chimp::TransformComponent{ transform });
 		ecs.SetComponent(entity, Chimp::MeshComponent{ &mesh });
-		ecs.SetComponent<EntityIdComponent>(entity, EntityIdComponent{ entity });
+		ecs.SetComponent(entity, Chimp::EntityIdComponent{ entity });
 
 		return entity;
 	}

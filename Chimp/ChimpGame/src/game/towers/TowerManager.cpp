@@ -52,7 +52,7 @@ Chimp::EntityId TowerManager::PlaceTowerWithNetworkId(TowerType type, Chimp::Vec
 
 void TowerManager::RemoveTowerWithNetworkId(NetworkId id)
 {
-	auto view = m_ECS.GetEntitiesWithComponents<NetworkedIdentifierComponent, HealthComponent>();
+	auto view = m_ECS.GetEntitiesWithComponents<NetworkedIdentifierComponent, Chimp::HealthComponent>();
 	for (auto& [idComp, health] : view) {
 		if (idComp.Id == id) {
 			health.Health = 0;

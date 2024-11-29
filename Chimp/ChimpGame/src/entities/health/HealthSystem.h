@@ -8,7 +8,7 @@ public:
 
 	void Update() {
 		std::vector<Chimp::EntityId> entitiesToRemove;
-		auto entities = m_ECS.GetEntitiesWithComponents<HealthComponent, EntityIdComponent>();
+		auto entities = m_ECS.GetEntitiesWithComponents<Chimp::HealthComponent, Chimp::EntityIdComponent>();
 		for (auto& [health, entIdComp] : entities) {
 			if (health.Health <= 0) {
 				entitiesToRemove.push_back(entIdComp.Id);
@@ -17,7 +17,7 @@ public:
 
 #ifndef NDEBUG
 		// Make sure all entities with health have an entity id component
-		auto entitiesWithHealth = m_ECS.GetEntitiesWithComponents<HealthComponent>();
+		auto entitiesWithHealth = m_ECS.GetEntitiesWithComponents<Chimp::HealthComponent>();
 		assert(entitiesWithHealth.Size() == entities.Size());
 #endif
 

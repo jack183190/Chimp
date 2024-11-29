@@ -173,7 +173,7 @@ void TowerEditor::RemoveSelectedTower()
 	auto selectedTower = m_SelectionSystem.GetSelectedTower();
 	auto towerId = m_ECS.GetComponent<NetworkedIdentifierComponent>(selectedTower)->Id;
 
-	auto health = m_ECS.GetMutableComponent<HealthComponent>(selectedTower);
+	auto health = m_ECS.GetMutableComponent<Chimp::HealthComponent>(selectedTower);
 	health->Health = 0;
 	m_SelectionSystem.DeselectTower();
 

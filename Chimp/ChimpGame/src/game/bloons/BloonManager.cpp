@@ -58,7 +58,7 @@ bool BloonManager::HasLost() const
 
 void BloonManager::HandleMovement(float dt)
 {
-	auto view = m_ECS.GetEntitiesWithComponents<MoveableComponent, HealthComponent, Chimp::TransformComponent>();
+	auto view = m_ECS.GetEntitiesWithComponents<MoveableComponent, Chimp::HealthComponent, Chimp::TransformComponent>();
 	dt *= DEBUG_BLOON_SPEED_MULTIPLIER;
 	for (auto& [moveable, health, transform] : view) {
 		moveable.DistanceTravelled += dt * moveable.Speed;
