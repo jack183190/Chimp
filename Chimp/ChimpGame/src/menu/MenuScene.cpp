@@ -15,10 +15,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 
 	if (renderer == nullptr) {
 		// Our renderer
-		m_GameShader = std::make_shared<Chimp::GameShader>(m_Engine, Chimp::ShaderFilePaths{
-		GAME_SRC + std::string("/assets/shaders/default.vert"),
-		GAME_SRC + std::string("/assets/shaders/default.frag")
-			});
+		m_GameShader = std::make_shared<Chimp::GameShader>(m_Engine);
 
 #ifdef DEBUG_AUTOHOST_AUTOCONNECT
 		Networking::GetServer()->Start(m_ConnectionInfo);

@@ -10,8 +10,11 @@ namespace Chimp {
 	// Simple abstraction around Chimp's renderer which is specific to the shader (so it sends correct textures, uniforms, etc)
 	class GameShader {
 	public:
-		GameShader(Engine& engine, 
-			const ShaderFilePaths& shaderFilePaths,
+		GameShader(Engine& engine,
+			const ShaderFilePaths& shaderFilePaths = ShaderFilePaths{
+				(std::filesystem::current_path() / "shaders/default.vert").string(),
+				(std::filesystem::current_path() / "shaders/default.frag").string()
+			},
 			const std::string& cameraBufferName = "Camera",
 			const std::string& modelBufferName = "Model");
 		virtual ~GameShader();
