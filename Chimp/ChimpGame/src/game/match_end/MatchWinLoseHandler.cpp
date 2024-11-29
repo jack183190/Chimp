@@ -3,10 +3,10 @@
 
 MatchWinLoseHandler::MatchWinLoseHandler(Chimp::Engine& engine,
 	Simulation& playerSimulation,
-	std::shared_ptr<GameRenderer> renderer) :
+	std::shared_ptr<Chimp::GameShader> renderer) :
 	m_Engine(engine),
 	m_PlayerSimulation(playerSimulation),
-	m_GameRenderer(renderer)
+	m_GameShader(renderer)
 {
 }
 
@@ -31,10 +31,10 @@ void MatchWinLoseHandler::Update()
 		endPacket.MatchId = clientHandlers.CurrentMatchHandler->GetMatchId();
 		Networking::GetClient()->GetClient().SendPacketToServer(endPacket);
 
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameRenderer, false));
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameShader, false));
 	}
 	// Did we win?
 	else if (clientHandlers.WinListener->DidWinMatch(clientHandlers.CurrentMatchHandler->GetMatchId())) {
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameRenderer, true));
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameOverScene>(m_Engine, m_GameShader, true));
 	}
 }

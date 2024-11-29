@@ -3,9 +3,9 @@
 #include "networking/Networking.h"
 
 GameScene::GameScene(Chimp::Engine& engine,
-	std::shared_ptr<GameRenderer> gameRenderer) :
+	std::shared_ptr<Chimp::GameShader> gameShader) :
 	m_Engine(engine),
-	m_GameRenderer(gameRenderer)
+	m_GameShader(gameShader)
 {
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
@@ -15,12 +15,12 @@ GameScene::GameScene(Chimp::Engine& engine,
 	}
 
 	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
-	m_OpponentSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager);
-	m_PlayerSimulation = std::make_unique<Simulation>(engine, gameRenderer, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager);
+	m_OpponentSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager);
+	m_PlayerSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager);
 
 	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
 
-	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameRenderer);
+	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameShader);
 
 	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager);
 
@@ -67,7 +67,7 @@ void GameScene::OnUpdate()
 
 void GameScene::OnRender()
 {
-	m_GameRenderer->BeginFrame();
+	m_GameShader->BeginFrame();
 
 	m_PlayerSimulation->Render();
 	m_OpponentSimulation->Render();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "rendering/GameRenderer.h"
+
 #include "Simulation.h"
 #include "waves/WaveStartHandler.h"
 #include "match_end/MatchWinLoseHandler.h"
@@ -10,7 +10,7 @@
 
 class GameScene : public Chimp::Scene {
 public:
-	GameScene(Chimp::Engine& engine, std::shared_ptr<GameRenderer> gameRenderer);
+	GameScene(Chimp::Engine& engine, std::shared_ptr<Chimp::GameShader> gameShader);
 	~GameScene();
 
 	void OnInit() override;
@@ -28,7 +28,7 @@ private:
 
 private:
 	Chimp::Engine& m_Engine;
-	std::shared_ptr<GameRenderer> m_GameRenderer;
+	std::shared_ptr<Chimp::GameShader> m_GameShader;
 	std::unique_ptr<Simulation> m_OpponentSimulation;
 	std::unique_ptr<Simulation> m_PlayerSimulation;
 	std::unique_ptr<WaveStartHandler> m_WaveStartHandler;

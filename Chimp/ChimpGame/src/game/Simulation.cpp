@@ -2,13 +2,13 @@
 #include "networking/Networking.h"
 
 Simulation::Simulation(Chimp::Engine& engine,
-	std::shared_ptr<GameRenderer> gameRenderer,
+	std::shared_ptr<Chimp::GameShader> gameShader,
 	Chimp::Vector2f position,
 	Chimp::Vector2f size,
 	bool isPlayerSimulation,
 	MoneyManager& moneyManager)
 	: m_Engine(engine),
-	m_GameRenderer(gameRenderer),
+	m_GameShader(gameShader),
 	m_Position(position),
 	m_Size(size),
 	m_HealthSystem(m_ECS),
@@ -52,7 +52,7 @@ void Simulation::Update()
 
 void Simulation::Render()
 {
-	m_GameRenderer->RenderWorld(m_ECS);
+	m_GameShader->RenderWorld(m_ECS);
 }
 
 void Simulation::RenderUI()
