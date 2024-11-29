@@ -17,7 +17,7 @@ void TowerSelectionSystem::Update()
 	clickedPos.y *= -1;
 	assert(m_SimulationPosition.y == 0); // if not, might need to add before flipping, just make sure its correct
 
-	auto view = m_ECS.GetEntitiesWithComponents<TowerComponent, Chimp::TransformComponent, EntityIdComponent>();
+	auto view = m_ECS.GetEntitiesWithComponents<TowerComponent, Chimp::TransformComponent, Chimp::EntityIdComponent>();
 	for (auto& [tower, transform, id] : view) {
 		Chimp::Rect towerBounds = {
 			{transform.GetTranslation().x, transform.GetTranslation().y},

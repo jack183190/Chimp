@@ -22,7 +22,7 @@ namespace Entities {
 			});
 
 		ecs.SetComponent(entity, ProjectileComponent{ velocity, damage, 5 });
-		ecs.SetComponent(entity, HealthComponent{ 1 });
+		ecs.SetComponent(entity, Chimp::HealthComponent{ 1 });
 
 		return entity;
 	}

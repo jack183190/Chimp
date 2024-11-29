@@ -7,7 +7,9 @@
 #include "api/graphics/meshes/TexturedQuad.h"
 #include "api/graphics/camera/controllers/DebugCameraController.h"
 #include "api/ecs/ECS.h"
+#include "api/ecs/Components.h"
 #include "api/networking/PacketTypeRegistry.h"
+#include "api/graphics/GameShader.h"
 
 // Utils
 #include "api/utils/FileReader.h"

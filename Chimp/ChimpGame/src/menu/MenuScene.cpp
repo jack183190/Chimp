@@ -3,7 +3,7 @@
 #include "Debug.h"
 
 MenuScene::MenuScene(Chimp::Engine& engine,
-	std::shared_ptr<GameRenderer> renderer)
+	std::shared_ptr<Chimp::GameShader> renderer)
 	: m_Engine(engine),
 	m_ConnectionInfo({})
 {
@@ -15,7 +15,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 
 	if (renderer == nullptr) {
 		// Our renderer
-		m_GameRenderer = std::make_shared<GameRenderer>(m_Engine);
+		m_GameShader = std::make_shared<Chimp::GameShader>(m_Engine);
 
 #ifdef DEBUG_AUTOHOST_AUTOCONNECT
 		Networking::GetServer()->Start(m_ConnectionInfo);
@@ -23,7 +23,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 #endif
 	}
 	else {
-		m_GameRenderer = renderer;
+		m_GameShader = renderer;
 		Networking::GetServer()->Shutdown();
 		Networking::GetClient()->Disconnect();
 	}
@@ -54,7 +54,7 @@ void MenuScene::OnUpdate()
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
 	
 	if (clientHandlers.CurrentMatchHandler->IsInMatch()) {
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameRenderer));
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader));
 	}
 	
 }

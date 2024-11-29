@@ -12,7 +12,7 @@ void TowerTargetSystem::Update()
 	std::vector<Chimp::Vector2f> bloonPositions;
 	std::vector<Chimp::EntityId> bloonIds;
 	{
-		auto bloonsView = m_ECS.GetEntitiesWithComponents<BloonComponent, EntityIdComponent, Chimp::TransformComponent>();
+		auto bloonsView = m_ECS.GetEntitiesWithComponents<BloonComponent, Chimp::EntityIdComponent, Chimp::TransformComponent>();
 		bloonPositions.reserve(bloonsView.Size());
 		bloonIds.reserve(bloonsView.Size());
 		for (size_t i = 0; i < bloonsView.Size(); i++) {

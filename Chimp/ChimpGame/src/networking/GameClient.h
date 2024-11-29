@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "client/ClientCurrentMatchHandler.h"
-#include "rendering/GameRenderer.h"
+
 #include "client/GameWinListener.h"
 #include "client/WaveStartListener.h"
 #include "client/TowerListener.h"

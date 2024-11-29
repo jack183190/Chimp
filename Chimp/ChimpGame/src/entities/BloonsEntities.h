@@ -2,8 +2,6 @@
 
 #include "stdafx.h"
 #include "BaseEntity.h"
-#include "health/HealthComponent.h"
-#include "EntityIdComponent.h"
 #include "bloons/MoveableComponent.h"
 #include "bloons/BloonComponent.h"
 

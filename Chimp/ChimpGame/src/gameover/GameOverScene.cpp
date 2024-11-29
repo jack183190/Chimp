@@ -4,10 +4,10 @@
 #include "networking/GameServer.h"
 
 GameOverScene::GameOverScene(Chimp::Engine& engine, 
-	std::shared_ptr<GameRenderer> gameRenderer,
+	std::shared_ptr<Chimp::GameShader>  gameShader,
 	bool didWin) :
 	m_Engine(engine),
-	m_GameRenderer(gameRenderer),
+	m_GameShader(gameShader),
 	m_DidWin(didWin)
 {
 }
@@ -41,6 +41,6 @@ void GameOverScene::OnRenderUI()
 {
 	ImGui::Text(m_DidWin ? "You won!" : "You lost!");
 	if (ImGui::Button("Go To Main Menu")) {
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<MenuScene>(m_Engine, m_GameRenderer));
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<MenuScene>(m_Engine, m_GameShader));
 	}
 }

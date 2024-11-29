@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "rendering/GameRenderer.h"
+
 #include "Entities.h"
 #include "entities/health/HealthSystem.h"
 #include "bloons/BloonManager.h"
@@ -12,7 +12,7 @@
 class Simulation {
 public:
 	Simulation(Chimp::Engine& engine, 
-		std::shared_ptr<GameRenderer> gameRenderer,
+		std::shared_ptr<Chimp::GameShader> gameShader,
 		Chimp::Vector2f position,
 		Chimp::Vector2f size,
 		bool isPlayerSimulation,
@@ -33,7 +33,7 @@ private:
 	Chimp::Vector2f m_Position;
 	Chimp::Vector2f m_Size;
 	Chimp::ECS m_ECS;
-	std::shared_ptr<GameRenderer> m_GameRenderer;
+	std::shared_ptr<Chimp::GameShader> m_GameShader;
 	HealthSystem m_HealthSystem;
 	BloonManager m_BloonManager;
 	std::unique_ptr<Chimp::WaveManager> m_WaveManager;

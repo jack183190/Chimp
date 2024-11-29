@@ -13,9 +13,9 @@ TowerProjectileSystem::TowerProjectileSystem(Chimp::Engine& engine,
 void TowerProjectileSystem::Update()
 {
 	const float dt = m_Engine.GetTimeManager().GetDeltaTime();
-	auto projectiles = m_ECS.GetEntitiesWithComponents<ProjectileComponent, Chimp::TransformComponent, HealthComponent>();
+	auto projectiles = m_ECS.GetEntitiesWithComponents<ProjectileComponent, Chimp::TransformComponent, Chimp::HealthComponent>();
 
-	auto bloons = m_ECS.GetEntitiesWithComponents<BloonComponent, Chimp::TransformComponent, EntityIdComponent>();
+	auto bloons = m_ECS.GetEntitiesWithComponents<BloonComponent, Chimp::TransformComponent, Chimp::EntityIdComponent>();
 	std::vector<Chimp::Vector2f> bloonPositions;
 	bloonPositions.reserve(bloons.Size());
 	for (size_t i = 0; i < bloons.Size(); i++) {

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "stdafx.h"
-#include "rendering/GameRenderer.h"
+
 
 class GameOverScene : public Chimp::Scene {
 public:
 	GameOverScene(Chimp::Engine& engine,
-		std::shared_ptr<GameRenderer> gameRenderer,
+		std::shared_ptr<Chimp::GameShader> gameShader,
 		bool didWin);
 	~GameOverScene();
 
@@ -19,6 +19,6 @@ public:
 
 private:
 	Chimp::Engine& m_Engine;
-	std::shared_ptr<GameRenderer> m_GameRenderer;
+	std::shared_ptr<Chimp::GameShader> m_GameShader;
 	bool m_DidWin;
 };
