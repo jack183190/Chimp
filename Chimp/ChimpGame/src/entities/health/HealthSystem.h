@@ -1,8 +1,6 @@
 #pragma once
 
 #include "stdafx.h"
-#include "HealthComponent.h"
-#include "entities/EntityIdComponent.h"
 
 class HealthSystem {
 public:

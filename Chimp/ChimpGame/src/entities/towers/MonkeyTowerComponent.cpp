@@ -1,7 +1,6 @@
 #include "MonkeyTowerComponent.h"
 #include "entities/BaseEntity.h"
 #include "entities/towers/TowerTypes.h"
-#include "entities/health/HealthComponent.h"
 
 Chimp::EntityId Entities::CreateMonkeyTower(Chimp::ECS& ecs, Chimp::Mesh& mesh, Chimp::Vector2f position)
 {

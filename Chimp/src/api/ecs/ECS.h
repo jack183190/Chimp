@@ -1,8 +1,5 @@
 #pragma once
 
-#include "components/MeshComponent.h"
-#include "components/TransformComponent.h"
-
 #include "stdafx.h"
 #include "api/utils/OptionalReference.h"
 
@@ -11,7 +8,6 @@
 #endif
 
 namespace Chimp {
-	static int a = 0;
 #ifdef CHIMP_FLECS
 	typedef flecs::entity EntityId;
 	class ECS {
