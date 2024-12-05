@@ -2,7 +2,7 @@
 #include "Loggers.h"
 
 namespace Chimp {
-	YamlBlock::YamlBlock(
+	YamlBlockParser::YamlBlockParser(
 		const std::vector<std::string>& lines,
 		std::vector<std::string>::const_iterator begin,
 		int indentsThisBlock
@@ -85,19 +85,19 @@ namespace Chimp {
 					return;
 				}
 
-				Blocks.emplace(std::string(key), YamlBlock{ lines, iter + 1, indentsNextLine });
+				Blocks.emplace(std::string(key), YamlBlockParser{ lines, iter + 1, indentsNextLine });
 				iter = Blocks.at(std::string(key)).m_End;
 				m_IsValid = m_IsValid && Blocks.at(std::string(key)).IsValid();
 			}
 		}
 	}
 
-	bool YamlBlock::IsValid() const
+	bool YamlBlockParser::IsValid() const
 	{
 		return m_IsValid;
 	}
 
-	std::vector<std::string>::const_iterator YamlBlock::ParseList(std::string_view keyView, std::vector<std::string>::const_iterator begin, std::vector<std::string>::const_iterator end)
+	std::vector<std::string>::const_iterator YamlBlockParser::ParseList(std::string_view keyView, std::vector<std::string>::const_iterator begin, std::vector<std::string>::const_iterator end)
 	{
 		// This is the most unreadable code ever, I'm practicing if I ever have to write the standard library
 
@@ -182,7 +182,7 @@ namespace Chimp {
 		return end;
 	}
 
-	void YamlBlock::ParseValue(std::string_view key, std::string_view value)
+	void YamlBlockParser::ParseValue(std::string_view key, std::string_view value)
 	{
 #define ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(parseFunction, value, map, key) {\
 	const auto v = parseFunction(value);\
@@ -204,7 +204,7 @@ namespace Chimp {
 		assert(false);
 	}
 
-	InPlaceOptional<bool> YamlBlock::ParseBool(std::string_view value) const
+	InPlaceOptional<bool> YamlBlockParser::ParseBool(std::string_view value) const
 	{
 		if (value.size() == 4
 			&& (value.at(0) == 'T' || value.at(0) == 't')
@@ -226,7 +226,7 @@ namespace Chimp {
 		}
 	}
 
-	InPlaceOptional<int> YamlBlock::ParseInt(std::string_view value) const
+	InPlaceOptional<int> YamlBlockParser::ParseInt(std::string_view value) const
 	{
 		InPlaceOptional<int> result(0);
 		int& val = result.UnsafeGet();
@@ -249,7 +249,7 @@ namespace Chimp {
 		return result;
 	}
 
-	InPlaceOptional<float> YamlBlock::ParseFloat(std::string_view value) const
+	InPlaceOptional<float> YamlBlockParser::ParseFloat(std::string_view value) const
 	{
 		InPlaceOptional<float> result(0.0f);
 		float& val = result.UnsafeGet();
@@ -287,12 +287,12 @@ namespace Chimp {
 		return result;
 	}
 
-	InPlaceOptional<std::string> YamlBlock::ParseString(std::string_view value) const
+	InPlaceOptional<std::string> YamlBlockParser::ParseString(std::string_view value) const
 	{
 		return InPlaceOptional<std::string>(std::string(value));
 	}
 
-	int YamlBlock::GetIndentCount(std::string_view line) const
+	int YamlBlockParser::GetIndentCount(std::string_view line) const
 	{
 		int chars = 0;
 		for (char c : line) {
@@ -306,7 +306,7 @@ namespace Chimp {
 		return chars;
 	}
 
-	std::string_view YamlBlock::GetKey(std::string_view line) const
+	std::string_view YamlBlockParser::GetKey(std::string_view line) const
 	{
 		std::string_view noIndents = line.substr(m_IndentsThisBlock);
 		size_t colonIndex = noIndents.find(':');
@@ -318,7 +318,7 @@ namespace Chimp {
 		}
 	}
 
-	std::string_view YamlBlock::GetValue(std::string_view line) const
+	std::string_view YamlBlockParser::GetValue(std::string_view line) const
 	{
 		std::string_view noIndents = line.substr(m_IndentsThisBlock);
 		for (size_t i = 0; i < noIndents.size(); i++) {
@@ -332,7 +332,7 @@ namespace Chimp {
 		return noIndents.substr(noIndents.size());
 	}
 
-	bool YamlBlock::IsListElement(std::string_view line) const
+	bool YamlBlockParser::IsListElement(std::string_view line) const
 	{
 		if (line.size() - 3 < m_IndentsThisBlock) {
 			return false;

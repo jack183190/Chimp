@@ -4,10 +4,10 @@
 #include "api/utils/InPlaceOptional.h"
 
 namespace Chimp {
-	class YamlBlock {
+	class YamlBlockParser {
 	public:
-		YamlBlock(const std::vector<std::string> &lines, std::vector<std::string>::const_iterator begin, int indentsThisBlock = 0);
-		~YamlBlock() = default;
+		YamlBlockParser(const std::vector<std::string> &lines, std::vector<std::string>::const_iterator begin, int indentsThisBlock = 0);
+		~YamlBlockParser() = default;
 
 		[[nodiscard]] bool IsValid() const;
 
@@ -54,10 +54,10 @@ namespace Chimp {
 		std::unordered_map<std::string, std::vector<int>> IntArrays;
 		std::unordered_map<std::string, std::vector<float>> FloatArrays;
 		std::unordered_map<std::string, std::vector<bool>> BoolArrays;
-		std::unordered_map<std::string, YamlBlock> Blocks;
+		std::unordered_map<std::string, YamlBlockParser> Blocks;
 
 	private:
-		std::vector<std::string>::const_iterator m_End; // one passed end of this block in the lines vector
+		std::vector<std::string>::const_iterator m_End; // one past end of this block in the lines vector
 		int m_IndentsThisBlock;
 		bool m_IsValid;
 	};

@@ -46,7 +46,7 @@ void MenuScene::OnInit()
 		" - 2",
 		" - 3"
 	};
-	Chimp::YamlBlock block(lines, lines.begin());
+	Chimp::YamlBlockParser block(lines, lines.begin());
 
 	for (auto& [key, value] : block.IntArrays) {
 		std::stringstream ss;
