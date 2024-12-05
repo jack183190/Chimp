@@ -46,9 +46,9 @@ void MenuScene::OnInit()
 		" - 2",
 		" - 3"
 	};
-	Chimp::YamlBlockParser block(lines, lines.begin());
+	Chimp::YAMLBlockParser block(lines, lines.begin());
 
-	for (auto& [key, value] : block.IntArrays) {
+	for (auto& [key, value] : block.Data.IntArrays) {
 		std::stringstream ss;
 		for (auto& v : value) {
 			ss << v << ", ";
@@ -56,9 +56,9 @@ void MenuScene::OnInit()
 		GetLogger().Info(std::format("Key: {}, Value: {}", key, ss.str()));
 	}
 
-	GetLogger().Info(std::format("Root Bool: {}", block.Bools["Bool"]));
-	GetLogger().Info(std::format("Block Float: {}", block.Blocks.at("Block").Floats["Float"]));
-	GetLogger().Info(std::format("Block2 String: {}", block.Blocks.at("Block").Blocks.at("Block2").Strings["String"]));
+	GetLogger().Info(std::format("Root Bool: {}", block.Data.Bools["Bool"]));
+	GetLogger().Info(std::format("Block Float: {}", block.Data.Blocks.at("Block").Floats["Float"]));
+	GetLogger().Info(std::format("Block2 String: {}", block.Data.Blocks.at("Block").Blocks.at("Block2").Strings["String"]));
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)

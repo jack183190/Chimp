@@ -1,8 +1,8 @@
-#include "api/files/yaml/YamlBlock.h"
+#include "api/files/yaml/YAMLBlockParser.h"
 #include "Loggers.h"
 
 namespace Chimp {
-	YamlBlockParser::YamlBlockParser(
+	YAMLBlockParser::YAMLBlockParser(
 		const std::vector<std::string>& lines,
 		std::vector<std::string>::const_iterator begin,
 		int indentsThisBlock
@@ -85,19 +85,20 @@ namespace Chimp {
 					return;
 				}
 
-				Blocks.emplace(std::string(key), YamlBlockParser{ lines, iter + 1, indentsNextLine });
-				iter = Blocks.at(std::string(key)).m_End;
-				m_IsValid = m_IsValid && Blocks.at(std::string(key)).IsValid();
+				YAMLBlockParser parsedBlockYamlBlockParser(lines, iter + 1, indentsNextLine);
+				Data.Blocks.emplace(std::string(key), parsedBlockYamlBlockParser.Data);
+				iter = parsedBlockYamlBlockParser.m_End;
+				m_IsValid = m_IsValid && parsedBlockYamlBlockParser.IsValid();
 			}
 		}
 	}
 
-	bool YamlBlockParser::IsValid() const
+	bool YAMLBlockParser::IsValid() const
 	{
 		return m_IsValid;
 	}
 
-	std::vector<std::string>::const_iterator YamlBlockParser::ParseList(std::string_view keyView, std::vector<std::string>::const_iterator begin, std::vector<std::string>::const_iterator end)
+	std::vector<std::string>::const_iterator YAMLBlockParser::ParseList(std::string_view keyView, std::vector<std::string>::const_iterator begin, std::vector<std::string>::const_iterator end)
 	{
 		// This is the most unreadable code ever, I'm practicing if I ever have to write the standard library
 
@@ -145,13 +146,13 @@ namespace Chimp {
 		> parseFunctions;
 
 		// Set the map and parse function variants
-		FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseBool, BoolArrays, key, value, bool);
+		FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseBool, Data.BoolArrays, key, value, bool);
 		if (std::holds_alternative<std::monostate>(map)) [[likely]] {
-			FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseInt, IntArrays, key, value, int);
+			FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseInt, Data.IntArrays, key, value, int);
 			if (std::holds_alternative<std::monostate>(map)) [[likely]] {
-				FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseFloat, FloatArrays, key, value, float);
+				FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseFloat, Data.FloatArrays, key, value, float);
 				if (std::holds_alternative<std::monostate>(map)) {
-					FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseString, StringArrays, key, value, std::string);
+					FIND_MAP_AND_INSERT_FIRST_IF_FOUND(ParseString, Data.StringArrays, key, value, std::string);
 					assert(!std::holds_alternative<std::monostate>(map));
 				}
 				}
@@ -182,7 +183,7 @@ namespace Chimp {
 		return end;
 	}
 
-	void YamlBlockParser::ParseValue(std::string_view key, std::string_view value)
+	void YAMLBlockParser::ParseValue(std::string_view key, std::string_view value)
 	{
 #define ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(parseFunction, value, map, key) {\
 	const auto v = parseFunction(value);\
@@ -197,14 +198,14 @@ namespace Chimp {
 	}\
 }
 
-		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseBool, value, Bools, key);
-		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseInt, value, Ints, key);
-		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseFloat, value, Floats, key);
-		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseString, value, Strings, key);
+		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseBool, value, Data.Bools, key);
+		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseInt, value, Data.Ints, key);
+		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseFloat, value, Data.Floats, key);
+		ATTEMPT_PARSE_AND_RETURN_IF_SUCCESSFUL(ParseString, value, Data.Strings, key);
 		assert(false);
 	}
 
-	InPlaceOptional<bool> YamlBlockParser::ParseBool(std::string_view value) const
+	InPlaceOptional<bool> YAMLBlockParser::ParseBool(std::string_view value) const
 	{
 		if (value.size() == 4
 			&& (value.at(0) == 'T' || value.at(0) == 't')
@@ -226,7 +227,7 @@ namespace Chimp {
 		}
 	}
 
-	InPlaceOptional<int> YamlBlockParser::ParseInt(std::string_view value) const
+	InPlaceOptional<int> YAMLBlockParser::ParseInt(std::string_view value) const
 	{
 		InPlaceOptional<int> result(0);
 		int& val = result.UnsafeGet();
@@ -249,7 +250,7 @@ namespace Chimp {
 		return result;
 	}
 
-	InPlaceOptional<float> YamlBlockParser::ParseFloat(std::string_view value) const
+	InPlaceOptional<float> YAMLBlockParser::ParseFloat(std::string_view value) const
 	{
 		InPlaceOptional<float> result(0.0f);
 		float& val = result.UnsafeGet();
@@ -287,12 +288,12 @@ namespace Chimp {
 		return result;
 	}
 
-	InPlaceOptional<std::string> YamlBlockParser::ParseString(std::string_view value) const
+	InPlaceOptional<std::string> YAMLBlockParser::ParseString(std::string_view value) const
 	{
 		return InPlaceOptional<std::string>(std::string(value));
 	}
 
-	int YamlBlockParser::GetIndentCount(std::string_view line) const
+	int YAMLBlockParser::GetIndentCount(std::string_view line) const
 	{
 		int chars = 0;
 		for (char c : line) {
@@ -306,7 +307,7 @@ namespace Chimp {
 		return chars;
 	}
 
-	std::string_view YamlBlockParser::GetKey(std::string_view line) const
+	std::string_view YAMLBlockParser::GetKey(std::string_view line) const
 	{
 		std::string_view noIndents = line.substr(m_IndentsThisBlock);
 		size_t colonIndex = noIndents.find(':');
@@ -318,7 +319,7 @@ namespace Chimp {
 		}
 	}
 
-	std::string_view YamlBlockParser::GetValue(std::string_view line) const
+	std::string_view YAMLBlockParser::GetValue(std::string_view line) const
 	{
 		std::string_view noIndents = line.substr(m_IndentsThisBlock);
 		for (size_t i = 0; i < noIndents.size(); i++) {
@@ -332,7 +333,7 @@ namespace Chimp {
 		return noIndents.substr(noIndents.size());
 	}
 
-	bool YamlBlockParser::IsListElement(std::string_view line) const
+	bool YAMLBlockParser::IsListElement(std::string_view line) const
 	{
 		if (line.size() - 3 < m_IndentsThisBlock) {
 			return false;

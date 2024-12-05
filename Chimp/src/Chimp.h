@@ -12,7 +12,7 @@
 #include "api/graphics/GameShader.h"
 
 // Utils
-#include "api/files/yaml/YamlBlock.h"
+#include "api/files/yaml/YAMLBlockParser.h"
 #include "api/utils/FileReader.h"
 #include "api/utils/HashCombine.h"
 #include "api/utils/Maths.h"
