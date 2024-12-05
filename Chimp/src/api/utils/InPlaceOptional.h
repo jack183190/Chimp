@@ -9,7 +9,9 @@ namespace Chimp {
 	class InPlaceOptional
 	{
 	public:
-		InPlaceOptional() : m_HasValue(false) {}
+		using ValueType = T;
+	public:
+		InPlaceOptional() : m_Value(), m_HasValue(false) {}
 		InPlaceOptional(T value) : m_Value(value), m_HasValue(true) {}
 
 		InPlaceOptional<T>& operator=(T value) {
@@ -32,8 +34,13 @@ namespace Chimp {
 			return !m_HasValue;
 		}
 
-		[[nodiscard]]  T Value() const {
+		[[nodiscard]] T Value() const {
 			assert(m_HasValue);
+			return m_Value;
+		}
+
+		// Returns pointer to value, even if value is empty
+		[[nodiscard]] T& UnsafeGet() {
 			return m_Value;
 		}
 

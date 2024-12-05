@@ -36,7 +36,21 @@ MenuScene::~MenuScene()
 
 void MenuScene::OnInit()
 {
+	std::vector<std::string> lines = {
+		"Root: ",
+		"\tTest: ",
+		"\t - 2",
+		"\t - 3"
+	};
+	Chimp::YamlBlock block(lines, lines.begin());
 
+	for (auto& [key, value] : block.IntArrays) {
+		std::stringstream ss;
+		for (auto& v : value) {
+			ss << v << ", ";
+		}
+		GetLogger().Info(std::format("Key: {}, Value: {}", key, ss.str()));
+	}
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)

@@ -44,6 +44,7 @@
 #include <utility>
 #include <regex>
 #include <format>
+#include <variant>
 
 // OpenGL
 #ifdef CHIMP_OPENGL

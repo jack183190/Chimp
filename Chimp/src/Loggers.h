@@ -38,4 +38,10 @@ namespace Chimp::Loggers {
 		static Logger logger("ChimpTimeManager", LogLevel::WARNING);
 		return logger;
 	}
+
+	static Logger& YAML()
+	{
+		static Logger logger("ChimpYAML", LogLevel::INFO);
+		return logger;
+	}
 }
