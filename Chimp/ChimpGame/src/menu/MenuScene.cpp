@@ -37,15 +37,14 @@ MenuScene::~MenuScene()
 void MenuScene::OnInit()
 {
 	std::vector<std::string> lines = {
-		"Root: ",
-		"\tBool: true",
-		"\tBlock:",
-		"\t\tFloat: 13.3",
-		"\t\tBlock2: ",
-		"\t\t\tString: Hi!",
-		"\tTest: ",
-		"\t - 2",
-		"\t - 3"
+		"Bool: true",
+		"Block:",
+		"\tFloat: 13.3",
+		"\tBlock2: ",
+		"\t\tString: Hi!",
+		"Test: ",
+		" - 2",
+		" - 3"
 	};
 	Chimp::YamlBlock block(lines, lines.begin());
 
@@ -57,7 +56,7 @@ void MenuScene::OnInit()
 		GetLogger().Info(std::format("Key: {}, Value: {}", key, ss.str()));
 	}
 
-	GetLogger().Info(std::format("Root Bool: {}", block.Bools["Root"]));
+	GetLogger().Info(std::format("Root Bool: {}", block.Bools["Bool"]));
 	GetLogger().Info(std::format("Block Float: {}", block.Blocks.at("Block").Floats["Float"]));
 	GetLogger().Info(std::format("Block2 String: {}", block.Blocks.at("Block").Blocks.at("Block2").Strings["String"]));
 }

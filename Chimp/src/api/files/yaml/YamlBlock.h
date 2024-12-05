@@ -6,7 +6,7 @@
 namespace Chimp {
 	class YamlBlock {
 	public:
-		YamlBlock(const std::vector<std::string> &lines, std::vector<std::string>::const_iterator begin, int indentsThisBlock = 1);
+		YamlBlock(const std::vector<std::string> &lines, std::vector<std::string>::const_iterator begin, int indentsThisBlock = 0);
 		~YamlBlock() = default;
 
 		[[nodiscard]] bool IsValid() const;

@@ -53,7 +53,7 @@ namespace Chimp {
 		assert(GetValue(testKey) == "value");
 #pragma endregion
 
-		auto iter = std::max(begin, lines.begin() + 1); // Skip the name of the block if we are the root node
+		auto iter = begin;
 		while (iter < lines.end()) {
 			std::string_view key = GetKey(*iter);
 			std::string_view value = GetValue(*iter);
