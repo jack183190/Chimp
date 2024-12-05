@@ -65,10 +65,11 @@ namespace Chimp {
 				return;
 			}
 
-			if (indentsThisLine == m_IndentsThisBlock) {
+			auto nextIter = iter + 1;
+			int indentsNextLine = nextIter < lines.end() ? GetIndentCount(*nextIter) : -1;
+			if (indentsNextLine <= m_IndentsThisBlock || indentsNextLine == -1) {
 				// Parsing normal value or a list
-				auto nextIter = iter + 1;
-				if (nextIter < lines.end() && IsListElement(*nextIter)) {
+				if (indentsNextLine == m_IndentsThisBlock && IsListElement(*nextIter)) {
 					iter = ParseList(key, nextIter, lines.end());
 				}
 				else {
@@ -78,7 +79,13 @@ namespace Chimp {
 			}
 			else {
 				// Parsing a block
-				Blocks.emplace(std::string(key), YamlBlock(lines, iter + 1, indentsThisLine + 1));
+				if (indentsThisLine + 1 < indentsNextLine) {
+					logger.Error(std::format("Invalid indents for new block {}: {} -> {}", key, indentsThisLine, indentsNextLine));
+					m_IsValid = false;
+					return;
+				}
+
+				Blocks.emplace(std::string(key), YamlBlock{ lines, iter + 1, indentsNextLine });
 				iter = Blocks.at(std::string(key)).m_End;
 				m_IsValid = m_IsValid && Blocks.at(std::string(key)).IsValid();
 			}
