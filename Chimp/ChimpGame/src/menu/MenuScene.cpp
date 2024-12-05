@@ -59,6 +59,11 @@ void MenuScene::OnInit()
 	GetLogger().Info(std::format("Root Bool: {}", block.Data.Bools["Bool"]));
 	GetLogger().Info(std::format("Block Float: {}", block.Data.Blocks.at("Block").Floats["Float"]));
 	GetLogger().Info(std::format("Block2 String: {}", block.Data.Blocks.at("Block").Blocks.at("Block2").Strings["String"]));
+
+	GetLogger().Info("---------------");
+	Chimp::YAMLWriter::Write(block.Data, [](std::string_view line) {
+		GetLogger().Info(std::string(line));
+		});
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
