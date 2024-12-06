@@ -49,7 +49,7 @@ namespace Chimp {
 		}
 		for (const auto& [key, value] : root.Floats) {
 			// Ensure that floats aren't misintrepreted as ints when deserialising
-			const std::string stringValue = std::fabs(value - std::floor(value)) > FLT_EPSILON ? std::to_string(value) : std::format("{:.1f}", value);
+			const std::string stringValue = FloatEqual(value, std::floor(value)) ? std::format("{:.1f}", value) : std::format("{}", value);
 			writeFunc(std::format("{}{}: {}", indents, key, stringValue));
 		}
 		for (const auto& [key, value] : root.Strings) {

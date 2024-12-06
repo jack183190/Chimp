@@ -100,6 +100,11 @@ namespace Chimp {
 #pragma endregion
 #pragma endregion
 
+	bool FloatEqual(float a, float b)
+	{
+		return abs(a - b) < std::numeric_limits<float>::epsilon();
+	}
+
 	void RegisterYAMLSerialisableMathsTypes(YAMLSerialiser& serialiser)
 	{
 		serialiser.RegisterSerialisable<Vector2f>("Vec2f", Vector2f::Deserialise);

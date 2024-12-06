@@ -20,6 +20,9 @@ namespace Chimp {
 	struct Vector3i;
 	struct Vector4i;
 
+	// Compare two floats for equality, supports floating point error
+	[[nodiscard]] bool FloatEqual(float a, float b);
+
 	typedef glm::mat4x4 Matrix;
 
 #pragma region Types
@@ -80,7 +83,7 @@ namespace Chimp {
 			y -= other.y;
 		}
 		bool operator==(const Vector2f& other) const {
-			return x == other.x && y == other.y;
+			return FloatEqual(x, other.x) && FloatEqual(y, other.y);
 		}
 		bool operator!=(const Vector2f& other) const {
 			return !(*this == other);
@@ -162,7 +165,7 @@ namespace Chimp {
 			z -= other.z;
 		}
 		bool operator==(const Vector3f& other) const {
-			return x == other.x && y == other.y && z == other.z;
+			return FloatEqual(x, other.x) && FloatEqual(y, other.y) && FloatEqual(z, other.z);
 		}
 		bool operator!=(const Vector3f& other) const {
 			return !(*this == other);
@@ -252,7 +255,7 @@ namespace Chimp {
 			w -= other.w;
 		}
 		bool operator==(const Vector4f& other) const {
-			return x == other.x && y == other.y && z == other.z && w == other.w;
+			return FloatEqual(x, other.x) && FloatEqual(y, other.y) && FloatEqual(z, other.z) && FloatEqual(w, other.w);
 		}
 		bool operator!=(const Vector4f& other) const {
 			return !(*this == other);
