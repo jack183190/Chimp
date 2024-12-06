@@ -1,4 +1,5 @@
 #include "api/utils/Maths.h"
+#include "api/files/yaml/YAMLSerialiser.h"
 
 namespace Chimp {
 
@@ -98,6 +99,19 @@ namespace Chimp {
 
 #pragma endregion
 #pragma endregion
+
+	void RegisterYAMLSerialisableMathsTypes(YAMLSerialiser& serialiser)
+	{
+		serialiser.RegisterSerialisable<Vector2f>("Vec2f", Vector2f::Deserialise);
+		serialiser.RegisterSerialisable<Vector3f>("Vec3f", Vector3f::Deserialise);
+		serialiser.RegisterSerialisable<Vector4f>("Vec4f", Vector4f::Deserialise);
+
+		serialiser.RegisterSerialisable<Vector2i>("Vec2i", Vector2i::Deserialise);
+		serialiser.RegisterSerialisable<Vector3i>("Vec3i", Vector3i::Deserialise);
+		serialiser.RegisterSerialisable<Vector4i>("Vec4i", Vector4i::Deserialise);
+
+		serialiser.RegisterSerialisable<Rect>("Rect", Rect::Deserialise);
+	}
 
 	Vector3f VectorCrossProduct(const Vector3f& a, const Vector3f& b)
 	{

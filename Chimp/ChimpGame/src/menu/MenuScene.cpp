@@ -35,33 +35,9 @@ MenuScene::~MenuScene()
 
 }
 
-struct Test : public Chimp::YAMLSerialisable {
-	int notSaved = 0;
-	std::string name;
-	std::unique_ptr<Test> child = nullptr;
-
-	void Serialise(Chimp::YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
-		block.Strings.insert({ "name", name });
-		if (child != nullptr) {
-			serialiseChild("child", *child);
-		}
-	}
-
-	static std::unique_ptr<Test> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
-		auto test = std::make_unique<Test>();
-		auto iter = block.Strings.find("name");
-		if (iter != block.Strings.end()) {
-			test->name = iter->second;
-		}
-
-		test->child = UNIQUE_PTR_CAST_AND_MOVE(Test, deserialiseChild("child"));
-		return test;
-	}
-};
-
 void MenuScene::OnInit()
 {
-	m_Engine.GetYAMLSerialiser().RegisterSerialisable<Test>("test", Test::Deserialise);
+	/*m_Engine.GetYAMLSerialiser().RegisterSerialisable<Test>("test", Test::Deserialise);
 
 	Test test;
 	test.notSaved = 1;
@@ -88,7 +64,35 @@ void MenuScene::OnInit()
 	}
 	else {
 		GetLogger().Error("Failed to read test.yaml");
-	}
+	}*/
+
+	Chimp::Vector2f test = { 13.1f, -99.9f };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test, "test.yaml");
+	assert(test == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector2f, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
+
+	Chimp::Vector3f test2 = { 13.1f, -99.9f, 0.7f };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test2, "test.yaml");
+	assert(test2 == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector3f, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
+
+	Chimp::Vector4f test3 = { 13.1f, -99.9f, 0.7f, 0.10f };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test3, "test.yaml");
+	assert(test3 == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector4f, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
+
+	Chimp::Vector2i test4 = { 13, -99 };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test4, "test.yaml");
+	assert(test4 == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector2i, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
+
+	Chimp::Vector3i test5 = { 13, -99, 0 };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test5, "test.yaml");
+	assert(test5 == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector3i, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
+
+	Chimp::Vector4i test6 = { 13, -99, 0, 10 };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test6, "test.yaml");
+	assert(test6 == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector4i, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
+
+	Chimp::Rect test7 = { { 13.3f, -99.5f }, { 0.9f, 10.1f } };
+	m_Engine.GetYAMLSerialiser().WriteToFile(test7, "test.yaml");
+	assert(test7 == *UNIQUE_PTR_CAST_AND_MOVE(Chimp::Rect, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml")));
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)

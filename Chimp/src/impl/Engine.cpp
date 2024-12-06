@@ -33,6 +33,8 @@ namespace Chimp {
 
 		PacketTypeRegistry::RegisterChimpPacketTypes();
 
+		RegisterYAMLSerialisableMathsTypes(m_YAMLSerialiser);
+
 		Loggers::Main().Info("Initialized Chimp Engine!");
 	}
 

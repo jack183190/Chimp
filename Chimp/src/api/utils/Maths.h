@@ -7,8 +7,12 @@
 #include <../vendor/glm/glm/gtc/type_ptr.hpp>
 #include <../vendor/glm/glm/gtc/constants.hpp>
 #include <imgui.h>
+#include "api/files/yaml/YAMLSerialisable.h"
+#include "api/utils/preprocessor/Casting.h"
 
 namespace Chimp {
+	class YAMLSerialiser;
+
 	struct Vector2f;
 	struct Vector3f;
 	struct Vector4f;
@@ -20,7 +24,7 @@ namespace Chimp {
 
 #pragma region Types
 #pragma region Vectors
-	struct Vector2f {
+	struct Vector2f : public YAMLSerialisable {
 		Vector2f() : x(0), y(0) {}
 		Vector2f(float x, float y) : x(x), y(y) {}
 		Vector2f(int x, int y) : x((float)x), y((float)y) {}
@@ -31,6 +35,18 @@ namespace Chimp {
 		explicit Vector2f(Vector3f vec);
 		explicit Vector2f(Vector3i vec);
 		explicit Vector2f(Vector4f vec);
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			block.Floats["x"] = x;
+			block.Floats["y"] = y;
+		}
+
+		static std::unique_ptr<Vector2f> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Vector2f>(
+				block.Floats.at("x"),
+				block.Floats.at("y")
+			);
+		}
 
 		operator glm::vec2() const { return glm::vec2(x, y); }
 		operator ImVec2() const { return ImVec2(x, y); }
@@ -86,7 +102,7 @@ namespace Chimp {
 		float y;
 	};
 
-	struct Vector3f {
+	struct Vector3f : public YAMLSerialisable {
 		Vector3f() : x(0), y(0), z(0) {}
 		Vector3f(float x, float y, float z) : x(x), y(y), z(z) {}
 		Vector3f(int x, int y, int z) : x((float)x), y((float)y), z((float)z) {}
@@ -96,6 +112,20 @@ namespace Chimp {
 		explicit Vector3f(Vector4f vec);
 		Vector3f(glm::vec<3, float> vec) : x(vec.x), y(vec.y), z(vec.z) {}
 		explicit Vector3f(ImVec2 vec, float z = 0.0f) : x(vec.x), y(vec.y), z(z) {}
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			block.Floats["x"] = x;
+			block.Floats["y"] = y;
+			block.Floats["z"] = z;
+		}
+
+		static std::unique_ptr<Vector3f> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Vector3f>(
+				block.Floats.at("x"),
+				block.Floats.at("y"),
+				block.Floats.at("z")
+			);
+		}
 
 		operator glm::vec3() const { return glm::vec3(x, y, z); }
 
@@ -155,7 +185,7 @@ namespace Chimp {
 		float z;
 	};
 
-	struct Vector4f {
+	struct Vector4f : public YAMLSerialisable {
 		Vector4f() : x(0), y(0), z(0), w(0) {}
 		Vector4f(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 		Vector4f(int x, int y, int z, int w) : x((float)x), y((float)y), z((float)z), w((float)w) {}
@@ -166,6 +196,22 @@ namespace Chimp {
 		Vector4f(glm::vec<4, float> vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
 		Vector4f(ImVec2 vec, float z = 0.0f, float w = 0.0f)
 			: x(vec.x), y(vec.y), z(z), w(w) {}
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			block.Floats["x"] = x;
+			block.Floats["y"] = y;
+			block.Floats["z"] = z;
+			block.Floats["w"] = w;
+		}
+
+		static std::unique_ptr<Vector4f> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Vector4f>(
+				block.Floats.at("x"),
+				block.Floats.at("y"),
+				block.Floats.at("z"),
+				block.Floats.at("w")
+			);
+		}
 
 		operator glm::vec4() const { return glm::vec4(x, y, z, w); }
 
@@ -230,7 +276,7 @@ namespace Chimp {
 		float w;
 	};
 
-	struct Vector2i {
+	struct Vector2i : public YAMLSerialisable {
 		Vector2i() : x(0), y(0) {}
 		Vector2i(int x, int y) : x(x), y(y) {}
 		explicit Vector2i(Vector3i vec);
@@ -238,9 +284,20 @@ namespace Chimp {
 		explicit Vector2i(Vector2f vec);
 		explicit Vector2i(Vector3f vec);
 		explicit Vector2i(Vector4f vec);
-
 		Vector2i(glm::vec<2, int> vec) : x(vec.x), y(vec.y) {}
 		Vector2i(ImVec2 vec) : x((int)vec.x), y((int)vec.y) {}
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			block.Ints["x"] = x;
+			block.Ints["y"] = y;
+		}
+
+		static std::unique_ptr<Vector2i> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Vector2i>(
+				block.Ints.at("x"),
+				block.Ints.at("y")
+			);
+		}
 
 		operator glm::ivec2() const { return glm::ivec2(x, y); }
 
@@ -296,7 +353,7 @@ namespace Chimp {
 		int y;
 	};
 
-	struct Vector3i {
+	struct Vector3i : public YAMLSerialisable {
 		Vector3i() : x(0), y(0), z(0) {}
 		Vector3i(int x, int y, int z) : x(x), y(y), z(z) {}
 		explicit Vector3i(Vector4i vec);
@@ -306,6 +363,20 @@ namespace Chimp {
 		explicit Vector3i(Vector4f vec);
 		Vector3i(glm::vec<3, int> vec) : x(vec.x), y(vec.y), z(vec.z) {}
 		Vector3i(ImVec2 vec, int z = 0) : x((int)vec.x), y((int)vec.y), z(z) {}
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			block.Ints["x"] = x;
+			block.Ints["y"] = y;
+			block.Ints["z"] = z;
+		}
+
+		static std::unique_ptr<Vector3i> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Vector3i>(
+				block.Ints.at("x"),
+				block.Ints.at("y"),
+				block.Ints.at("z")
+			);
+		}
 
 		operator glm::ivec3() const { return glm::ivec3(x, y, z); }
 
@@ -366,7 +437,7 @@ namespace Chimp {
 		int z;
 	};
 
-	struct Vector4i {
+	struct Vector4i : public YAMLSerialisable {
 		Vector4i() : x(0), y(0), z(0), w(0) {}
 		Vector4i(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
 		explicit Vector4i(Vector3i vec, int w = 0);
@@ -374,9 +445,24 @@ namespace Chimp {
 		explicit Vector4i(Vector2f vec, int z = 0, int w = 0);
 		explicit Vector4i(Vector3f vec);
 		explicit Vector4i(Vector4f vec);
-
 		Vector4i(glm::vec<4, int> vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
 		Vector4i(ImVec2 vec, int z = 0, int w = 0) : x((int)vec.x), y((int)vec.y), z(z), w(w) {}
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			block.Ints["x"] = x;
+			block.Ints["y"] = y;
+			block.Ints["z"] = z;
+			block.Ints["w"] = w;
+		}
+
+		static std::unique_ptr<Vector4i> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Vector4i>(
+				block.Ints.at("x"),
+				block.Ints.at("y"),
+				block.Ints.at("z"),
+				block.Ints.at("w")
+			);
+		}
 
 		operator glm::ivec4() const { return glm::ivec4(x, y, z, w); }
 
@@ -447,13 +533,27 @@ namespace Chimp {
 
 	constexpr float PI = glm::pi<float>();
 
-	struct Rect {
+	struct Rect : public YAMLSerialisable {
 		Vector2f Position;
 		Vector2f Size;
 
 		Rect(Vector2f position, Vector2f size) :
 			Position{ position }, Size{ size } {
 			assert(size.x >= 0 && size.y >= 0);
+		}
+
+		Rect(std::unique_ptr<Vector2f> position, std::unique_ptr<Vector2f> size) : Rect(*position, *size) {}
+
+		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+			serialiseChild("Position", Position);
+			serialiseChild("Size", Size);
+		}
+
+		static std::unique_ptr<Rect> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+			return std::make_unique<Rect>(
+				UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector2f, deserialiseChild("Position")),
+				UNIQUE_PTR_CAST_AND_MOVE(Chimp::Vector2f, deserialiseChild("Size"))
+			);
 		}
 
 		// Check if a point is inside the rectangle
@@ -471,7 +571,14 @@ namespace Chimp {
 			Position -= Size * (scale - 1.0f) / 2.0f;
 			Size *= scale;
 		}
+
+		bool operator==(const Rect& other) const {
+			return Position == other.Position && Size == other.Size;
+		}
 	};
+
+	// Register serialisable types to a YAMLSerialiser, does not need to be called for the one stored in engine
+	void RegisterYAMLSerialisableMathsTypes(YAMLSerialiser& serialiser);
 
 	// Cross product of two vectors
 	[[nodiscard]] Vector3f VectorCrossProduct(const Vector3f& a, const Vector3f& b);
