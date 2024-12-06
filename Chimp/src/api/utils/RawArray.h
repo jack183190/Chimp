@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "api/utils/preprocessor/CopyAndMove.h"
 
 namespace Chimp {
 	struct RawArray {

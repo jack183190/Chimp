@@ -13,11 +13,13 @@ namespace Chimp {
 		void operator=(T* value) { m_Value = value; }
 		void operator=(T& value) { m_Value = &value; }
 
-		T* operator->() { return m_Value; }
-		T& operator*() { return *m_Value; }
+		T* operator->() { assert(HasValue()); return m_Value; }
+		T& operator*() { assert(HasValue()); return *m_Value; }
 		T* operator&() { return m_Value; }
 
 		bool HasValue() const { return m_Value != nullptr; }
+		T& Get() { assert(HasValue()); return *m_Value; }
+		const T& Get() const { assert(HasValue()); return *m_Value; }
 
 		operator bool() const { return HasValue(); }
 

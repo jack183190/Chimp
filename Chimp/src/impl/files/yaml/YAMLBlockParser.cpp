@@ -18,79 +18,110 @@ namespace Chimp {
 			}
 
 #pragma region Tests
-		assert(ParseBool("true").HasValue() && ParseBool("true").Value());
-		assert(ParseBool("false").HasValue() && !ParseBool("false").Value());
-		assert(ParseBool("True").HasValue() && ParseBool("True").Value());
-		assert(!ParseBool("Invalid").HasValue());
+#ifndef NDEBUG
+		{
+			assert(ParseBool("true").HasValue() && ParseBool("true").Value());
+			assert(ParseBool("false").HasValue() && !ParseBool("false").Value());
+			assert(ParseBool("True").HasValue() && ParseBool("True").Value());
+			assert(!ParseBool("Invalid").HasValue());
 
-		assert(ParseInt("123").HasValue() && ParseInt("123").Value() == 123);
-		assert(ParseInt("0").HasValue() && ParseInt("0").Value() == 0);
-		assert(!ParseInt("Invalid").HasValue());
-		assert(!ParseInt("123.8").HasValue());
-		assert(ParseInt("09").HasValue() && ParseInt("09").Value() == 9);
-		assert(ParseInt("-123").HasValue() && ParseInt("-123").Value() == -123);
+			assert(ParseInt("123").HasValue() && ParseInt("123").Value() == 123);
+			assert(ParseInt("0").HasValue() && ParseInt("0").Value() == 0);
+			assert(!ParseInt("Invalid").HasValue());
+			assert(!ParseInt("123.8").HasValue());
+			assert(ParseInt("09").HasValue() && ParseInt("09").Value() == 9);
+			assert(ParseInt("-123").HasValue() && ParseInt("-123").Value() == -123);
 
-		assert(ParseFloat("123.8").HasValue() && std::abs(ParseFloat("123.8").Value()) - 123.8f < FLT_EPSILON);
-		assert(ParseFloat("0.0").HasValue() && std::abs(ParseFloat("0.0").Value()) - 0.0f < FLT_EPSILON);
-		assert(!ParseFloat("Invalid").HasValue());
-		assert(!ParseFloat("123").HasValue());
-		assert(ParseFloat("-12.8").HasValue() && std::abs(ParseFloat("-12.8").Value()) - 12.8f < FLT_EPSILON);
-		assert(ParseFloat("0.8").HasValue() && std::abs(ParseFloat("0.8").Value()) - 0.8f < FLT_EPSILON);
-		assert(ParseFloat("0.08").HasValue() && std::abs(ParseFloat("0.08").Value()) - 0.08f < FLT_EPSILON);
+			assert(ParseFloat("123.8").HasValue() && std::abs(ParseFloat("123.8").Value()) - 123.8f < FLT_EPSILON);
+			assert(ParseFloat("0.0").HasValue() && std::abs(ParseFloat("0.0").Value()) - 0.0f < FLT_EPSILON);
+			assert(!ParseFloat("Invalid").HasValue());
+			assert(!ParseFloat("123").HasValue());
+			assert(ParseFloat("-12.8").HasValue() && std::abs(ParseFloat("-12.8").Value()) - 12.8f < FLT_EPSILON);
+			assert(ParseFloat("0.8").HasValue() && std::abs(ParseFloat("0.8").Value()) - 0.8f < FLT_EPSILON);
+			assert(ParseFloat("0.08").HasValue() && std::abs(ParseFloat("0.08").Value()) - 0.08f < FLT_EPSILON);
 
-		std::string testKey;
-		for (int i = 0; i < 3; ++i) {
-			testKey += INDENT_CHAR;
+			std::string testKey;
+			for (int i = 0; i < 3; ++i) {
+				testKey += INDENT_CHAR;
+			}
+			testKey += "key: value";
+			assert(GetIndentCount(testKey) == 3);
+			testKey = "";
+			for (int i = 0; i < m_IndentsThisBlock; ++i) {
+				testKey += INDENT_CHAR;
+			}
+			testKey += "key: value";
+			assert(GetKey(testKey) == "key");
+			assert(GetValue(testKey) == "value");
 		}
-		testKey += "key: value";
-		assert(GetIndentCount(testKey) == 3);
-		testKey = "";
-		for (int i = 0; i < m_IndentsThisBlock; ++i) {
-			testKey += INDENT_CHAR;
-		}
-		testKey += "key: value";
-		assert(GetKey(testKey) == "key");
-		assert(GetValue(testKey) == "value");
+#endif
 #pragma endregion
 
-		auto iter = begin;
-		while (iter < lines.end()) {
-			std::string_view key = GetKey(*iter);
-			std::string_view value = GetValue(*iter);
-			int indentsThisLine = GetIndentCount(*iter);
+			auto iter = begin;
+			while (iter < lines.end()) {
+				std::string_view key = GetKey(*iter);
+				std::string_view value = GetValue(*iter);
+				int indentsThisLine = GetIndentCount(*iter);
 
-			// Did we reach end of block?
-			if (indentsThisLine < m_IndentsThisBlock) {
-				m_End = iter;
-				return;
-			}
-
-			auto nextIter = iter + 1;
-			int indentsNextLine = nextIter < lines.end() ? GetIndentCount(*nextIter) : -1;
-			if (indentsNextLine <= m_IndentsThisBlock || indentsNextLine == -1) {
-				// Parsing normal value or a list
-				if (indentsNextLine == m_IndentsThisBlock && IsListElement(*nextIter)) {
-					iter = ParseList(key, nextIter, lines.end());
-				}
-				else {
-					ParseValue(key, value);
-					++iter;
-				}
-			}
-			else {
-				// Parsing a block
-				if (indentsThisLine + 1 < indentsNextLine) {
-					logger.Error(std::format("Invalid indents for new block {}: {} -> {}", key, indentsThisLine, indentsNextLine));
-					m_IsValid = false;
+				// Did we reach end of block?
+				if (indentsThisLine < m_IndentsThisBlock) {
+					m_End = iter;
 					return;
 				}
 
-				YAMLBlockParser parsedBlockYamlBlockParser(lines, iter + 1, indentsNextLine);
-				Data.Blocks.emplace(std::string(key), parsedBlockYamlBlockParser.Data);
-				iter = parsedBlockYamlBlockParser.m_End;
-				m_IsValid = m_IsValid && parsedBlockYamlBlockParser.IsValid();
+				auto nextIter = iter + 1;
+				int indentsNextLine = nextIter < lines.end() ? GetIndentCount(*nextIter) : -1;
+				if (indentsNextLine <= m_IndentsThisBlock || indentsNextLine == -1) {
+					// Parsing normal value or a list
+					if (indentsNextLine == m_IndentsThisBlock && IsListElement(*nextIter)) {
+						iter = ParseList(key, nextIter, lines.end());
+					}
+					else {
+						ParseValue(key, value);
+						++iter;
+					}
+				}
+				else {
+					// Parsing a block
+					if (indentsThisLine + 1 < indentsNextLine) {
+						logger.Error(std::format("Invalid indents for new block {}: {} -> {}", key, indentsThisLine, indentsNextLine));
+						m_IsValid = false;
+						return;
+					}
+
+					YAMLBlockParser parsedBlockYamlBlockParser(lines, iter + 1, indentsNextLine);
+					Data.Blocks.emplace(std::string(key), parsedBlockYamlBlockParser.Data);
+					iter = parsedBlockYamlBlockParser.m_End;
+					m_IsValid = m_IsValid && parsedBlockYamlBlockParser.IsValid();
+				}
+			}
+	}
+
+	YAMLBlockParser YAMLBlockParser::Parse(const std::vector<std::string>& lines)
+	{
+		return YAMLBlockParser(lines, lines.begin());
+	}
+
+	YAMLBlockParser YAMLBlockParser::Parse(const std::filesystem::path& path)
+	{
+		std::vector<std::string> lines;
+		try {
+			std::ifstream file(path);
+			if (file.is_open()) {
+				std::string line;
+				while (std::getline(file, line)) {
+					lines.push_back(line);
+				}
+			}
+			else {
+				Loggers::YAML().Error(std::format("Failed to open file '{}' for reading", path.string()));
 			}
 		}
+		catch (const std::exception& e) {
+			Loggers::YAML().Error(std::format("Failed to read file '{}': {}", path.string(), e.what()));
+		}
+
+		return YAMLBlockParser(lines, lines.begin());
 	}
 
 	bool YAMLBlockParser::IsValid() const

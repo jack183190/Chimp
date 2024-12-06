@@ -14,6 +14,7 @@
 #include "api/threading/ThreadPool.h"
 #include "api/utils/TaskScheduler.h"
 #include "api/utils/ImGuiHelper.h"
+#include "api/files/yaml/YAMLSerialiser.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -33,6 +34,7 @@ namespace Chimp {
 		[[nodiscard]] SceneManager& GetSceneManager();
 		[[nodiscard]] ThreadPool& GetThreadPool();
 		[[nodiscard]] ImGuiHelper& GetImGuiHelper();
+		[[nodiscard]] YAMLSerialiser& GetYAMLSerialiser();
 
 		// Task scheduler for running tasks at specific times
 		// This instance is updated automatically at the end of each update phase.
@@ -70,5 +72,6 @@ namespace Chimp {
 		ThreadPool m_ThreadPool;
 		TaskScheduler m_TaskScheduler;
 		ImGuiHelper m_ImGuiHelper;
+		YAMLSerialiser m_YAMLSerialiser;
 	};
 }

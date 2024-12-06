@@ -11,6 +11,10 @@ namespace Chimp {
 		// out - vector to write to
 		static void Write(const YAMLBlock& root, std::vector<std::string>& out);
 
+		// Writes the YAMLBlock to file
+		// path - path to write to
+		static void Write(const YAMLBlock& root, const std::filesystem::path& path);
+
 		// Writes the YAMLBlock
 		// writeFunc - called with each line of the YAML
 		// indents - number of indents to start with

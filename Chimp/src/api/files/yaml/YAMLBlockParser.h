@@ -6,8 +6,16 @@
 
 namespace Chimp {
 	class YAMLBlockParser {
+	private:
+		YAMLBlockParser(const std::vector<std::string>& lines, std::vector<std::string>::const_iterator begin, int indentsThisBlock = 0);
+
 	public:
-		YAMLBlockParser(const std::vector<std::string> &lines, std::vector<std::string>::const_iterator begin, int indentsThisBlock = 0);
+		// Parses a YAML block from a vector of strings
+		static [[nodiscard]] YAMLBlockParser Parse(const std::vector<std::string>& lines);
+
+		// Parses a YAML block from a file
+		static [[nodiscard]] YAMLBlockParser Parse(const std::filesystem::path& path);
+
 		~YAMLBlockParser() = default;
 
 		[[nodiscard]] bool IsValid() const;
@@ -30,7 +38,7 @@ namespace Chimp {
 		[[nodiscard]] InPlaceOptional<float> ParseFloat(std::string_view value) const;
 		// Always returns
 		[[nodiscard]] InPlaceOptional<std::string> ParseString(std::string_view value) const;
-		
+
 		// Returns number of indent characters at the start of the string
 		[[nodiscard]] int GetIndentCount(std::string_view line) const;
 

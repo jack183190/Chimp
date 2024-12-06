@@ -1,6 +1,7 @@
 #include "MenuScene.h"
 #include "game/GameScene.h"
 #include "Debug.h"
+#include "Logger.h"
 
 MenuScene::MenuScene(Chimp::Engine& engine,
 	std::shared_ptr<Chimp::GameShader> renderer)
@@ -34,36 +35,60 @@ MenuScene::~MenuScene()
 
 }
 
-void MenuScene::OnInit()
-{
-	std::vector<std::string> lines = {
-		"Bool: true",
-		"Block:",
-		"\tFloat: 13.3",
-		"\tBlock2: ",
-		"\t\tString: Hi!",
-		"Test: ",
-		" - 2",
-		" - 3"
-	};
-	Chimp::YAMLBlockParser block(lines, lines.begin());
+struct Test : public Chimp::YAMLSerialisable {
+	int notSaved = 0;
+	std::string name;
+	std::unique_ptr<Test> child = nullptr;
 
-	for (auto& [key, value] : block.Data.IntArrays) {
-		std::stringstream ss;
-		for (auto& v : value) {
-			ss << v << ", ";
+	void Serialise(Chimp::YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override {
+		block.Strings.insert({ "name", name });
+		if (child != nullptr) {
+			serialiseChild("child", *child);
 		}
-		GetLogger().Info(std::format("Key: {}, Value: {}", key, ss.str()));
 	}
 
-	GetLogger().Info(std::format("Root Bool: {}", block.Data.Bools["Bool"]));
-	GetLogger().Info(std::format("Block Float: {}", block.Data.Blocks.at("Block").Floats["Float"]));
-	GetLogger().Info(std::format("Block2 String: {}", block.Data.Blocks.at("Block").Blocks.at("Block2").Strings["String"]));
+	static std::unique_ptr<Test> Deserialise(const Chimp::YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild) {
+		auto test = std::make_unique<Test>();
+		auto iter = block.Strings.find("name");
+		if (iter != block.Strings.end()) {
+			test->name = iter->second;
+		}
 
-	GetLogger().Info("---------------");
-	Chimp::YAMLWriter::Write(block.Data, [](std::string_view line) {
-		GetLogger().Info(std::string(line));
-		});
+		test->child = UNIQUE_PTR_CAST_AND_MOVE(Test, deserialiseChild("child"));
+		return test;
+	}
+};
+
+void MenuScene::OnInit()
+{
+	m_Engine.GetYAMLSerialiser().RegisterSerialisable<Test>("test", Test::Deserialise);
+
+	Test test;
+	test.notSaved = 1;
+	test.name = "testobject";
+	test.child = std::make_unique<Test>();
+	test.child->notSaved = 2;
+	test.child->name = "childobject";
+	test.child->child = std::make_unique<Test>();
+	test.child->child->name = "grandchildobject";
+
+	m_Engine.GetYAMLSerialiser().WriteToFile(test, "test.yaml");
+
+	std::unique_ptr<Test> testCopy = UNIQUE_PTR_CAST_AND_MOVE(Test, m_Engine.GetYAMLSerialiser().ReadFromFile("test.yaml"));
+	if (testCopy != nullptr) {
+		GetLogger().Info(std::format("Test notSaved: {}", testCopy->notSaved));
+		GetLogger().Info(std::format("Test name: {}", testCopy->name));
+		if (testCopy->child != nullptr) {
+			GetLogger().Info(std::format("Child notSaved: {}", testCopy->child->notSaved));
+			GetLogger().Info(std::format("Child name: {}", testCopy->child->name));
+			if (testCopy->child->child != nullptr) {
+				GetLogger().Info(std::format("Grandchild name: {}", testCopy->child->child->name));
+			}
+		}
+	}
+	else {
+		GetLogger().Error("Failed to read test.yaml");
+	}
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
@@ -79,11 +104,11 @@ void MenuScene::OnUpdate()
 {
 	if (!Networking::GetClient()->IsConnected()) return;
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
-	
+
 	if (clientHandlers.CurrentMatchHandler->IsInMatch()) {
 		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader));
 	}
-	
+
 }
 
 void MenuScene::OnRender()

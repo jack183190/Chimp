@@ -81,6 +81,11 @@ namespace Chimp {
 		return m_TaskScheduler;
 	}
 
+	YAMLSerialiser& Engine::GetYAMLSerialiser()
+	{
+		return m_YAMLSerialiser;
+	}
+
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
 	{
 		if (!serverInfo.IsValid()) {

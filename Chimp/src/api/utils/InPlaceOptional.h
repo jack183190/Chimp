@@ -26,6 +26,11 @@ namespace Chimp {
 			return *this;
 		}
 
+		T* operator->() {
+			assert(m_HasValue);
+			return m_Value;
+		}
+
 		[[nodiscard]] bool HasValue() const {
 			return m_HasValue;
 		}
