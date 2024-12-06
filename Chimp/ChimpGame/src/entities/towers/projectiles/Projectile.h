@@ -16,9 +16,9 @@ namespace Entities {
 		int damage = 1,
 		float rotation = 0) {
 		Chimp::EntityId entity = CreateBaseEntity(ecs, mesh, {
-			{position.x, position.y, 0},
-			{0,0,rotation},
-			{25,25,1}
+			{position.x, position.y, 0.0f},
+			{0.0f, 0.0f, rotation},
+			{25, 25, 1}
 			});
 
 		ecs.SetComponent(entity, ProjectileComponent{ velocity, damage, 5 });

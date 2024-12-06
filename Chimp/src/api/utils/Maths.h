@@ -6,19 +6,444 @@
 #include <../vendor/glm/glm/gtc/matrix_transform.hpp>
 #include <../vendor/glm/glm/gtc/type_ptr.hpp>
 #include <../vendor/glm/glm/gtc/constants.hpp>
-
-// Done so glm can be swapped out by just changing this file rather than the whole project
+#include <imgui.h>
 
 namespace Chimp {
-	typedef glm::vec2 Vector2f;
-	typedef glm::vec3 Vector3f;
-	typedef glm::vec4 Vector4f;
-
-	typedef glm::vec<2, int> Vector2i;
-	typedef glm::vec<3, int> Vector3i;
-	typedef glm::vec<4, int> Vector4i;
+	struct Vector2f;
+	struct Vector3f;
+	struct Vector4f;
+	struct Vector2i;
+	struct Vector3i;
+	struct Vector4i;
 
 	typedef glm::mat4x4 Matrix;
+
+#pragma region Types
+#pragma region Vectors
+	struct Vector2f {
+		Vector2f() : x(0), y(0) {}
+		Vector2f(float x, float y) : x(x), y(y) {}
+		Vector2f(int x, int y) : x((float)x), y((float)y) {}
+		Vector2f(double x, double y) : x((float)x), y((float)y) {}
+		Vector2f(Vector2i vec);
+		Vector2f(glm::vec<2, float> vec) : x(vec.x), y(vec.y) {}
+		Vector2f(ImVec2 vec) : x(vec.x), y(vec.y) {}
+		explicit Vector2f(Vector3f vec);
+		explicit Vector2f(Vector3i vec);
+		explicit Vector2f(Vector4f vec);
+
+		operator glm::vec2() const { return glm::vec2(x, y); }
+		operator ImVec2() const { return ImVec2(x, y); }
+
+		Vector2f operator*(float scale) const {
+			return Vector2f(x * scale, y * scale);
+		}
+		void operator*=(float scale) {
+			x *= scale;
+			y *= scale;
+		}
+		Vector2f operator/(float scale) const {
+			return Vector2f(x / scale, y / scale);
+		}
+		void operator/=(float scale) {
+			x /= scale;
+			y /= scale;
+		}
+		Vector2f operator+(const Vector2f& other) const {
+			return Vector2f(x + other.x, y + other.y);
+		}
+		void operator+=(const Vector2f& other) {
+			x += other.x;
+			y += other.y;
+		}
+		Vector2f operator-(const Vector2f& other) const {
+			return Vector2f(x - other.x, y - other.y);
+		}
+		void operator-=(const Vector2f& other) {
+			x -= other.x;
+			y -= other.y;
+		}
+		bool operator==(const Vector2f& other) const {
+			return x == other.x && y == other.y;
+		}
+		bool operator!=(const Vector2f& other) const {
+			return !(*this == other);
+		}
+		bool operator<(const Vector2f& other) const {
+			return x < other.x && y < other.y;
+		}
+		bool operator<=(const Vector2f& other) const {
+			return x <= other.x && y <= other.y;
+		}
+		bool operator>(const Vector2f& other) const {
+			return x > other.x && y > other.y;
+		}
+		bool operator>=(const Vector2f& other) const {
+			return x >= other.x && y >= other.y;
+		}
+
+		float x;
+		float y;
+	};
+
+	struct Vector3f {
+		Vector3f() : x(0), y(0), z(0) {}
+		Vector3f(float x, float y, float z) : x(x), y(y), z(z) {}
+		Vector3f(int x, int y, int z) : x((float)x), y((float)y), z((float)z) {}
+		Vector3f(double x, double y, double z) : x((float)x), y((float)y), z((float)z) {}
+		Vector3f(Vector3i vec);
+		explicit Vector3f(Vector2f vec, float z = 0.0f);
+		explicit Vector3f(Vector4f vec);
+		Vector3f(glm::vec<3, float> vec) : x(vec.x), y(vec.y), z(vec.z) {}
+		explicit Vector3f(ImVec2 vec, float z = 0.0f) : x(vec.x), y(vec.y), z(z) {}
+
+		operator glm::vec3() const { return glm::vec3(x, y, z); }
+
+		Vector3f operator*(float scale) const {
+			return Vector3f(x * scale, y * scale, z * scale);
+		}
+		void operator*=(float scale) {
+			x *= scale;
+			y *= scale;
+			z *= scale;
+		}
+		Vector3f operator/(float scale) const {
+			return Vector3f(x / scale, y / scale, z / scale);
+		}
+		void operator/=(float scale) {
+			x /= scale;
+			y /= scale;
+			z /= scale;
+		}
+		Vector3f operator+(const Vector3f& other) const {
+			return Vector3f(x + other.x, y + other.y, z + other.z);
+		}
+		void operator+=(const Vector3f& other) {
+			x += other.x;
+			y += other.y;
+			z += other.z;
+		}
+		Vector3f operator-(const Vector3f& other) const {
+			return Vector3f(x - other.x, y - other.y, z - other.z);
+		}
+		void operator-=(const Vector3f& other) {
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
+		}
+		bool operator==(const Vector3f& other) const {
+			return x == other.x && y == other.y && z == other.z;
+		}
+		bool operator!=(const Vector3f& other) const {
+			return !(*this == other);
+		}
+		bool operator<(const Vector3f& other) const {
+			return x < other.x && y < other.y && z < other.z;
+		}
+		bool operator<=(const Vector3f& other) const {
+			return x <= other.x && y <= other.y && z <= other.z;
+		}
+		bool operator>(const Vector3f& other) const {
+			return x > other.x && y > other.y && z > other.z;
+		}
+		bool operator>=(const Vector3f& other) const {
+			return x >= other.x && y >= other.y && z >= other.z;
+		}
+
+		float x;
+		float y;
+		float z;
+	};
+
+	struct Vector4f {
+		Vector4f() : x(0), y(0), z(0), w(0) {}
+		Vector4f(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+		Vector4f(int x, int y, int z, int w) : x((float)x), y((float)y), z((float)z), w((float)w) {}
+		Vector4f(double x, double y, double z, double w) : x((float)x), y((float)y), z((float)z), w((float)w) {}
+		Vector4f(Vector4i vec);
+		explicit Vector4f(Vector2f vec, float z = 0.0f, float w = 0.0f);
+		explicit Vector4f(Vector3f vec, float w = 0.0f);
+		Vector4f(glm::vec<4, float> vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+		Vector4f(ImVec2 vec, float z = 0.0f, float w = 0.0f)
+			: x(vec.x), y(vec.y), z(z), w(w) {}
+
+		operator glm::vec4() const { return glm::vec4(x, y, z, w); }
+
+		Vector4f operator*(float scale) const {
+			return Vector4f(x * scale, y * scale, z * scale, w * scale);
+		}
+		void operator*=(float scale) {
+			x *= scale;
+			y *= scale;
+			z *= scale;
+			w *= scale;
+		}
+		Vector4f operator/(float scale) const {
+			return Vector4f(x / scale, y / scale, z / scale, w / scale);
+		}
+		void operator/=(float scale) {
+			x /= scale;
+			y /= scale;
+			z /= scale;
+			w /= scale;
+		}
+		Vector4f operator+(const Vector4f& other) const {
+			return Vector4f(x + other.x, y + other.y, z + other.z, w + other.w);
+		}
+		void operator+=(const Vector4f& other) {
+			x += other.x;
+			y += other.y;
+			z += other.z;
+			w += other.w;
+		}
+		Vector4f operator-(const Vector4f& other) const {
+			return Vector4f(x - other.x, y - other.y, z - other.z, w - other.w);
+		}
+		void operator-=(const Vector4f& other) {
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
+			w -= other.w;
+		}
+		bool operator==(const Vector4f& other) const {
+			return x == other.x && y == other.y && z == other.z && w == other.w;
+		}
+		bool operator!=(const Vector4f& other) const {
+			return !(*this == other);
+		}
+		bool operator<(const Vector4f& other) const {
+			return x < other.x && y < other.y && z < other.z && w < other.w;
+		}
+		bool operator<=(const Vector4f& other) const {
+			return x <= other.x && y <= other.y && z <= other.z && w <= other.w;
+		}
+		bool operator>(const Vector4f& other) const {
+			return x > other.x && y > other.y && z > other.z && w > other.w;
+		}
+		bool operator>=(const Vector4f& other) const {
+			return x >= other.x && y >= other.y && z >= other.z && w >= other.w;
+		}
+
+		float x;
+		float y;
+		float z;
+		float w;
+	};
+
+	struct Vector2i {
+		Vector2i() : x(0), y(0) {}
+		Vector2i(int x, int y) : x(x), y(y) {}
+		explicit Vector2i(Vector3i vec);
+		explicit Vector2i(Vector4i vec);
+		explicit Vector2i(Vector2f vec);
+		explicit Vector2i(Vector3f vec);
+		explicit Vector2i(Vector4f vec);
+
+		Vector2i(glm::vec<2, int> vec) : x(vec.x), y(vec.y) {}
+		Vector2i(ImVec2 vec) : x((int)vec.x), y((int)vec.y) {}
+
+		operator glm::ivec2() const { return glm::ivec2(x, y); }
+
+		Vector2i operator*(int scale) const {
+			return Vector2i(x * scale, y * scale);
+		}
+		void operator*=(int scale) {
+			x *= scale;
+			y *= scale;
+		}
+		Vector2i operator/(int scale) const {
+			return Vector2i(x / scale, y / scale);
+		}
+		void operator/=(int scale) {
+			x /= scale;
+			y /= scale;
+		}
+		Vector2i operator+(const Vector2i& other) const {
+			return Vector2i(x + other.x, y + other.y);
+		}
+		void operator+=(const Vector2i& other) {
+			x += other.x;
+			y += other.y;
+		}
+		Vector2i operator-(const Vector2i& other) const {
+			return Vector2i(x - other.x, y - other.y);
+		}
+		void operator-=(const Vector2i& other) {
+			x -= other.x;
+			y -= other.y;
+		}
+		bool operator==(const Vector2i& other) const {
+			return x == other.x && y == other.y;
+		}
+		bool operator!=(const Vector2i& other) const {
+			return !(*this == other);
+		}
+
+		bool operator<(const Vector2i& other) const {
+			return x < other.x && y < other.y;
+		}
+		bool operator<=(const Vector2i& other) const {
+			return x <= other.x && y <= other.y;
+		}
+		bool operator>(const Vector2i& other) const {
+			return x > other.x && y > other.y;
+		}
+		bool operator>=(const Vector2i& other) const {
+			return x >= other.x && y >= other.y;
+		}
+
+		int x;
+		int y;
+	};
+
+	struct Vector3i {
+		Vector3i() : x(0), y(0), z(0) {}
+		Vector3i(int x, int y, int z) : x(x), y(y), z(z) {}
+		explicit Vector3i(Vector4i vec);
+		explicit Vector3i(Vector2i vec, int z = 0);
+		explicit Vector3i(Vector2f vec, int z = 0);
+		explicit Vector3i(Vector3f vec);
+		explicit Vector3i(Vector4f vec);
+		Vector3i(glm::vec<3, int> vec) : x(vec.x), y(vec.y), z(vec.z) {}
+		Vector3i(ImVec2 vec, int z = 0) : x((int)vec.x), y((int)vec.y), z(z) {}
+
+		operator glm::ivec3() const { return glm::ivec3(x, y, z); }
+
+		Vector3i operator*(int scale) const {
+			return Vector3i(x * scale, y * scale, z * scale);
+		}
+		void operator*=(int scale) {
+			x *= scale;
+			y *= scale;
+			z *= scale;
+		}
+		Vector3i operator/(int scale) const {
+			return Vector3i(x / scale, y / scale, z / scale);
+		}
+		void operator/=(int scale) {
+			x /= scale;
+			y /= scale;
+			z /= scale;
+		}
+		Vector3i operator+(const Vector3i& other) const {
+			return Vector3i(x + other.x, y + other.y, z + other.z);
+		}
+		void operator+=(const Vector3i& other) {
+			x += other.x;
+			y += other.y;
+			z += other.z;
+		}
+		Vector3i operator-(const Vector3i& other) const {
+			return Vector3i(x - other.x, y - other.y, z - other.z);
+		}
+		void operator-=(const Vector3i& other) {
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
+		}
+		bool operator==(const Vector3i& other) const {
+			return x == other.x && y == other.y && z == other.z;
+		}
+		bool operator!=(const Vector3i& other) const {
+			return !(*this == other);
+		}
+
+		bool operator<(const Vector3i& other) const {
+			return x < other.x && y < other.y && z < other.z;
+		}
+		bool operator<=(const Vector3i& other) const {
+			return x <= other.x && y <= other.y && z <= other.z;
+		}
+		bool operator>(const Vector3i& other) const {
+			return x > other.x && y > other.y && z > other.z;
+		}
+		bool operator>=(const Vector3i& other) const {
+			return x >= other.x && y >= other.y && z >= other.z;
+		}
+
+		int x;
+		int y;
+		int z;
+	};
+
+	struct Vector4i {
+		Vector4i() : x(0), y(0), z(0), w(0) {}
+		Vector4i(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
+		explicit Vector4i(Vector3i vec, int w = 0);
+		explicit Vector4i(Vector2i vec, int z = 0, int w = 0);
+		explicit Vector4i(Vector2f vec, int z = 0, int w = 0);
+		explicit Vector4i(Vector3f vec);
+		explicit Vector4i(Vector4f vec);
+
+		Vector4i(glm::vec<4, int> vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+		Vector4i(ImVec2 vec, int z = 0, int w = 0) : x((int)vec.x), y((int)vec.y), z(z), w(w) {}
+
+		operator glm::ivec4() const { return glm::ivec4(x, y, z, w); }
+
+		Vector4i operator*(int scale) const {
+			return Vector4i(x * scale, y * scale, z * scale, w * scale);
+		}
+		void operator*=(int scale) {
+			x *= scale;
+			y *= scale;
+			z *= scale;
+			w *= scale;
+		}
+		Vector4i operator/(int scale) const {
+			return Vector4i(x / scale, y / scale, z / scale, w / scale);
+		}
+		void operator/=(int scale) {
+			x /= scale;
+			y /= scale;
+			z /= scale;
+			w /= scale;
+		}
+		Vector4i operator+(const Vector4i& other) const {
+			return Vector4i(x + other.x, y + other.y, z + other.z, w + other.w);
+		}
+		void operator+=(const Vector4i& other) {
+			x += other.x;
+			y += other.y;
+			z += other.z;
+			w += other.w;
+		}
+		Vector4i operator-(const Vector4i& other) const {
+			return Vector4i(x - other.x, y - other.y, z - other.z, w - other.w);
+		}
+		void operator-=(const Vector4i& other) {
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
+			w -= other.w;
+		}
+		bool operator==(const Vector4i& other) const {
+			return x == other.x && y == other.y && z == other.z && w == other.w;
+		}
+		bool operator!=(const Vector4i& other) const {
+			return !(*this == other);
+		}
+
+		bool operator<(const Vector4i& other) const {
+			return x < other.x && y < other.y && z < other.z && w < other.w;
+		}
+		bool operator<=(const Vector4i& other) const {
+			return x <= other.x && y <= other.y && z <= other.z && w <= other.w;
+		}
+		bool operator>(const Vector4i& other) const {
+			return x > other.x && y > other.y && z > other.z && w > other.w;
+		}
+		bool operator>=(const Vector4i& other) const {
+			return x >= other.x && y >= other.y && z >= other.z && w >= other.w;
+		}
+
+		int x;
+		int y;
+		int z;
+		int w;
+	};
+
+#pragma endregion
+#pragma endregion
 
 	constexpr float PI = glm::pi<float>();
 
@@ -98,7 +523,7 @@ namespace Chimp {
 			Translation{ translation }, Rotation{ rotation }, Scale{ scale } {
 		}
 		Transform(Vector2f translation) :
-			Transform({ translation.x, translation.y, 0 }) {
+			Transform((Vector3f)translation) {
 		}
 
 		Matrix CreateTransformMatrix(Vector3f translationOffset = { 0,0,0 }) const {
@@ -143,13 +568,13 @@ namespace Chimp {
 		return std::abs(a - b);
 	}
 	inline float GetDistanceBetween(Vector2f a, Vector2f b) {
-		return glm::distance(a, b);
+		return glm::distance((glm::vec2)a, (glm::vec2)b);
 	}
 	inline float GetDistanceBetween(Vector3f a, Vector3f b) {
-		return glm::distance(a, b);
+		return glm::distance((glm::vec3)a, (glm::vec3)b);
 	}
 	inline float GetDistanceBetween(Vector4f a, Vector4f b) {
-		return glm::distance(a, b);
+		return glm::distance((glm::vec4)a, (glm::vec4)b);
 	}
 
 	// Get squared distance between two points
@@ -158,15 +583,15 @@ namespace Chimp {
 	}
 	inline float GetSquaredDistanceBetween(Vector2f a, Vector2f b) {
 		const auto diff = a - b;
-		return glm::dot(diff, diff);
+		return glm::dot((glm::vec2)diff, (glm::vec2)diff);
 	}
 	inline float GetSquaredDistanceBetween(Vector3f a, Vector3f b) {
 		const auto diff = a - b;
-		return glm::dot(diff, diff);
+		return glm::dot((glm::vec3)diff, (glm::vec3)diff);
 	}
 	inline float GetSquaredDistanceBetween(Vector4f a, Vector4f b) {
 		const auto diff = a - b;
-		return glm::dot(diff, diff);
+		return glm::dot((glm::vec4)diff, (glm::vec4)diff);
 	}
 
 	// Get length of a vector
@@ -174,13 +599,13 @@ namespace Chimp {
 		return std::abs(a);
 	}
 	inline float Length(Vector2f a) {
-		return glm::length(a);
+		return glm::length((glm::vec2)a);
 	}
 	inline float Length(Vector3f a) {
-		return glm::length(a);
+		return glm::length((glm::vec3)a);
 	}
 	inline float Length(Vector4f a) {
-		return glm::length(a);
+		return glm::length((glm::vec4)a);
 	}
 
 	// Squared length of a vector
@@ -188,13 +613,13 @@ namespace Chimp {
 		return a * a;
 	}
 	inline float SquaredLength(Vector2f a) {
-		return glm::dot(a, a);
+		return glm::dot((glm::vec2)a, (glm::vec2)a);
 	}
 	inline float SquaredLength(Vector3f a) {
-		return glm::dot(a, a);
+		return glm::dot((glm::vec3)a, (glm::vec3)a);
 	}
 	inline float SquaredLength(Vector4f a) {
-		return glm::dot(a, a);
+		return glm::dot((glm::vec4)a, (glm::vec4)a);
 	}
 
 	// Returns minimum components of two values (e.g (2,3) and (1,4) would return (1,3))
@@ -331,68 +756,12 @@ namespace Chimp {
 
 	// Dot product
 	[[nodiscard]] inline float Dot(Vector2f a, Vector2f b) {
-		return glm::dot(a, b);
+		return glm::dot((glm::vec2)a, (glm::vec2)b);
 	}
 	[[nodiscard]] inline float Dot(Vector3f a, Vector3f b) {
-		return glm::dot(a, b);
+		return glm::dot((glm::vec3)a, (glm::vec3)b);
 	}
 	[[nodiscard]] inline float Dot(Vector4f a, Vector4f b) {
-		return glm::dot(a, b);
-	}
-
-	// >
-	[[nodiscard]] inline bool IsGreaterThan(float a, float b) {
-		return a > b;
-	}
-	[[nodiscard]] inline bool IsGreaterThan(Vector2f a, Vector2f b) {
-		return glm::all(glm::greaterThan(a, b));
-	}
-	[[nodiscard]] inline bool IsGreaterThan(Vector3f a, Vector3f b) {
-		return glm::all(glm::greaterThan(a, b));
-	}
-	[[nodiscard]] inline bool IsGreaterThan(Vector4f a, Vector4f b) {
-		return glm::all(glm::greaterThan(a, b));
-	}
-
-	// >=
-	[[nodiscard]] inline bool IsGreaterThanOrEqual(float a, float b) {
-		return a >= b;
-	}
-	[[nodiscard]] inline bool IsGreaterThanOrEqual(Vector2f a, Vector2f b) {
-		return glm::all(glm::greaterThanEqual(a, b));
-	}
-	[[nodiscard]] inline bool IsGreaterThanOrEqual(Vector3f a, Vector3f b) {
-		return glm::all(glm::greaterThanEqual(a, b));
-	}
-	[[nodiscard]] inline bool IsGreaterThanOrEqual(Vector4f a, Vector4f b) {
-		return glm::all(glm::greaterThanEqual(a, b));
-	}
-
-	// <
-	[[nodiscard]] inline bool IsLessThan(float a, float b) {
-		return a < b;
-	}
-	[[nodiscard]] inline bool IsLessThan(Vector2f a, Vector2f b) {
-		return glm::all(glm::lessThan(a, b));
-	}
-	[[nodiscard]] inline bool IsLessThan(Vector3f a, Vector3f b) {
-		return glm::all(glm::lessThan(a, b));
-	}
-	[[nodiscard]] inline bool IsLessThan(Vector4f a, Vector4f b) {
-		return glm::all(glm::lessThan(a, b));
-	}
-
-	// <=
-	[[nodiscard]] inline bool IsLessThanOrEqual(float a, float b) {
-		return a <= b;
-	}
-	[[nodiscard]] inline bool IsLessThanOrEqual(Vector2f a, Vector2f b) {
-		return glm::all(glm::lessThanEqual(a, b));
-	}
-	[[nodiscard]] inline bool IsLessThanOrEqual(Vector3f a, Vector3f b) {
-		return glm::all(glm::lessThanEqual(a, b));
-	}
-	[[nodiscard]] inline bool IsLessThanOrEqual(Vector4f a, Vector4f b) {
-		return glm::all(glm::lessThanEqual(a, b));
+		return glm::dot((glm::vec4)a, (glm::vec4)b);
 	}
 }

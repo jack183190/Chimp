@@ -38,8 +38,8 @@ void TowerEditor::Update()
 	auto mousePos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
 	if (m_Engine.GetWindow().GetInputManager().IsMouseButtonPressed(Chimp::Mouse::LEFT)
 		&& m_IsPlacing
-		&& Chimp::IsGreaterThanOrEqual(mousePos, m_SimulationPosition)
-		&& Chimp::IsLessThanOrEqual(mousePos, m_SimulationPosition + m_SimulationSize)) {
+		&& mousePos >= m_SimulationPosition
+		&& mousePos <= m_SimulationPosition + m_SimulationSize) {
 		auto towerPos = Chimp::ComponentMax({ 0,0 }, mousePos - m_SimulationPosition);
 		towerPos.y *= -1;
 		Place(m_PlacingType, towerPos);

@@ -20,9 +20,9 @@ void TowerAttackSystem::Update()
 		// Look at nearest bloon
 		const auto& bloonTransform = m_ECS.GetComponent<Chimp::TransformComponent>(tower.Target.Value());
 		const auto bloonPos = bloonTransform->GetTranslation()
-			+ Chimp::ComponentMultiply({ 0.5, -0.5, 0 }, bloonTransform->GetScale());
+			+ Chimp::ComponentMultiply({ 0.5, -0.5, 0.0 }, bloonTransform->GetScale());
 		const auto& towerPos = transform.GetTranslation()
-			+ Chimp::ComponentMultiply({ 0.5, -0.5, 0 }, transform.GetScale());
+			+ Chimp::ComponentMultiply({ 0.5, -0.5, 0.0 }, transform.GetScale());
 		Chimp::Vector2f direction = { bloonPos.x - towerPos.x, bloonPos.y - towerPos.y };
 		const auto angle = Chimp::Atan2(direction);
 		transform.SetRoll(angle - Chimp::PI / 2);
@@ -34,7 +34,7 @@ void TowerAttackSystem::Update()
 			Entities::CreateProjectile(
 				m_ECS,
 				m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + std::string("/assets/textures/Dart.png")),
-				transform.GetTranslation(),
+				Chimp::Vector2f(transform.GetTranslation()),
 				Chimp::ComponentMultiply(Chimp::VectorNormalized(direction), { 100, 100 }),
 				upgrades.GetDamage(tower.AttackDamage),
 				angle - Chimp::PI / 2

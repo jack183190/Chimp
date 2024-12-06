@@ -42,7 +42,7 @@ void TowerProjectileSystem::Update()
 			// Move the projectile
 			const auto& velocity = projectile.Velocity;
 			projTransform.Move(velocity.x * dt, velocity.y * dt, 0);
-			const auto projPos = projTransform.GetTranslation() + Chimp::Dot({ 0.5, -0.5, 0 }, projTransform.GetScale());
+			const auto projPos = projTransform.GetTranslation() + Chimp::ComponentMultiply({ 0.5, -0.5, 0.0 }, projTransform.GetScale());
 
 			// Handle collisions
 			const float damageRadiusSquared = Chimp::SquaredLength(projTransform.GetScale());

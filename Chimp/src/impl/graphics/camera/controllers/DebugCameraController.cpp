@@ -10,7 +10,7 @@ namespace Chimp {
 	{
 		// Arrow keys to change rotation
 		// note this looks weird if orthographic projection is used
-		Vector3f deltaRotation = Vector3f(0.0f);
+		Vector3f deltaRotation;
 		{
 			if (m_InputManager.IsKeyDown(Keyboard::U))
 			{
@@ -39,14 +39,14 @@ namespace Chimp {
 
 		}
 
-		if (deltaRotation != Vector3f(0.0f)) {
+		if (deltaRotation != Vector3f()) {
 			m_YawPitchRoll += VectorNormalized(deltaRotation) * ROTATION_SPEED * deltaTime;
 		}
 
 		m_Camera.SetNormalizedVectors(GetForwardUpRightVectors(m_YawPitchRoll));
 
 		// WASDQE to move position
-		Vector3f translation = Vector3f(0.0f);
+		Vector3f translation = Vector3f();
 		{
 			if (m_InputManager.IsKeyDown(Keyboard::W))
 			{
@@ -74,7 +74,7 @@ namespace Chimp {
 			}
 		}
 
-		if (translation != Vector3f(0.0f)) {
+		if (translation != Vector3f()) {
 			translation = VectorNormalized(translation) * MOVEMENT_SPEED * deltaTime;
 			m_Camera.SetPosition(m_Camera.GetPosition() + translation);
 		}
@@ -82,13 +82,13 @@ namespace Chimp {
 		// G to reset rotation, h to reset position
 		if (m_InputManager.IsKeyDown(Keyboard::G))
 		{
-			m_YawPitchRoll = Vector3f(PI, 0, 0);
+			m_YawPitchRoll = { PI, 0.0f, 0.0f };
 			m_Camera.SetNormalizedVectors(GetForwardUpRightVectors(m_YawPitchRoll));
 		}
 
 		if (m_InputManager.IsKeyDown(Keyboard::H))
 		{
-			m_Camera.SetPosition(Vector3f(0.0f));
+			m_Camera.SetPosition(Vector3f());
 		}
 	}
 }
