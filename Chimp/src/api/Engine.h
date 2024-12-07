@@ -15,6 +15,7 @@
 #include "api/utils/TaskScheduler.h"
 #include "api/utils/ImGuiHelper.h"
 #include "api/files/yaml/YAMLSerialiser.h"
+#include "api/utils/Random.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -35,6 +36,7 @@ namespace Chimp {
 		[[nodiscard]] ThreadPool& GetThreadPool();
 		[[nodiscard]] ImGuiHelper& GetImGuiHelper();
 		[[nodiscard]] YAMLSerialiser& GetYAMLSerialiser();
+		[[nodiscard]] Random& GetRandom();
 
 		// Task scheduler for running tasks at specific times
 		// You must update it once per frame
@@ -72,5 +74,6 @@ namespace Chimp {
 		ThreadPool m_ThreadPool;
 		ImGuiHelper m_ImGuiHelper;
 		YAMLSerialiser m_YAMLSerialiser;
+		Random m_Random;
 	};
 }

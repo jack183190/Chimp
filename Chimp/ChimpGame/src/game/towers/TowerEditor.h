@@ -11,7 +11,8 @@ public:
 		Chimp::ECS& ecs,
 		Chimp::Vector2f simulationPosition,
 		Chimp::Vector2f simulationSize,
-		MoneyManager& moneyManager);
+		MoneyManager& moneyManager,
+		Chimp::YAMLBlock& currentMap);
 
 	void Update();
 	void RenderUI();
@@ -41,4 +42,5 @@ private:
 	MoneyManager &m_MoneyManager;
 	Chimp::TextureDependency m_DeselectTexture;
 	std::vector<Chimp::TextureDependency> m_TowerIconTextures;
+	Chimp::YAMLBlock& m_CurrentMap;
 };

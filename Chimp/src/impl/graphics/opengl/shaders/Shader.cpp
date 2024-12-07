@@ -92,7 +92,7 @@ namespace Chimp::GL {
 	void Shader::SetTextureSampler(const std::string& name, const ITexture& texture) const
 	{
 		Bind();
-		texture.Bind();
+		texture.Bind(); // Exception here? probably you loaded a texture that didn't exist, check the console!
 
 		const auto location = glGetUniformLocation(m_ProgramID, name.c_str()); // todo cache this maybe?
 		assert(location != -1); // invalid uniform

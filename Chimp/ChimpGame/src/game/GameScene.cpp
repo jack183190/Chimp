@@ -3,24 +3,26 @@
 #include "networking/Networking.h"
 
 GameScene::GameScene(Chimp::Engine& engine,
-	std::shared_ptr<Chimp::GameShader> gameShader) :
+	std::shared_ptr<Chimp::GameShader> gameShader,
+	const std::string& map) :
 	m_Engine(engine),
 	m_GameShader(gameShader),
-	m_TaskScheduler(engine.CreateTaskScheduler())
+	m_TaskScheduler(engine.CreateTaskScheduler()),
+	m_CurrentMap(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/maps/") + map + ".yml").Data)
 {
-	m_Engine.GetResourceManager().GetImages().Depend(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
-
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
-	sprites.Depend(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
 		sprites.Depend(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
 	}
 
+	sprites.Depend(GAME_SRC + m_CurrentMap.Strings["Background"]);
+	m_Engine.GetResourceManager().GetImages().Depend(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
+
 	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
-	m_OpponentSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager);
-	m_PlayerSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager);
+	m_OpponentSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager, m_CurrentMap);
+	m_PlayerSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager, m_CurrentMap);
 
 	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
 
@@ -35,13 +37,13 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 GameScene::~GameScene()
 {
-	m_Engine.GetResourceManager().GetImages().Release(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
-
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
+
+	sprites.Release(GAME_SRC + m_CurrentMap.Strings["Background"]);
+	m_Engine.GetResourceManager().GetImages().Release(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
 
 	sprites.Release(GAME_SRC + std::string("/assets/textures/Dart.png"));
 	sprites.Release(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
-	sprites.Release(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
 		sprites.Release(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
 	}
@@ -91,7 +93,7 @@ void GameScene::OnRender()
 
 void GameScene::OnRenderUI()
 {
-	ImGui::Begin("##GameSceneUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+	ImGui::Begin("##GameSceneUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	ImGui::SetWindowPos({ 0.0f, 0.0f });
 	ImGui::SetWindowSize({ m_Engine.GetWindow().GetSize().x, m_Engine.GetWindow().GetSize().y });
 

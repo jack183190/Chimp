@@ -20,6 +20,8 @@ public:
 		return std::make_tuple(match->GetPlayerOneId(), match->GetPlayerTwoId());
 	}
 
+	int MapCount = 1;
+
 private:
 	void HandleNewConnections(const Chimp::NetworkPacket* event);
 	void HandleMatchEnd(const Chimp::NetworkPacket* event);

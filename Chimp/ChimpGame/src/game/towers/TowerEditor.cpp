@@ -6,7 +6,8 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	Chimp::ECS& ecs,
 	Chimp::Vector2f simulationPosition,
 	Chimp::Vector2f simulationSize,
-	MoneyManager& moneyManager) :
+	MoneyManager& moneyManager,
+	Chimp::YAMLBlock& currentMap) :
 	m_TowerManager(towerManager),
 	m_Engine(engine),
 	m_ECS(ecs),
@@ -14,7 +15,8 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	m_SimulationSize(simulationSize),
 	m_SelectionSystem(engine, ecs, simulationPosition),
 	m_MoneyManager(moneyManager),
-	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_SRC + std::string("/assets/textures/X.png"))
+	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_SRC + std::string("/assets/textures/X.png")),
+	m_CurrentMap(currentMap)
 {
 	m_TowerIconTextures.reserve(NUM_TOWERS);
 	for (TowerType type = 0; type < NUM_TOWERS; type++) {
@@ -239,7 +241,7 @@ void TowerEditor::UpgradeSelectedTower(UpgradeType type)
 
 bool TowerEditor::CollidesWithTrack(Chimp::Vector2i pos) const
 {
-	auto& collisions = m_Engine.GetResourceManager().GetImages().Get(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
+	auto& collisions = m_Engine.GetResourceManager().GetImages().Get(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
 
 	return collisions.GetPixel({ collisions.Width - pos.x, collisions.Height - pos.y }).w > 0;
 }

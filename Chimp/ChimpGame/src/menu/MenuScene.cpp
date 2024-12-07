@@ -4,9 +4,10 @@
 #include "Logger.h"
 
 MenuScene::MenuScene(Chimp::Engine& engine,
-	std::shared_ptr<Chimp::GameShader> renderer)
+	std::shared_ptr<Chimp::GameShader> shader)
 	: m_Engine(engine),
-	m_ConnectionInfo({})
+	m_ConnectionInfo({}),
+	m_MapList(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/maps/Maps.yml")).Data)
 {
 	m_Engine.GetWindow().SetTitle("Chimp Challenge");
 	m_Engine.GetWindow().SetSize({ 1280, 720 });
@@ -14,17 +15,17 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
-	if (renderer == nullptr) {
-		// Our renderer
+	if (shader == nullptr) {
 		m_GameShader = std::make_shared<Chimp::GameShader>(m_Engine);
 
 #ifdef DEBUG_AUTOHOST_AUTOCONNECT
 		Networking::GetServer()->Start(m_ConnectionInfo);
+		Networking::GetServer()->GetHandlers().MatchHandler->MapCount = m_MapList.StringArrays["Files"].size();
 		Networking::GetClient()->Connect(m_ConnectionInfo);
 #endif
 	}
 	else {
-		m_GameShader = renderer;
+		m_GameShader = shader;
 		Networking::GetServer()->Shutdown();
 		Networking::GetClient()->Disconnect();
 	}
@@ -55,7 +56,8 @@ void MenuScene::OnUpdate()
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
 
 	if (clientHandlers.CurrentMatchHandler->IsInMatch()) {
-		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader));
+		std::string map = m_MapList.StringArrays["Files"][clientHandlers.CurrentMatchHandler->GetMapFileIndex()];
+		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader, map));
 	}
 
 }
@@ -98,6 +100,7 @@ void MenuScene::OnRenderUI()
 	ImGui::BeginDisabled(disableHostButton);
 	if (ImGui::Button("Host Server")) {
 		Networking::GetServer()->Start(m_ConnectionInfo);
+		Networking::GetServer()->GetHandlers().MatchHandler->MapCount = m_MapList.StringArrays["Files"].size();
 	}
 	ImGui::EndDisabled();
 
