@@ -120,7 +120,7 @@ void TowerEditor::RenderUI()
 
 		// REMOVE BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
-		const int worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth * WorthComponent::SELL_MULTIPLIER;
+		const int worth = (int)((float)m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth * WorthComponent::SELL_MULTIPLIER);
 		const std::string removeButtonLabel = "Sell +$" + std::to_string(worth) + "##removeTower";
 		if (ImGui::Button(removeButtonLabel.c_str(), ImVec2(100, 50))) {
 			RemoveSelectedTower();
@@ -197,7 +197,7 @@ void TowerEditor::RemoveSelectedTower()
 	m_SelectionSystem.DeselectTower();
 
 	auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
-	m_MoneyManager.AddMoney(worth * WorthComponent::SELL_MULTIPLIER);
+	m_MoneyManager.AddMoney((int)((float)worth * WorthComponent::SELL_MULTIPLIER));
 
 	ClientTowerRemovePacket packet;
 	packet.PacketType = Networking::CLIENT_TOWER_REMOVE;

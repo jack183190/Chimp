@@ -20,7 +20,7 @@ void WaveStartHandler::Update()
 
 	// Can we start the next wave?
 	if (m_PlayerWaveManager.IsCurrentWaveFinished() &&
-		clientHandlers.WaveListener->CanStartNextWave(m_PlayerWaveManager.GetWave())) {
+		clientHandlers.WaveListener->CanStartNextWave((int)m_PlayerWaveManager.GetWave())) {
 #ifndef DEBUG_DISABLE_WAVE_SPAWNING
 		m_PlayerWaveManager.AllowStartNextWave();
 		m_OpponentWaveManager.AllowStartNextWave();
