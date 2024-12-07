@@ -16,6 +16,10 @@ namespace Chimp {
 	Vector2f::Vector2f(Vector2i vec) : x(vec.x), y(vec.y)
 	{
 	}
+	Vector2f::operator Vector2i() const
+	{
+		return Vector2i(x, y);
+	}
 
 	Vector3f::Vector3f(Vector2f vec, float z) : x(vec.x), y(vec.y), z(z)
 	{

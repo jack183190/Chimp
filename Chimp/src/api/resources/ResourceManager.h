@@ -11,6 +11,7 @@
 #include "containers/TextureResourceContainer.h"
 #include "containers/ModelResourceContainer.h"
 #include "containers/SpriteResourceContainer.h"
+#include "containers/ImageResourceContainer.h"
 
 namespace Chimp {
 	class Engine;
@@ -22,13 +23,20 @@ namespace Chimp {
 		ResourceManager(Engine& engine);
 
 	public:
+		// Stores IShader, this is wrapper classes around shaders in the rendering API
 		[[nodiscard]] ResourceContainer<ShaderFilePaths, IShader>& GetShaders();
 
+		// Stores textures, you probably don't need to use this, and can use sprites or models instead
 		[[nodiscard]] ResourceContainer<std::string, ITexture>& GetTextures();
 
+		// Stores 3d models
 		[[nodiscard]] ModelResourceContainer& GetModels();
 
+		// Stores sprites (textured quads)
 		[[nodiscard]] SpriteResourceContainer& GetSprites();
+
+		// Stores images (cpu side) - not used for rendering!
+		[[nodiscard]] ImageResourceContainer& GetImages();
 
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
@@ -51,5 +59,6 @@ namespace Chimp {
 		TextureResourceContainer m_Textures;
 		ModelResourceContainer m_Models;
 		SpriteResourceContainer m_Sprites;
+		ImageResourceContainer m_Images;
 	};
 }

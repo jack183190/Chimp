@@ -20,6 +20,14 @@ private:
 	void Place(TowerType type, Chimp::Vector2f position);
 	void RemoveSelectedTower();
 	void UpgradeSelectedTower(UpgradeType type);
+	// Returns true if the pos collides with the track
+	// assumes pos is NOT in simulation space
+	bool CollidesWithTrack(Chimp::Vector2i pos) const;
+	// Returns true if the point collides with another tower
+	// assumes pos IS in simulation space
+	bool CollidesWithTower(Chimp::Vector2f pos) const;
+
+	constexpr static float TOWER_ICON_SIZE = 50.0f;
 
 private:
 	TowerManager& m_TowerManager;

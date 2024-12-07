@@ -8,9 +8,10 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_GameShader(gameShader),
 	m_TaskScheduler(engine.CreateTaskScheduler())
 {
-	//m_Engine.GetResourceManager().GetTextures().Depend(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
+	m_Engine.GetResourceManager().GetImages().Depend(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
 
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
+	sprites.Depend(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
@@ -34,9 +35,12 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 GameScene::~GameScene()
 {
+	m_Engine.GetResourceManager().GetImages().Release(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
+
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
 
 	sprites.Release(GAME_SRC + std::string("/assets/textures/Dart.png"));
+	sprites.Release(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
 	sprites.Release(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
 		sprites.Release(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);

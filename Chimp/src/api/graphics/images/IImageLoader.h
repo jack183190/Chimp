@@ -20,6 +20,14 @@ namespace Chimp {
 			int NumberChannels = 0; // The number of channels in the image (3 for RGB, 4 for RGBA)
 
 			[[nodiscard]] bool IsValid() const;
+
+			// Returns colour of pixel at position
+			// if no alpha channel then alpha is 1
+			// if no colour channel, then colour is 0
+			// assumes row-major order (correct for STB)
+			// returns def if out of bounds or invalid image
+			// only supports 1/2/3/4 channels
+			[[nodiscard]] Vector4f GetPixel(Vector2i pos, Vector4f def = {-1,-1,-1,-1});
 		};
 
 		// Represents options for loading an image

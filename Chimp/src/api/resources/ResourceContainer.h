@@ -5,6 +5,7 @@
 
 namespace Chimp {
 	typedef std::string TextureResourcePath;
+	typedef std::string ImageResourcePath;
 	typedef ShaderFilePaths ShaderResourcePath;
 	typedef std::string ModelResourcePath;
 
@@ -73,6 +74,11 @@ namespace Chimp {
 				ImmediateDepend(path);
 			}
 			m_DelayedDependencies.clear();
+		}
+
+		// Get number loaded resources
+		[[nodiscard]] size_t Size() const {
+			return m_Resources.size();
 		}
 	private:
 		std::unordered_map<K, Resource<T>> m_Resources;

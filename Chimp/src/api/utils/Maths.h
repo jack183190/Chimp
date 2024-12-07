@@ -53,6 +53,7 @@ namespace Chimp {
 
 		operator glm::vec2() const { return glm::vec2(x, y); }
 		operator ImVec2() const { return ImVec2(x, y); }
+		operator Vector2i() const;
 
 		Vector2f operator*(float scale) const {
 			return Vector2f(x * scale, y * scale);
@@ -567,6 +568,23 @@ namespace Chimp {
 		[[nodiscard]] bool Contains(Vector3f point) const {
 			return point.x >= Position.x && point.x <= Position.x + Size.x &&
 				point.y >= Position.y && point.y <= Position.y + Size.y;
+		}
+
+		// Get a position
+		[[nodiscard]] Vector2f GetCenter() const {
+			return Position + Size / 2.0f;
+		}
+		[[nodiscard]] Vector2f GetTopLeft() const {
+			return Position;
+		}
+		[[nodiscard]] Vector2f GetTopRight() const {
+			return Position + Vector2f(Size.x, 0.0f);
+		}
+		[[nodiscard]] Vector2f GetBottomLeft() const {
+			return Position + Vector2f(0.0f, Size.y);
+		}
+		[[nodiscard]] Vector2f GetBottomRight() const {
+			return Position + Size;
 		}
 
 		// Scale the rectangle around its center

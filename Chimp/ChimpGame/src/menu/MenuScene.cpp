@@ -37,6 +37,7 @@ MenuScene::~MenuScene()
 
 void MenuScene::OnInit()
 {
+
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
