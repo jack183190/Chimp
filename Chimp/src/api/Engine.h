@@ -37,8 +37,8 @@ namespace Chimp {
 		[[nodiscard]] YAMLSerialiser& GetYAMLSerialiser();
 
 		// Task scheduler for running tasks at specific times
-		// This instance is updated automatically at the end of each update phase.
-		[[nodiscard]] TaskScheduler& GetTaskScheduler();
+		// You must update it once per frame
+		[[nodiscard]] std::unique_ptr<TaskScheduler> CreateTaskScheduler();
 
 		[[nodiscard]] std::unique_ptr<IServer> HostServer(const ConnectionInfo& serverInfo);
 		[[nodiscard]] std::unique_ptr<IClient> ConnectToServer(const ConnectionInfo& serverInfo);
@@ -70,7 +70,6 @@ namespace Chimp {
 		std::unique_ptr<IRenderingManager> m_RenderingManager;
 		std::unique_ptr<SceneManager> m_SceneManager; // initialized in MainLoop
 		ThreadPool m_ThreadPool;
-		TaskScheduler m_TaskScheduler;
 		ImGuiHelper m_ImGuiHelper;
 		YAMLSerialiser m_YAMLSerialiser;
 	};

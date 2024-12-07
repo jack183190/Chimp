@@ -27,7 +27,7 @@ void BloonManager::Update()
 	}
 
 	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::B)) {
-		SpawnBloon(Bloons::BloonType::BLUE);
+		m_Lives -= 25;
 	}
 
 	float dt = m_Engine.GetTimeManager().GetDeltaTime();

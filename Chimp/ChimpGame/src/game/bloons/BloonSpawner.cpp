@@ -3,11 +3,13 @@
 
 BloonSpawner::BloonSpawner(Chimp::Engine& engine,
 	BloonManager& opponentBloonManager,
-	MoneyManager& moneyManager) :
+	MoneyManager& moneyManager,
+	Chimp::TaskScheduler& taskScheduler) :
 	m_Engine(engine),
 	m_OpponentBloonManager(opponentBloonManager),
 	m_BloonSendsDisabledTime(0),
-	m_MoneyManager(moneyManager)
+	m_MoneyManager(moneyManager),
+	m_TaskScheduler(taskScheduler)
 {
 }
 
@@ -107,7 +109,7 @@ void BloonSpawner::RenderUI()
 
 void BloonSpawner::SendBloon(Bloons::BloonType bloonType, float delay)
 {
-	m_Engine.GetTaskScheduler().RunDelayedTask(delay, [this, bloonType]() {
+	m_TaskScheduler.RunDelayedTask(delay, [this, bloonType]() {
 		m_OpponentBloonManager.SpawnBloon(bloonType);
 
 		ClientSpawnBloonPacket packet;

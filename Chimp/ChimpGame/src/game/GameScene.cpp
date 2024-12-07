@@ -5,8 +5,11 @@
 GameScene::GameScene(Chimp::Engine& engine,
 	std::shared_ptr<Chimp::GameShader> gameShader) :
 	m_Engine(engine),
-	m_GameShader(gameShader)
+	m_GameShader(gameShader),
+	m_TaskScheduler(engine.CreateTaskScheduler())
 {
+	//m_Engine.GetResourceManager().GetTextures().Depend(GAME_SRC + std::string("/assets/textures/MapCollisions.png"));
+
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
 	sprites.Depend(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
@@ -22,7 +25,7 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameShader);
 
-	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager);
+	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager, *m_TaskScheduler);
 
 	LoadModels();
 
@@ -31,6 +34,13 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 GameScene::~GameScene()
 {
+	auto& sprites = m_Engine.GetResourceManager().GetSprites();
+
+	sprites.Release(GAME_SRC + std::string("/assets/textures/Dart.png"));
+	sprites.Release(GAME_SRC + std::string("/assets/textures/MapBackground.png"));
+	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
+		sprites.Release(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
+	}
 
 	UnloadModels();
 }
@@ -63,6 +73,8 @@ void GameScene::OnUpdate()
 	m_MoneyManager.Update();
 
 	Networking::GetClient()->GetHandlers().BloonListener->Update(m_PlayerSimulation->GetBloonManager());
+
+	m_TaskScheduler->Update();
 }
 
 void GameScene::OnRender()
@@ -113,4 +125,5 @@ void GameScene::LoadModels()
 
 void GameScene::UnloadModels()
 {
+	m_Engine.GetResourceManager().GetModels().Release(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
 }

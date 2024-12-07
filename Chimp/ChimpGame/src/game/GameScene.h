@@ -29,6 +29,7 @@ private:
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::GameShader> m_GameShader;
+	std::unique_ptr<Chimp::TaskScheduler> m_TaskScheduler;
 	std::unique_ptr<Simulation> m_OpponentSimulation;
 	std::unique_ptr<Simulation> m_PlayerSimulation;
 	std::unique_ptr<WaveStartHandler> m_WaveStartHandler;

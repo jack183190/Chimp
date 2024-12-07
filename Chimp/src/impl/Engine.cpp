@@ -26,8 +26,7 @@ namespace Chimp {
 		m_Window(CreateWindow()),
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager()),
-		m_ThreadPool(std::thread::hardware_concurrency() - 1),
-		m_TaskScheduler(*this)
+		m_ThreadPool(std::thread::hardware_concurrency() - 1)
 	{
 		m_ResourceManager.InitModelImporter();
 
@@ -78,14 +77,14 @@ namespace Chimp {
 		return m_ImGuiHelper;
 	}
 
-	TaskScheduler& Engine::GetTaskScheduler()
-	{
-		return m_TaskScheduler;
-	}
-
 	YAMLSerialiser& Engine::GetYAMLSerialiser()
 	{
 		return m_YAMLSerialiser;
+	}
+	
+	std::unique_ptr<TaskScheduler> Engine::CreateTaskScheduler()
+	{
+		return std::make_unique<TaskScheduler>(*this);
 	}
 
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)
