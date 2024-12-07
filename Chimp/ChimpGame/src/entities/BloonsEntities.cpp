@@ -7,7 +7,7 @@ namespace Entities {
 		Chimp::EntityId entity = CreateBaseEntity(ecs, mesh, {
 			{ position.x, position.y, 0.0f },
 			{ 0.0f, 0.0f, 0.0f },
-			{ 100, 100, 1.0f }
+			{ 100.0f, 100.0f, 1.0f }
 			});
 
 		ecs.SetComponent(entity, Chimp::HealthComponent{ Bloons::HealthValues[(size_t)type]});

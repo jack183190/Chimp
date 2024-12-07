@@ -44,6 +44,7 @@
 #include <utility>
 #include <regex>
 #include <format>
+#include <variant>
 
 // OpenGL
 #ifdef CHIMP_OPENGL
@@ -73,5 +74,6 @@
 #include <imgui.h>
 #endif
 
-// Preprocessor
-#include "preprocessor/CopyAndMove.h"
+// PREPROCESSOR
+#include "api/utils/preprocessor/CopyAndMove.h"
+#include "api/utils/preprocessor/Casting.h"

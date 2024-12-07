@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "ShaderTypes.h"
+#include "api/utils/preprocessor/CopyAndMove.h"
 
 namespace Chimp
 {

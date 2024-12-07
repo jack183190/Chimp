@@ -12,6 +12,8 @@
 #include "api/graphics/GameShader.h"
 
 // Utils
+#include "api/files/yaml/YAMLBlockParser.h"
+#include "api/files/yaml/YAMLWriter.h"
 #include "api/utils/FileReader.h"
 #include "api/utils/HashCombine.h"
 #include "api/utils/Maths.h"
@@ -23,3 +25,4 @@
 #include "api/utils/InPlaceOptional.h"
 #include "api/utils/waves/WaveManager.h"
 #include "api/threading/ThreadPool.h"
+#include "api/utils/preprocessor/Casting.h"

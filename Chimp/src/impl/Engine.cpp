@@ -33,6 +33,8 @@ namespace Chimp {
 
 		PacketTypeRegistry::RegisterChimpPacketTypes();
 
+		RegisterYAMLSerialisableMathsTypes(m_YAMLSerialiser);
+
 		Loggers::Main().Info("Initialized Chimp Engine!");
 	}
 
@@ -79,6 +81,11 @@ namespace Chimp {
 	TaskScheduler& Engine::GetTaskScheduler()
 	{
 		return m_TaskScheduler;
+	}
+
+	YAMLSerialiser& Engine::GetYAMLSerialiser()
+	{
+		return m_YAMLSerialiser;
 	}
 
 	std::unique_ptr<IServer> Engine::HostServer(const ConnectionInfo& serverInfo)

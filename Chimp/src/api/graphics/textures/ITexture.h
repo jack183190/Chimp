@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "TextureProperties.h"
 #include "TextureSlot.h"
+#include "api/utils/preprocessor/CopyAndMove.h"
 
 namespace Chimp {
 	class ITexture {

@@ -7,7 +7,7 @@ Chimp::EntityId Entities::CreateMonkeyTower(Chimp::ECS& ecs, Chimp::Mesh& mesh, 
 	constexpr float scale = 45;
 	Chimp::EntityId ent = Entities::CreateBaseEntity(ecs, mesh, Chimp::Transform(
 		{ position.x, position.y, TOWER_Z },
-		{ 0, 0.8 ,6 },
+		{ 0.0f, 0.8f, 6.0f },
 		{ scale, scale, scale }
 	));
 

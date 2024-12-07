@@ -1,6 +1,7 @@
 #include "MenuScene.h"
 #include "game/GameScene.h"
 #include "Debug.h"
+#include "Logger.h"
 
 MenuScene::MenuScene(Chimp::Engine& engine,
 	std::shared_ptr<Chimp::GameShader> renderer)
@@ -36,7 +37,6 @@ MenuScene::~MenuScene()
 
 void MenuScene::OnInit()
 {
-
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
@@ -52,11 +52,11 @@ void MenuScene::OnUpdate()
 {
 	if (!Networking::GetClient()->IsConnected()) return;
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
-	
+
 	if (clientHandlers.CurrentMatchHandler->IsInMatch()) {
 		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader));
 	}
-	
+
 }
 
 void MenuScene::OnRender()
