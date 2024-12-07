@@ -13,10 +13,11 @@ ClientCurrentMatchHandler::ClientCurrentMatchHandler(Chimp::Engine& engine,
 		[this](const Chimp::NetworkPacket* event) { HandleMatchStart(event); });
 
 #ifdef DEBUG_AUTOSTART_WITH_1_PLAYER
-	ClientMatchStartPacket matchStartPacket; // TODO: Remove this
+	ClientMatchStartPacket matchStartPacket;
 	matchStartPacket.PacketType = Networking::CLIENT_MATCH_START;
 	matchStartPacket.MatchId = 1;
 	matchStartPacket.OpponentId = 2;
+	matchStartPacket.MapFileIndex = 1;
 	HandleMatchStart(&matchStartPacket); 
 #endif
 }
@@ -32,18 +33,18 @@ void ClientCurrentMatchHandler::Update()
 
 void ClientCurrentMatchHandler::HandleMatchStart(const Chimp::NetworkPacket* event)
 {
-	if (IsInMatch()) {
-		std::cout << "Already in a match, dropping match start packet" << std::endl;
-		GetLogger().Error("Already in a match, dropping match start packet");
-		return;
-	}
-
 	auto matchStartPacket =
 		static_cast<const ClientMatchStartPacket*>(event);
 	assert(matchStartPacket != nullptr);
 
+	if (IsInMatch()) {
+		GetLogger().Error("Already in a match, dropping match start packet");
+		return;
+	}
+
 	m_MatchId = matchStartPacket->MatchId;
 	m_OpponentId = matchStartPacket->OpponentId;
+	m_MapFileIndex = matchStartPacket->MapFileIndex;
 
 	GetLogger().Info("Match started with opponent " + std::to_string(m_OpponentId));
 }

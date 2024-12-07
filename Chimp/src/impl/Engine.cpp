@@ -81,6 +81,11 @@ namespace Chimp {
 	{
 		return m_YAMLSerialiser;
 	}
+
+	Random& Engine::GetRandom()
+	{
+		return m_Random;
+	}
 	
 	std::unique_ptr<TaskScheduler> Engine::CreateTaskScheduler()
 	{

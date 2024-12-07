@@ -17,7 +17,7 @@ namespace Chimp {
 		std::is_same<T, Chimp::Vector4f>::value
 	>::type> {
 	public:
-		Path(std::vector<T> points, T offsetPoints = {}) {
+		Path(std::vector<T> points, T offsetPoints = {})  {
 			assert(!points.empty());
 			float distance = 0.0f;
 			for (size_t i = 0; i < points.size(); ++i) {
@@ -26,6 +26,25 @@ namespace Chimp {
 				}
 				m_Points.push_back(std::make_tuple(distance, points[i] + offsetPoints));
 			}
+		}
+
+		static Path<Chimp::Vector2f> Deserialise(const YAMLBlock& block, Chimp::Vector2f offsetPoints = {}) {
+			size_t numPoints = block.Blocks.size();
+			std::vector<Chimp::Vector2f> points;
+			for (size_t i = 0; i < numPoints; ++i) {
+				auto iter = block.Blocks.find(std::to_string(i));
+				if (iter == block.Blocks.end()) {
+					assert(false);
+					return Path<Chimp::Vector2f>({});
+				}
+
+				auto& block = iter->second;
+				points.push_back(Chimp::Vector2f{
+					block.Floats.at("x"),
+					block.Floats.at("y")
+					});
+			}
+			return Path<Chimp::Vector2f>(points, offsetPoints);
 		}
 
 		// Get point by index

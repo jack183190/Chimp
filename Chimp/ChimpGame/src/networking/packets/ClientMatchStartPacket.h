@@ -6,4 +6,5 @@ struct ClientMatchStartPacket : public Chimp::NetworkPacket
 {
 	int OpponentId;
 	int MatchId;
+	int MapFileIndex;
 };

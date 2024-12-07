@@ -6,20 +6,22 @@ Simulation::Simulation(Chimp::Engine& engine,
 	Chimp::Vector2f position,
 	Chimp::Vector2f size,
 	bool isPlayerSimulation,
-	MoneyManager& moneyManager)
-	: m_Engine(engine),
+	MoneyManager& moneyManager,
+	Chimp::YAMLBlock& currentMap) :
+	m_Engine(engine),
 	m_GameShader(gameShader),
 	m_Position(position),
 	m_Size(size),
 	m_HealthSystem(m_ECS),
-	m_BloonManager(m_Engine, m_ECS, m_Position),
+	m_BloonManager(m_Engine, m_ECS, m_Position, currentMap),
 	m_WaveManager(WaveManagerBuilder::Build(m_Engine, m_BloonManager)),
 	m_TowerManager(m_Engine, m_ECS, m_Position, m_Size),
 	m_IsPlayerSimulation(isPlayerSimulation),
-	m_MoneyManager(moneyManager)
+	m_MoneyManager(moneyManager),
+	m_CurrentMap(currentMap)
 {
 	if (isPlayerSimulation) {
-		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position, m_Size, m_MoneyManager);
+		m_TowerEditor = std::make_unique<TowerEditor>(m_TowerManager, m_Engine, m_ECS, m_Position, m_Size, m_MoneyManager, m_CurrentMap);
 	}
 }
 
@@ -27,7 +29,7 @@ void Simulation::Init()
 {
 	Entities::CreateBaseEntity(
 		m_ECS,
-		m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + std::string("/assets/textures/MapBackground.png")),
+		m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + m_CurrentMap.Strings["Background"]),
 		{
 			{ m_Position.x, m_Position.y, 10.0f },
 			{ 0.0f, 0.0f, 0.0f },
@@ -68,7 +70,7 @@ bool Simulation::HasLost() const
 {
 	return m_BloonManager.HasLost() ||
 #ifndef NDEBUG
-		m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) || 
+		m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) ||
 #endif
 		!Networking::GetClient()->IsConnected();
 }

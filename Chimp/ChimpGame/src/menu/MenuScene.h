@@ -5,7 +5,7 @@
 
 class MenuScene : public Chimp::Scene {
 public:
-	MenuScene(Chimp::Engine& engine, std::shared_ptr<Chimp::GameShader> renderer = nullptr);
+	MenuScene(Chimp::Engine& engine, std::shared_ptr<Chimp::GameShader> shader = nullptr);
 	~MenuScene();
 
 public:
@@ -23,4 +23,5 @@ private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::GameShader> m_GameShader;
 	Chimp::ConnectionInfo m_ConnectionInfo;
+	Chimp::YAMLBlock m_MapList;
 };

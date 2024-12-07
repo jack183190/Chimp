@@ -6,7 +6,8 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	Chimp::ECS& ecs,
 	Chimp::Vector2f simulationPosition,
 	Chimp::Vector2f simulationSize,
-	MoneyManager& moneyManager) :
+	MoneyManager& moneyManager,
+	Chimp::YAMLBlock& currentMap) :
 	m_TowerManager(towerManager),
 	m_Engine(engine),
 	m_ECS(ecs),
@@ -14,7 +15,8 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	m_SimulationSize(simulationSize),
 	m_SelectionSystem(engine, ecs, simulationPosition),
 	m_MoneyManager(moneyManager),
-	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_SRC + std::string("/assets/textures/X.png"))
+	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_SRC + std::string("/assets/textures/X.png")),
+	m_CurrentMap(currentMap)
 {
 	m_TowerIconTextures.reserve(NUM_TOWERS);
 	for (TowerType type = 0; type < NUM_TOWERS; type++) {
@@ -39,7 +41,9 @@ void TowerEditor::Update()
 	if (m_Engine.GetWindow().GetInputManager().IsMouseButtonPressed(Chimp::Mouse::LEFT)
 		&& m_IsPlacing
 		&& mousePos >= m_SimulationPosition
-		&& mousePos <= m_SimulationPosition + m_SimulationSize) {
+		&& mousePos <= m_SimulationPosition + m_SimulationSize
+		&& !CollidesWithTower(Chimp::ComponentMultiply(mousePos, Chimp::Vector2f{ 1,-1 }))
+		&& !CollidesWithTrack(mousePos - m_SimulationPosition)) {
 		auto towerPos = Chimp::ComponentMax({ 0,0 }, mousePos - m_SimulationPosition);
 		towerPos.y *= -1;
 		Place(m_PlacingType, towerPos);
@@ -50,7 +54,15 @@ void TowerEditor::Update()
 
 void TowerEditor::RenderUI()
 {
-	ImVec2 iconPosition = ImGui::GetWindowSize();
+	auto errorTowerOverlay = (intptr_t)m_Engine.GetResourceManager().GetTextures().Get(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png")).GetId();
+	if (m_IsPlacing) {
+		ImGui::SetCursorPos({ 0,0 });
+		ImGui::Image(errorTowerOverlay, { m_SimulationPosition.x, m_Engine.GetWindow().GetSize().y });
+	}
+
+	const Chimp::Vector2f towerIconSize = { TOWER_ICON_SIZE, TOWER_ICON_SIZE };
+
+	Chimp::Vector2f iconPosition = ImGui::GetWindowSize();
 	iconPosition.x /= 2;
 	iconPosition.x -= 60.0f * NUM_TOWERS / 2.0f;
 	iconPosition.y -= 100;
@@ -87,7 +99,16 @@ void TowerEditor::RenderUI()
 		if (m_IsPlacing && m_PlacingType == type) {
 			auto mousePos = m_Engine.GetWindow().GetInputManager().GetMousePosition();
 			ImGui::SetCursorPos({ mousePos.x, mousePos.y });
-			ImGui::Image(icon, ImVec2(50, 50));
+			ImGui::Image(icon, towerIconSize);
+			if (
+				CollidesWithTrack(mousePos - m_SimulationPosition) || 
+				CollidesWithTower(Chimp::ComponentMultiply(mousePos, Chimp::Vector2f{ 1,-1 })) ||
+				mousePos.x < m_SimulationPosition.x || mousePos.x > m_SimulationPosition.x + m_SimulationSize.x ||
+				mousePos.y < m_SimulationPosition.y || mousePos.y > m_SimulationPosition.y + m_SimulationSize.y
+				) {
+				ImGui::SetCursorPos({ mousePos.x, mousePos.y });
+				ImGui::Image(errorTowerOverlay, towerIconSize);
+			}
 		}
 	}
 
@@ -101,7 +122,7 @@ void TowerEditor::RenderUI()
 
 		// REMOVE BUTTON
 		ImGui::SetCursorPos({ iconPosition.x + 60, iconPosition.y });
-		const int worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth * WorthComponent::SELL_MULTIPLIER;
+		const int worth = (int)((float)m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth * WorthComponent::SELL_MULTIPLIER);
 		const std::string removeButtonLabel = "Sell +$" + std::to_string(worth) + "##removeTower";
 		if (ImGui::Button(removeButtonLabel.c_str(), ImVec2(100, 50))) {
 			RemoveSelectedTower();
@@ -178,7 +199,7 @@ void TowerEditor::RemoveSelectedTower()
 	m_SelectionSystem.DeselectTower();
 
 	auto worth = m_ECS.GetMutableComponent<WorthComponent>(selectedTower)->Worth;
-	m_MoneyManager.AddMoney(worth * WorthComponent::SELL_MULTIPLIER);
+	m_MoneyManager.AddMoney((int)((float)worth * WorthComponent::SELL_MULTIPLIER));
 
 	ClientTowerRemovePacket packet;
 	packet.PacketType = Networking::CLIENT_TOWER_REMOVE;
@@ -216,4 +237,22 @@ void TowerEditor::UpgradeSelectedTower(UpgradeType type)
 	const auto opponentId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetOpponentId();
 	Networking::GetClient()->GetClient().SendPacketToClient(opponentId, packet);
 #endif
+}
+
+bool TowerEditor::CollidesWithTrack(Chimp::Vector2i pos) const
+{
+	auto& collisions = m_Engine.GetResourceManager().GetImages().Get(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
+
+	return collisions.GetPixel({ collisions.Width - pos.x, collisions.Height - pos.y }).w > 0;
+}
+
+bool TowerEditor::CollidesWithTower(Chimp::Vector2f pos) const
+{
+	auto view = m_ECS.GetEntitiesWithComponents<Chimp::TransformComponent, TowerComponent>();
+	for (auto& [transform, tower] : view) {
+		if (Chimp::GetDistanceBetween(Chimp::Vector2f(transform.GetTranslation()), pos) < TOWER_ICON_SIZE * 0.5f) {
+			return true;
+		}
+	}
+	return false;
 }

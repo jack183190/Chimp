@@ -4,17 +4,11 @@
 BloonManager::BloonManager(
 	Chimp::Engine& engine, 
 	Chimp::ECS& ecs,
-	Chimp::Vector2f simulationPosition) :
+	Chimp::Vector2f simulationPosition,
+	Chimp::YAMLBlock& currentMap) :
 	m_ECS(ecs),
 	m_Engine(engine),
-	m_Path({
-		{ 310.0f, 0.0f },
-		{ 310.0f, -210.0f },
-		{ 50.0f, -210.0f },
-		{ 50.0f, -530.0f },
-		{ 530.0f, -530.0f },
-		{ 530.0f, -720.0f }
-		}, simulationPosition),
+	m_Path(Chimp::Path<Chimp::Vector2f>::Deserialise(currentMap.Blocks["Path"], simulationPosition)),
 	m_SimulationPosition(simulationPosition)
 {
 

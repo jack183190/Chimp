@@ -16,7 +16,8 @@ public:
 		Chimp::Vector2f position,
 		Chimp::Vector2f size,
 		bool isPlayerSimulation,
-		MoneyManager& moneyManager);
+		MoneyManager& moneyManager,
+		Chimp::YAMLBlock& currentMap);
 	void Init();
 
 	void Update();
@@ -41,4 +42,5 @@ private:
 	std::unique_ptr<TowerEditor> m_TowerEditor;
 	bool m_IsPlayerSimulation;
 	MoneyManager& m_MoneyManager;
+	Chimp::YAMLBlock& m_CurrentMap;
 };

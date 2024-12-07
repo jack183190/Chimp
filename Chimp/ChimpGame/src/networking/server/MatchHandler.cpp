@@ -97,11 +97,14 @@ void MatchHandler::StartMatch(int player1, int player2)
 		m_MatchSet.AddMatch(match);
 	}
 
+	int mapIndex = m_Engine.GetRandom().GetRandomInt(0, MapCount - 1);
+
 	// Send match start packet to both players
 	ClientMatchStartPacket matchStartPacket;
 	matchStartPacket.PacketType = Networking::CLIENT_MATCH_START;
 	matchStartPacket.MatchId = matchId;
 	matchStartPacket.OpponentId = player2;
+	matchStartPacket.MapFileIndex = mapIndex;
 	m_Server.SendPacketToClient(player1, matchStartPacket);
 	matchStartPacket.OpponentId = player1;
 	m_Server.SendPacketToClient(player2, matchStartPacket);

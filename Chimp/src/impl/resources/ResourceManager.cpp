@@ -13,7 +13,8 @@ namespace Chimp {
 		m_Shaders(engine),
 		m_Textures(engine),
 		m_Models(engine),
-		m_Sprites(engine, m_Textures)
+		m_Sprites(engine, m_Textures),
+		m_Images(engine)
 	{
 		InitModelImporter();
 	}
@@ -40,6 +41,11 @@ namespace Chimp {
 		return m_Sprites;
 	}
 
+	ImageResourceContainer& ResourceManager::GetImages()
+	{
+		return m_Images;
+	}
+
 	MeshStorage& ResourceManager::GetMeshStorage()
 	{
 		return m_MeshStorage;
@@ -61,6 +67,7 @@ namespace Chimp {
 		m_Sprites.UnloadUnused();
 		m_Textures.UnloadUnused();
 		m_Models.UnloadUnused();
+		m_Images.UnloadUnused();
 	}
 	
 	void ResourceManager::LoadRequiredResources()
@@ -69,5 +76,6 @@ namespace Chimp {
 		m_Sprites.LoadDependencies();
 		m_Textures.LoadDependencies();
 		m_Models.LoadDependencies();
+		m_Images.LoadDependencies();
 	}
 }

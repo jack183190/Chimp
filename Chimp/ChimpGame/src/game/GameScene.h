@@ -10,7 +10,7 @@
 
 class GameScene : public Chimp::Scene {
 public:
-	GameScene(Chimp::Engine& engine, std::shared_ptr<Chimp::GameShader> gameShader);
+	GameScene(Chimp::Engine& engine, std::shared_ptr<Chimp::GameShader> gameShader, const std::string& map);
 	~GameScene();
 
 	void OnInit() override;
@@ -37,4 +37,5 @@ private:
 	std::unique_ptr<BloonSpawner> m_BloonSpawner;
 	MoneyManager m_MoneyManager;
 	Chimp::Timer m_GameRunningTimer;
+	Chimp::YAMLBlock m_CurrentMap;
 };
