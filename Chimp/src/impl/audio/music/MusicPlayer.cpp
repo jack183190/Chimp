@@ -6,7 +6,8 @@
 
 namespace Chimp {
 	MusicPlayer::MusicPlayer(Engine& engine) :
-		m_Engine(engine)
+		m_Engine(engine),
+		m_NextTrackWriteMutex()
 	{
 	}
 
@@ -17,16 +18,22 @@ namespace Chimp {
 
 	void MusicPlayer::SwitchMusic(std::shared_ptr<MusicTracksContainer> tracksContainer)
 	{
+		if (tracksContainer.get() == m_TracksContainer.get()) [[unlikely]] return;
+
+		std::lock_guard lock(m_NextTrackWriteMutex);
 		Loggers::Audio().Info(std::format("Switching music tracks container"));
 
 		m_TracksContainer = tracksContainer;
 		m_MusicFadeOutStartTime = std::chrono::system_clock::now();
+		m_NextTrackLoadId++;
 		m_NextTrack.Reset();
 
 		if (HasTracks()) {
-			EnsureTracksLoaded();
 			if (IsCurrentTrackStopped()) {
 				PlayNewTrack();
+			}
+			else {
+				AsyncLoadNextTrack();
 			}
 		}
 	}
@@ -58,6 +65,8 @@ namespace Chimp {
 
 	void MusicPlayer::PlayNewTrack()
 	{
+		std::lock_guard lock(m_NextTrackWriteMutex);
+
 		if (m_NextTrack.Sound) {
 			m_CurrentTrack.Sound = std::move(m_NextTrack.Sound);
 			m_NextTrack.PlayingAudio.reset();
@@ -66,6 +75,7 @@ namespace Chimp {
 			m_CurrentTrack.Sound = m_Engine.GetAudioManager().LoadSound(m_TracksContainer->GetRandomTrack(m_Engine.GetRandom()));
 			m_CurrentTrack.PlayingAudio.reset();
 		}
+		AsyncLoadNextTrack();
 
 		m_CurrentTrack.PlayingAudio = m_CurrentTrack.Sound->Play(m_Position, m_Velocity, 1.0f, GetStartingVolume());
 
@@ -73,17 +83,27 @@ namespace Chimp {
 		m_MusicFadeOutStartTime = std::chrono::system_clock::now() + trackDuration - std::chrono::milliseconds((int)GetMillisToFade());
 	}
 
-	void MusicPlayer::EnsureTracksLoaded()
+	void MusicPlayer::AsyncLoadNextTrack()
 	{
-		// Load tracks if not loaded
-		if (!m_CurrentTrack.Sound) {
-			m_CurrentTrack.Sound = m_Engine.GetAudioManager().LoadSound(m_TracksContainer->GetRandomTrack(m_Engine.GetRandom()));
-			m_CurrentTrack.PlayingAudio.reset();
-		}
-		if (!m_NextTrack.Sound) {
-			m_NextTrack.Sound = m_Engine.GetAudioManager().LoadSound(m_TracksContainer->GetRandomTrack(m_Engine.GetRandom()));
-			m_NextTrack.PlayingAudio.reset();
-		}
+		if (m_NextTrack.Sound) return;
+
+		std::lock_guard lock(m_NextTrackWriteMutex);
+		const size_t loadId = ++m_NextTrackLoadId;
+
+		m_Engine.GetThreadPool().RunTask([this, loadId]() {
+			if (m_NextTrackLoadId != loadId) return; // something happened like we switched music container and this was useless
+
+			auto timer = m_Engine.GetTimeManager().CreateTimer().Start();
+			auto sound = m_Engine.GetAudioManager().LoadSound(m_TracksContainer->GetRandomTrack(m_Engine.GetRandom()));
+			timer.Stop();
+			Loggers::Audio().Info(std::format("Loaded next music track in {}s", timer.GetSecondsElapsed()));
+			
+			std::lock_guard lock(m_NextTrackWriteMutex);
+			if (m_NextTrackLoadId == loadId) { // double check we still need it
+				m_NextTrack.Sound = std::move(sound);
+				m_NextTrackLoadId++;
+			}
+			});
 	}
 
 	float MusicPlayer::GetStartingVolume() const
@@ -94,8 +114,6 @@ namespace Chimp {
 	void MusicPlayer::Update()
 	{
 		if (!HasTracks()) return;
-
-		EnsureTracksLoaded();
 
 		// Update sounds
 		if (m_CurrentTrack.Sound) m_CurrentTrack.Sound->Update();

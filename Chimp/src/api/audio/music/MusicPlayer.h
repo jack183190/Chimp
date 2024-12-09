@@ -57,7 +57,7 @@ namespace Chimp {
 
 		void PlayNewTrack();
 
-		void EnsureTracksLoaded();
+		void AsyncLoadNextTrack();
 
 		float GetStartingVolume() const;
 
@@ -71,5 +71,8 @@ namespace Chimp {
 		std::chrono::system_clock::time_point m_MusicFadeOutStartTime; // Time stamp which fading out has or should start
 		Vector3f m_Position = { 0, 0, 0 };
 		Vector3f m_Velocity = { 0, 0, 0 };
+
+		std::recursive_mutex m_NextTrackWriteMutex;
+		size_t m_NextTrackLoadId = 0;
 	};
 }
