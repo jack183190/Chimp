@@ -24,7 +24,13 @@ namespace Chimp {
 		virtual bool IsPlaying() const = 0;
 		virtual bool IsValid() const = 0;
 
-	private:
+		virtual void SetPitch(float pitch) = 0;
+
+		[[nodiscard]] float GetPitch() const {
+			return m_Pitch;
+		}
+
+	protected:
 		Vector3f m_Position;
 		Vector3f m_Velocity;
 		float m_Pitch;

@@ -8,6 +8,7 @@ namespace Chimp {
 	typedef std::string ImageResourcePath;
 	typedef ShaderFilePaths ShaderResourcePath;
 	typedef std::string ModelResourcePath;
+	typedef std::string SoundResourcePath;
 
 	template <typename K, typename T>
 	class ResourceContainer {
@@ -80,8 +81,10 @@ namespace Chimp {
 		[[nodiscard]] size_t Size() const {
 			return m_Resources.size();
 		}
-	private:
+	protected:
 		std::unordered_map<K, Resource<T>> m_Resources;
+
+	private:
 		std::function<Resource<T>(const K&)> m_LoadResourceFunc;
 		std::unordered_set<K> m_DelayedDependencies;
 	};

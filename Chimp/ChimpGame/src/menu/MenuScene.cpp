@@ -36,17 +36,13 @@ MenuScene::~MenuScene()
 
 }
 
-std::unique_ptr<Chimp::ISound> sound;
+std::shared_ptr<Chimp::IPlayingAudio> playingAudio;
+Chimp::ISound* sound;
 
 void MenuScene::OnInit()
 {
-	auto& audio = m_Engine.GetAudioManager();
-
-	sound = audio.LoadSound(GAME_SRC + std::string("/test.wav"));
-
-	auto playingAudio = sound->Play({ 0, 0, 0 }, { 0, 0, 0 }, 1.0f, 1.0f);
-
-
+	sound = &m_Engine.GetResourceManager().GetSounds().ImmediateDepend(GAME_SRC + std::string("/short.wav"));
+	playingAudio = sound->Play({ 0, 0, 0 }, { 0, 0, 0 }, 1.0f, 1.0f);
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
@@ -60,6 +56,18 @@ void MenuScene::OnDeactivate()
 
 void MenuScene::OnUpdate()
 {
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::O)) {
+		if (!playingAudio) return;
+		playingAudio->SetPitch(playingAudio->GetPitch() - 0.1f);
+		std::cout << "Pitch: " << playingAudio->GetPitch() << std::endl;
+	}
+
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::P)) {
+		if (!playingAudio) return;
+		playingAudio->SetPitch(playingAudio->GetPitch() + 0.1f);
+		std::cout << "Pitch: " << playingAudio->GetPitch() << std::endl;
+	}
+
 	if (!Networking::GetClient()->IsConnected()) return;
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
 
@@ -67,7 +75,6 @@ void MenuScene::OnUpdate()
 		std::string map = m_MapList.StringArrays["Files"][clientHandlers.CurrentMatchHandler->GetMapFileIndex()];
 		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader, map));
 	}
-
 }
 
 void MenuScene::OnRender()

@@ -14,16 +14,9 @@ namespace Chimp {
 
 	public:
 		// Setters
-		virtual void SetPosition(Vector3f position) {
-			m_Position = (Chimp::Vector3f)position;
-		}
-		virtual void SetVelocity(Vector3f velocity) {
-			m_Velocity = (Chimp::Vector3f)velocity;
-		}
-		virtual void SetOrientation(const Vector3f forward, const Vector3f up) {
-			m_Up = up;
-			m_Forward = forward;
-		}
+		virtual void SetPosition(Vector3f position) = 0;
+		virtual void SetVelocity(Vector3f velocity) = 0;
+		virtual void SetOrientation(const Vector3f forward, const Vector3f up) = 0;
 
 		// Getters
 		Vector3f GetPosition() const {
@@ -39,7 +32,7 @@ namespace Chimp {
 			return m_Up;
 		}
 
-	private:
+	protected:
 		Vector3f m_Position;
 		Vector3f m_Velocity;
 		Vector3f m_Forward;

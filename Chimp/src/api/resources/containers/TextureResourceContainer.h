@@ -11,6 +11,7 @@ namespace Chimp {
 	public:
 		TextureResourceContainer(Engine& engine);
 
+	private:
 		[[nodiscard]] Resource<ITexture> LoadResource(Engine& engine, const TextureResourcePath& path);
 	};
 }

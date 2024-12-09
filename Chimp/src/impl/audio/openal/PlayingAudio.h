@@ -21,7 +21,7 @@ namespace Chimp {
 
 			alSource3f(m_SourceId, AL_POSITION, position.x, position.y, position.z);
 			alSource3f(m_SourceId, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
-			alSourcef(m_SourceId, AL_PITCH, pitch);
+			SetPitch(pitch);
 			alSourcef(m_SourceId, AL_GAIN, gain);
 			alSourcei(m_SourceId, AL_LOOPING, AL_FALSE);
 
@@ -34,13 +34,25 @@ namespace Chimp {
 		}
 
 		bool IsPlaying() const override {
+			if (!IsValid()) return false;
+
 			ALint state;
 			alGetSourcei(m_SourceId, AL_SOURCE_STATE, &state);
-			return IsValid() && state == AL_PLAYING;
+			return state == AL_PLAYING;
 		}
 
 		bool IsValid() const override {
 			return m_SoundId != 0 && m_SourceId != 0;
+		}
+
+		void SetPitch(float pitch) override {
+			m_Pitch = pitch;
+#ifndef NDEBUG
+			if (pitch < 0.5f || pitch > 2.0f) {
+				Loggers::Audio().Warning("Pitch is out of range! Pitch: " + std::to_string(pitch));
+			}
+#endif
+			alSourcef(m_SourceId, AL_PITCH, pitch);
 		}
 		
 	private:

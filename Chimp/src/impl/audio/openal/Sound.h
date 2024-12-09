@@ -30,19 +30,19 @@ namespace Chimp {
 			return m_PlayingAudios.back();
 		}
 
+		bool IsAnySoundsPlaying() const override {
+			return !m_PlayingAudios.empty();
+		}
+
 		void Update() override {
-			for (auto it = m_PlayingAudios.begin(); it != m_PlayingAudios.end();) {
-				if (!(*it)->IsPlaying()) {
-					it = m_PlayingAudios.erase(it);
-				}
-				else {
-					++it;
-				}
-			}
+			std::erase_if(m_PlayingAudios, [](const std::shared_ptr<IPlayingAudio>& audio) {
+				std::cout << "use count: " << audio.use_count() << std::endl;
+				std::cout << "is playing: " << audio->IsPlaying() << std::endl;
+				return audio.use_count() <= 1 && !audio->IsPlaying();
+				});
 		}
 
 	private:
 		ALuint m_Id;
-		size_t m_Size;
 	};
 }

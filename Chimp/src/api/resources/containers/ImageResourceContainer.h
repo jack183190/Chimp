@@ -14,6 +14,7 @@ namespace Chimp {
 	public:
 		ImageResourceContainer(Engine& engine);
 
+	private:
 		[[nodiscard]] Resource<IImageLoader::LoadedImage> LoadResource(Engine& engine, const ImageResourcePath& path);
 	};
 }

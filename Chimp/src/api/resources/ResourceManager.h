@@ -12,13 +12,16 @@
 #include "containers/ModelResourceContainer.h"
 #include "containers/SpriteResourceContainer.h"
 #include "containers/ImageResourceContainer.h"
+#include "containers/SoundResourceContainer.h"
 
 namespace Chimp {
 	class Engine;
+	class MainLoop;
 	class IShader;
 
 	class ResourceManager {
 		friend class Engine;
+		friend class MainLoop;
 	private:
 		ResourceManager(Engine& engine);
 
@@ -33,10 +36,13 @@ namespace Chimp {
 		[[nodiscard]] ModelResourceContainer& GetModels();
 
 		// Stores sprites (textured quads)
-		[[nodiscard]] SpriteResourceContainer& GetSprites();
+		[[nodiscard]] ResourceContainer<TextureResourcePath, Mesh>& GetSprites();
 
 		// Stores images (cpu side) - not used for rendering!
-		[[nodiscard]] ImageResourceContainer& GetImages();
+		[[nodiscard]] ResourceContainer<ImageResourcePath, IImageLoader::LoadedImage>& GetImages();
+
+		// Stores audio files
+		[[nodiscard]] ResourceContainer<SoundResourcePath, ISound>& GetSounds();
 
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
@@ -50,6 +56,8 @@ namespace Chimp {
 	private:
 		void InitModelImporter();
 
+		void Update();
+
 	private:
 		Engine& m_Engine;
 		std::unique_ptr<IModelImporter> m_ModelImporter;
@@ -60,5 +68,6 @@ namespace Chimp {
 		ModelResourceContainer m_Models;
 		SpriteResourceContainer m_Sprites;
 		ImageResourceContainer m_Images;
+		SoundResourceContainer m_Sounds;
 	};
 }
