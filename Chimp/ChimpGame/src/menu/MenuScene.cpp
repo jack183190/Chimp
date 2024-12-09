@@ -36,8 +36,16 @@ MenuScene::~MenuScene()
 
 }
 
+std::unique_ptr<Chimp::ISound> sound;
+
 void MenuScene::OnInit()
 {
+	auto& audio = m_Engine.GetAudioManager();
+
+	sound = audio.LoadSound(GAME_SRC + std::string("/test.wav"));
+
+	auto playingAudio = sound->Play({ 0, 0, 0 }, { 0, 0, 0 }, 1.0f, 1.0f);
+
 
 }
 

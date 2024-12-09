@@ -32,6 +32,7 @@
 #include <sstream>
 #include <chrono>
 #include <fstream>
+#include <concepts>
 #include <filesystem>
 #include <functional>
 #include <typeinfo>
@@ -45,6 +46,7 @@
 #include <regex>
 #include <format>
 #include <variant>
+#include <cstddef>
 
 // OpenGL
 #ifdef CHIMP_OPENGL
@@ -72,6 +74,12 @@
 // IMGUI
 #ifdef CHIMP_IMGUI
 #include <imgui.h>
+#endif
+
+// OpenAL
+#ifdef CHIMP_OPENAL
+#include <AL/al.h>
+#include <AL/alc.h>
 #endif
 
 // PREPROCESSOR

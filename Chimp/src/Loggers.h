@@ -44,4 +44,10 @@ namespace Chimp::Loggers {
 		static Logger logger("ChimpYAML", LogLevel::INFO);
 		return logger;
 	}
+
+	static Logger& Audio()
+	{
+		static Logger logger("ChimpAudio", LogLevel::INFO);
+		return logger;
+	}
 }

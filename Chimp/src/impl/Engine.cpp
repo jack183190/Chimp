@@ -26,7 +26,8 @@ namespace Chimp {
 		m_Window(CreateWindow()),
 		m_ImageLoader(CreateImageLoader()),
 		m_RenderingManager(CreateRenderingManager()),
-		m_ThreadPool(std::thread::hardware_concurrency() - 1)
+		m_ThreadPool(std::thread::hardware_concurrency() - 1),
+		m_AudioManager(std::make_unique<AudioManager>())
 	{
 		m_ResourceManager.InitModelImporter();
 
@@ -85,6 +86,11 @@ namespace Chimp {
 	Random& Engine::GetRandom()
 	{
 		return m_Random;
+	}
+
+	AudioManager& Engine::GetAudioManager()
+	{
+		return *m_AudioManager;
 	}
 	
 	std::unique_ptr<TaskScheduler> Engine::CreateTaskScheduler()

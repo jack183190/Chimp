@@ -23,8 +23,6 @@ namespace Chimp {
 	// Compare two floats for equality, supports floating point error
 	[[nodiscard]] bool FloatEqual(float a, float b);
 
-	typedef glm::mat4x4 Matrix;
-
 #pragma region Types
 #pragma region Vectors
 	struct Vector2f : public YAMLSerialisable {
@@ -533,6 +531,8 @@ namespace Chimp {
 	};
 
 #pragma endregion
+
+	typedef glm::mat4x4 Matrix;
 #pragma endregion
 
 	constexpr float PI = glm::pi<float>();
