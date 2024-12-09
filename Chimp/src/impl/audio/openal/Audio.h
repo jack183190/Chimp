@@ -14,6 +14,7 @@ namespace Chimp {
 				Loggers::Audio().Error(
 					std::format("OpenAL error: {} in function: {} at file: {} line: {}",
 						std::to_string(error), functionName, file, line));
+				assert(false);
 			}
 		}
 

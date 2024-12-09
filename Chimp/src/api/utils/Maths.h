@@ -661,36 +661,6 @@ namespace Chimp {
 		}
 	};
 
-	// Lerp between two values
-	// a - The start value
-	// b - The end value
-	// t - The interpolation value
-	// Clamps t to 0 and 1
-	inline float Lerp(float a, float b, float t) {
-		return a + t * (b - a);
-	}
-	inline	Vector2f Lerp(Vector2f a, Vector2f b, float t) {
-		return Vector2f(
-			Lerp(a.x, b.x, t),
-			Lerp(a.y, b.y, t)
-		);
-	}
-	inline Vector3f Lerp(Vector3f a, Vector3f b, float t) {
-		return Vector3f(
-			Lerp(a.x, b.x, t),
-			Lerp(a.y, b.y, t),
-			Lerp(a.z, b.z, t)
-		);
-	}
-	inline Vector4f Lerp(Vector4f a, Vector4f b, float t) {
-		return Vector4f(
-			Lerp(a.x, b.x, t),
-			Lerp(a.y, b.y, t),
-			Lerp(a.z, b.z, t),
-			Lerp(a.w, b.w, t)
-		);
-	}
-
 	// Get distance between two points
 	inline float GetDistanceBetween(float a, float b) {
 		return std::abs(a - b);
@@ -862,6 +832,53 @@ namespace Chimp {
 			ComponentClamp(value.z, min.z, max.z),
 			ComponentClamp(value.w, min.w, max.w)
 		);
+	}
+
+	// Lerp between two values
+	// a - The start value
+	// b - The end value
+	// t - The interpolation value
+	// Clamps t to 0 and 1
+	inline float Lerp(float a, float b, float t) {
+		return a + t * (b - a);
+	}
+	inline Vector2f Lerp(Vector2f a, Vector2f b, float t) {
+		return Vector2f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t)
+		);
+	}
+	inline Vector3f Lerp(Vector3f a, Vector3f b, float t) {
+		return Vector3f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t),
+			Lerp(a.z, b.z, t)
+		);
+	}
+	inline Vector4f Lerp(Vector4f a, Vector4f b, float t) {
+		return Vector4f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t),
+			Lerp(a.z, b.z, t),
+			Lerp(a.w, b.w, t)
+		);
+	}
+
+	// Inverse lerp between two values
+	// a - The start value
+	// b - The end value
+	// value - The value to find the interpolation value of (%, ranged 0 to 1)
+	inline float InverseLerp(float a, float b, float value) {
+		return (b - a) == 0.0f ? 1.0f : Clamp((value - a) / (b - a), 0.0f, 1.0f);
+	}
+	inline float InverseLerp(Vector2f a, Vector2f b, Vector2f value) {
+		return Min(InverseLerp(a.x, b.x, value.x), InverseLerp(a.y, b.y, value.y));
+	}
+	inline float InverseLerp(Vector3f a, Vector3f b, Vector3f value) {
+		return Min(InverseLerp(a.x, b.x, value.x), Min(InverseLerp(a.y, b.y, value.y), InverseLerp(a.z, b.z, value.z)));
+	}
+	inline float InverseLerp(Vector4f a, Vector4f b, Vector4f value) {
+		return Min(InverseLerp(a.x, b.x, value.x), Min(InverseLerp(a.y, b.y, value.y), Min(InverseLerp(a.z, b.z, value.z), InverseLerp(a.w, b.w, value.w))));
 	}
 
 	// Find closest position to a target

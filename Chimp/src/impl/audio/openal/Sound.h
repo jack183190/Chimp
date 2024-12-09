@@ -16,7 +16,7 @@ namespace Chimp {
 
 		virtual ~Sound() {
 			for (auto& audio : m_PlayingAudios) {
-				audio->m_IsValid = false;
+				audio->Destroy();
 			}
 
 			alDeleteBuffers(1, &m_Id);

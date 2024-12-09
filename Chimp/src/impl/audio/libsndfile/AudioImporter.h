@@ -10,7 +10,7 @@
 namespace Chimp {
 	class AudioImporter : public IAudioImporter {
 	public:
-		std::unique_ptr<AudioData> Load(const std::filesystem::path& path) override {
+		std::unique_ptr<AudioData> Load(const std::filesystem::path& path) const override {
 			SF_INFO info;
 			SNDFILE* file = sf_open(path.string().c_str(), SFM_READ, &info);
 
@@ -28,6 +28,7 @@ namespace Chimp {
 			audioData->Data = std::move(data);
 			audioData->Format = info.channels == 1 ? (info.format & SF_FORMAT_PCM_S8 ? AudioFormats::MONO8 : AudioFormats::MONO16) : (info.format & SF_FORMAT_PCM_S8 ? AudioFormats::STEREO8 : AudioFormats::STEREO16);
 			audioData->Frequency = info.samplerate;
+			audioData->DurationSeconds = static_cast<float>(info.frames) / info.samplerate;
 
 			return std::move(audioData);
 		}

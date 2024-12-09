@@ -39,6 +39,11 @@ namespace Chimp {
 		// If the sound was loaded from the resource manager, this will be done automatically and you don't need to call it.
 		virtual void Update() = 0;
 
+		// Get duration in seconds
+		[[nodiscard]] virtual float GetDurationSeconds() const {
+			return m_Data->DurationSeconds;
+		}
+
 	protected:
 		std::unique_ptr<IAudioImporter::AudioData> m_Data;
 		std::vector<std::shared_ptr<IPlayingAudio>> m_PlayingAudios;

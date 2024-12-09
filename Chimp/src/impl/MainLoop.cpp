@@ -6,12 +6,14 @@ namespace Chimp {
 		Engine& engine)
 		: m_Engine(engine) {
 		m_Engine.m_SceneManager = std::unique_ptr<SceneManager>(new SceneManager(std::move(entryScene), m_Engine));
+
 		while (!m_Engine.GetSceneManager().m_CurrentScene->ShouldExit(m_Engine)) {
 			m_Engine.GetTimeManager().Update();
 			m_Engine.GetWindow().Update();
 			m_Engine.GetSceneManager().Update();
 			m_Engine.GetUpdateSubscriber().Update();
 			m_Engine.GetResourceManager().Update();
+			m_Engine.GetMusicPlayer().Update();
 
 			m_Engine.GetWindow().UpdateEnd();
 

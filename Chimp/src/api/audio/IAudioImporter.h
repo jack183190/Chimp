@@ -17,10 +17,11 @@ namespace Chimp {
 			std::vector<short> Data;
 			AudioFormat Format;
 			int Frequency;
+			float DurationSeconds;
 		};
 
 	public:
-		virtual std::unique_ptr<AudioData> Load(const std::filesystem::path& path) = 0;
+		virtual std::unique_ptr<AudioData> Load(const std::filesystem::path& path) const = 0;
 
 	private:
 	};

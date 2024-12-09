@@ -47,6 +47,10 @@ namespace Chimp {
 			SetVolume(Max(m_Volume + volume, 0.0f));
 		}
 
+		void AddVolumeThenClamp(float volume, float min, float max) {
+			SetVolume(Clamp(m_Volume + volume, min, max));
+		}
+
 		// Getters
 		[[nodiscard]] float GetPitch() const {
 			return m_Pitch;
@@ -67,6 +71,9 @@ namespace Chimp {
 		[[nodiscard]] bool IsLooping() const {
 			return m_Looping;
 		}
+
+	protected:
+		virtual void Destroy() = 0;
 
 	protected:
 		Vector3f m_Position;

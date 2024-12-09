@@ -34,10 +34,17 @@ namespace Chimp {
 		}
 
 		~PlayingAudio() {
-			alSourceStop(m_SourceId);
-			CHECK_AL_ERROR();
-			alDeleteSources(1, &m_SourceId);
-			CHECK_AL_ERROR();
+			Destroy();
+		}
+
+		void Destroy() override {
+			if (IsValid()) {
+				alSourceStop(m_SourceId);
+				CHECK_AL_ERROR();
+				alDeleteSources(1, &m_SourceId);
+				CHECK_AL_ERROR();
+				m_IsValid = false;
+			}
 		}
 
 		bool IsPlaying() const override {
@@ -50,7 +57,7 @@ namespace Chimp {
 		}
 
 		bool IsValid() const override {
-			return m_SoundId != 0 && m_SourceId != 0;
+			return m_IsValid && m_SoundId != 0 && m_SourceId != 0;
 		}
 
 		void SetPitch(float pitch) override {

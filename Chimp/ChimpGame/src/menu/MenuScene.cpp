@@ -36,13 +36,17 @@ MenuScene::~MenuScene()
 
 }
 
-std::shared_ptr<Chimp::IPlayingAudio> playingAudio;
-Chimp::ISound* sound;
+Chimp::MusicTracksContainer container1({
+	GAME_SRC + std::string("/music1.wav")
+	});
+
+Chimp::MusicTracksContainer container2({
+	GAME_SRC + std::string("/music2.wav")
+	});
 
 void MenuScene::OnInit()
 {
-	sound = &m_Engine.GetResourceManager().GetSounds().ImmediateDepend(GAME_SRC + std::string("/short.wav"));
-	playingAudio = sound->Play({ 0, 0, 0 }, { 0, 0, 0 }, 1.0f, 1.0f, true);
+
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
@@ -57,27 +61,10 @@ void MenuScene::OnDeactivate()
 void MenuScene::OnUpdate()
 {
 	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::O)) {
-		if (!playingAudio) return;
-		playingAudio->AddPitch(-0.1f);
-		std::cout << "Pitch: " << playingAudio->GetPitch() << std::endl;
+		m_Engine.GetMusicPlayer().SwitchMusic(container1);
 	}
-
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::P)) {
-		if (!playingAudio) return;
-		playingAudio->AddPitch(0.1f);
-		std::cout << "Pitch: " << playingAudio->GetPitch() << std::endl;
-	}
-
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::K)) {
-		if (!playingAudio) return;
-		playingAudio->AddVolume(-0.1f);
-		std::cout << "Gain: " << playingAudio->GetVolume() << std::endl;
-	}
-
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L)) {
-		if (!playingAudio) return;
-		playingAudio->AddVolume(0.1f);
-		std::cout << "Volume: " << playingAudio->GetVolume() << std::endl;
+	else if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::P)) {
+		m_Engine.GetMusicPlayer().SwitchMusic(container2);
 	}
 
 	if (!Networking::GetClient()->IsConnected()) return;
