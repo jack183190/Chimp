@@ -9,6 +9,9 @@ namespace Chimp {
 	class MainLoop;
 	class IPlayingAudio;
 
+	// This is a music player
+	// it handles fading between tracks
+	// it doesn't stream from disk but it will load the next track in the background (thus max 2 tracks are loaded at a time) so thats good at least
 	class MusicPlayer {
 		friend class MainLoop;
 		struct Music {
@@ -37,6 +40,7 @@ namespace Chimp {
 		// Returns true if there is any music tracks
 		[[nodiscard]] bool HasTracks() const;
 		
+		// Fade to another music track
 		void SwitchMusic(std::shared_ptr<MusicTracksContainer> tracksContainer);
 		void SwitchMusic(const MusicTracksContainer& tracksContainer);
 
@@ -46,11 +50,18 @@ namespace Chimp {
 		// Set min and max volume
 		[[nodiscard]] void SetVolumeRange(float minVolume, float maxVolume);
 
+		// Set music fade speed (this is the volume change per second)
+		// e.g if min volume is 0 and max volume is 1 and fade speed is 0.25 then it will take 4 seconds ((1- / 0.25) to fully fade a track in or out
+		void SetMusicFadeSpeed(float fadeSpeed);
+
+		// Set position of the sound source
+		void SetPosition(const Vector3f& position);
+
+		// Set velocity of the sound source
+		void SetVelocity(const Vector3f& velocity);
+
 		// Call this once per frame if you aren't using the music player in the engine instance
 		void Update();
-
-	public:
-		float FadeSpeed = 0.25f; // volume change per second
 
 	private:
 		bool IsCurrentTrackStopped() const;
@@ -66,8 +77,9 @@ namespace Chimp {
 		std::shared_ptr<MusicTracksContainer> m_TracksContainer;
 		Music m_CurrentTrack;
 		Music m_NextTrack;
-		float MinVolume = 0;
-		float MaxVolume = 1;
+		float m_MusicFadeSpeed = 0.25f; // volume change per second
+		float m_MinVolume = 0;
+		float m_MaxVolume = 1;
 		std::chrono::system_clock::time_point m_MusicFadeOutStartTime; // Time stamp which fading out has or should start
 		Vector3f m_Position = { 0, 0, 0 };
 		Vector3f m_Velocity = { 0, 0, 0 };

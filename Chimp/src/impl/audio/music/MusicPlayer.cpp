@@ -45,14 +45,35 @@ namespace Chimp {
 
 	float MusicPlayer::GetMillisToFade() const
 	{
-		assert(FadeSpeed > 0.0f);
-		return (MaxVolume - MinVolume) / FadeSpeed * 1000;
+		assert(m_MusicFadeSpeed > 0.0f);
+		return (m_MaxVolume - m_MinVolume) / m_MusicFadeSpeed * 1000;
 	}
 
 	void MusicPlayer::SetVolumeRange(float minVolume, float maxVolume)
 	{
-		MinVolume = minVolume;
-		MaxVolume = Max(maxVolume, minVolume);
+		m_MinVolume = minVolume;
+		m_MaxVolume = Max(maxVolume, minVolume);
+	}
+
+	void MusicPlayer::SetMusicFadeSpeed(float fadeSpeed)
+	{
+		m_MusicFadeSpeed = fadeSpeed;
+	}
+
+	void MusicPlayer::SetPosition(const Vector3f& position)
+	{
+		m_Position = position;
+		if (m_CurrentTrack.PlayingAudio) {
+			m_CurrentTrack.PlayingAudio->SetPosition(position);
+		}
+	}
+
+	void MusicPlayer::SetVelocity(const Vector3f& velocity)
+	{
+		m_Velocity = velocity;
+		if (m_CurrentTrack.PlayingAudio) {
+			m_CurrentTrack.PlayingAudio->SetVelocity(velocity);
+		}
 	}
 
 	bool MusicPlayer::IsCurrentTrackStopped() const
@@ -60,7 +81,7 @@ namespace Chimp {
 		return
 			!m_CurrentTrack.PlayingAudio ||
 			!m_CurrentTrack.PlayingAudio->IsPlaying() ||
-			!m_CurrentTrack.PlayingAudio->GetVolume() > MinVolume;
+			!m_CurrentTrack.PlayingAudio->GetVolume() > m_MinVolume;
 	}
 
 	void MusicPlayer::PlayNewTrack()
@@ -108,7 +129,7 @@ namespace Chimp {
 
 	float MusicPlayer::GetStartingVolume() const
 	{
-		return MinVolume + 0.001; // if it is min volume, we would pick a new track next frame
+		return m_MinVolume + 0.001; // if it is min volume, we would pick a new track next frame
 	}
 
 	void MusicPlayer::Update()
@@ -127,6 +148,6 @@ namespace Chimp {
 
 		// Handle fading out
 		float fadeDirection = std::chrono::system_clock::now() >= m_MusicFadeOutStartTime ? -1.0f : 1.0f; // Negative if fading out, positive if fading in
-		m_CurrentTrack.PlayingAudio->AddVolumeThenClamp(fadeDirection * FadeSpeed * dt, MinVolume, MaxVolume);
+		m_CurrentTrack.PlayingAudio->AddVolumeThenClamp(fadeDirection * m_MusicFadeSpeed * dt, m_MinVolume, m_MaxVolume);
 	}
 }
