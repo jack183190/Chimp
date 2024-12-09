@@ -10,6 +10,7 @@
 #include "api/ecs/Components.h"
 #include "api/networking/PacketTypeRegistry.h"
 #include "api/graphics/GameShader.h"
+#include "api/audio/IPlayingAudio.h"
 
 // Utils
 #include "api/files/yaml/YAMLBlockParser.h"

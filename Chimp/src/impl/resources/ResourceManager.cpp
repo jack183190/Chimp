@@ -14,7 +14,8 @@ namespace Chimp {
 		m_Textures(engine),
 		m_Models(engine),
 		m_Sprites(engine, m_Textures),
-		m_Images(engine)
+		m_Images(engine),
+		m_Sounds(engine)
 	{
 		InitModelImporter();
 	}
@@ -24,7 +25,7 @@ namespace Chimp {
 		return m_Shaders;
 	}
 
-	ResourceContainer<std::string, ITexture>& ResourceManager::GetTextures()
+	ResourceContainer<TextureResourcePath, ITexture>& ResourceManager::GetTextures()
 	{
 		return m_Textures;
 	}
@@ -36,14 +37,18 @@ namespace Chimp {
 		return m_Models;
 	}
 
-	SpriteResourceContainer& ResourceManager::GetSprites()
+	ResourceContainer<TextureResourcePath, Mesh>& ResourceManager::GetSprites()
 	{
 		return m_Sprites;
 	}
 
-	ImageResourceContainer& ResourceManager::GetImages()
+	ResourceContainer<ImageResourcePath, IImageLoader::LoadedImage>& ResourceManager::GetImages()
 	{
 		return m_Images;
+	}
+
+	ResourceContainer<SoundResourcePath, ISound>& ResourceManager::GetSounds() {
+		return m_Sounds;
 	}
 
 	MeshStorage& ResourceManager::GetMeshStorage()
@@ -61,6 +66,10 @@ namespace Chimp {
 		m_Models.m_ModelImporter = m_ModelImporter.get();
 	}
 
+	void ResourceManager::Update() {
+		m_Sounds.Update();
+	}
+
 	void ResourceManager::UnloadUnusedResources()
 	{
 		m_Shaders.UnloadUnused();
@@ -68,8 +77,9 @@ namespace Chimp {
 		m_Textures.UnloadUnused();
 		m_Models.UnloadUnused();
 		m_Images.UnloadUnused();
+		m_Sounds.UnloadUnused();
 	}
-	
+
 	void ResourceManager::LoadRequiredResources()
 	{
 		m_Shaders.LoadDependencies();
@@ -77,5 +87,6 @@ namespace Chimp {
 		m_Textures.LoadDependencies();
 		m_Models.LoadDependencies();
 		m_Images.LoadDependencies();
+		m_Sounds.LoadDependencies();
 	}
 }

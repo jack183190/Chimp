@@ -16,6 +16,8 @@
 #include "api/utils/ImGuiHelper.h"
 #include "api/files/yaml/YAMLSerialiser.h"
 #include "api/utils/Random.h"
+#include "api/audio/AudioManager.h"
+#include "api/audio/music/MusicPlayer.h"
 
 namespace Chimp {
 	class EntryPoint;
@@ -37,6 +39,8 @@ namespace Chimp {
 		[[nodiscard]] ImGuiHelper& GetImGuiHelper();
 		[[nodiscard]] YAMLSerialiser& GetYAMLSerialiser();
 		[[nodiscard]] Random& GetRandom();
+		[[nodiscard]] AudioManager& GetAudioManager();
+		[[nodiscard]] MusicPlayer& GetMusicPlayer();
 
 		// Task scheduler for running tasks at specific times
 		// You must update it once per frame
@@ -75,5 +79,7 @@ namespace Chimp {
 		ImGuiHelper m_ImGuiHelper;
 		YAMLSerialiser m_YAMLSerialiser;
 		Random m_Random;
+		std::unique_ptr<AudioManager> m_AudioManager;
+		MusicPlayer m_MusicPlayer;
 	};
 }

@@ -29,7 +29,7 @@ namespace Chimp::Loggers {
 
 	static Logger& WaveManager()
 	{
-		static Logger logger("ChimpWaveManager", LogLevel::INFO);
+		static Logger logger("ChimpWaveManager", LogLevel::WARNING);
 		return logger;
 	}
 
@@ -41,7 +41,13 @@ namespace Chimp::Loggers {
 
 	static Logger& YAML()
 	{
-		static Logger logger("ChimpYAML", LogLevel::INFO);
+		static Logger logger("ChimpYAML", LogLevel::WARNING);
+		return logger;
+	}
+
+	static Logger& Audio()
+	{
+		static Logger logger("ChimpAudio", LogLevel::INFO);
 		return logger;
 	}
 }

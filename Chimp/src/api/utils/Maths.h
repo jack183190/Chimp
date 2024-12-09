@@ -23,8 +23,6 @@ namespace Chimp {
 	// Compare two floats for equality, supports floating point error
 	[[nodiscard]] bool FloatEqual(float a, float b);
 
-	typedef glm::mat4x4 Matrix;
-
 #pragma region Types
 #pragma region Vectors
 	struct Vector2f : public YAMLSerialisable {
@@ -533,6 +531,8 @@ namespace Chimp {
 	};
 
 #pragma endregion
+
+	typedef glm::mat4x4 Matrix;
 #pragma endregion
 
 	constexpr float PI = glm::pi<float>();
@@ -661,36 +661,6 @@ namespace Chimp {
 		}
 	};
 
-	// Lerp between two values
-	// a - The start value
-	// b - The end value
-	// t - The interpolation value
-	// Clamps t to 0 and 1
-	inline float Lerp(float a, float b, float t) {
-		return a + t * (b - a);
-	}
-	inline	Vector2f Lerp(Vector2f a, Vector2f b, float t) {
-		return Vector2f(
-			Lerp(a.x, b.x, t),
-			Lerp(a.y, b.y, t)
-		);
-	}
-	inline Vector3f Lerp(Vector3f a, Vector3f b, float t) {
-		return Vector3f(
-			Lerp(a.x, b.x, t),
-			Lerp(a.y, b.y, t),
-			Lerp(a.z, b.z, t)
-		);
-	}
-	inline Vector4f Lerp(Vector4f a, Vector4f b, float t) {
-		return Vector4f(
-			Lerp(a.x, b.x, t),
-			Lerp(a.y, b.y, t),
-			Lerp(a.z, b.z, t),
-			Lerp(a.w, b.w, t)
-		);
-	}
-
 	// Get distance between two points
 	inline float GetDistanceBetween(float a, float b) {
 		return std::abs(a - b);
@@ -751,8 +721,11 @@ namespace Chimp {
 	}
 
 	// Returns minimum components of two values (e.g (2,3) and (1,4) would return (1,3))
-	inline float ComponentMin(float a, float b) {
+	inline float Min(float a, float b) {
 		return std::min(a, b);
+	}
+	inline float ComponentMin(float a, float b) {
+		return Min(a, b);
 	}
 	inline Vector2f ComponentMin(Vector2f a, Vector2f b) {
 		return Vector2f(
@@ -777,8 +750,11 @@ namespace Chimp {
 	}
 
 	// Returns maximum components of two values
-	inline float ComponentMax(float a, float b) {
+	inline float Max(float a, float b) {
 		return std::max(a, b);
+	}
+	inline float ComponentMax(float a, float b) {
+		return Max(a, b);
 	}
 	inline Vector2f ComponentMax(Vector2f a, Vector2f b) {
 		return Vector2f(
@@ -830,8 +806,11 @@ namespace Chimp {
 	}
 
 	// Clamp components of a value between a minimum and maximum
-	inline float ComponentClamp(float value, float min, float max) {
+	inline float Clamp(float value, float min, float max) {
 		return value < min ? min : value > max ? max : value;
+	}
+	inline float ComponentClamp(float value, float min, float max) {
+		return Clamp(value, min, max);
 	}
 	inline Vector2f ComponentClamp(Vector2f value, Vector2f min, Vector2f max) {
 		return Vector2f(
@@ -853,6 +832,53 @@ namespace Chimp {
 			ComponentClamp(value.z, min.z, max.z),
 			ComponentClamp(value.w, min.w, max.w)
 		);
+	}
+
+	// Lerp between two values
+	// a - The start value
+	// b - The end value
+	// t - The interpolation value
+	// Clamps t to 0 and 1
+	inline float Lerp(float a, float b, float t) {
+		return a + t * (b - a);
+	}
+	inline Vector2f Lerp(Vector2f a, Vector2f b, float t) {
+		return Vector2f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t)
+		);
+	}
+	inline Vector3f Lerp(Vector3f a, Vector3f b, float t) {
+		return Vector3f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t),
+			Lerp(a.z, b.z, t)
+		);
+	}
+	inline Vector4f Lerp(Vector4f a, Vector4f b, float t) {
+		return Vector4f(
+			Lerp(a.x, b.x, t),
+			Lerp(a.y, b.y, t),
+			Lerp(a.z, b.z, t),
+			Lerp(a.w, b.w, t)
+		);
+	}
+
+	// Inverse lerp between two values
+	// a - The start value
+	// b - The end value
+	// value - The value to find the interpolation value of (%, ranged 0 to 1)
+	inline float InverseLerp(float a, float b, float value) {
+		return (b - a) == 0.0f ? 1.0f : Clamp((value - a) / (b - a), 0.0f, 1.0f);
+	}
+	inline float InverseLerp(Vector2f a, Vector2f b, Vector2f value) {
+		return Min(InverseLerp(a.x, b.x, value.x), InverseLerp(a.y, b.y, value.y));
+	}
+	inline float InverseLerp(Vector3f a, Vector3f b, Vector3f value) {
+		return Min(InverseLerp(a.x, b.x, value.x), Min(InverseLerp(a.y, b.y, value.y), InverseLerp(a.z, b.z, value.z)));
+	}
+	inline float InverseLerp(Vector4f a, Vector4f b, Vector4f value) {
+		return Min(InverseLerp(a.x, b.x, value.x), Min(InverseLerp(a.y, b.y, value.y), Min(InverseLerp(a.z, b.z, value.z), InverseLerp(a.w, b.w, value.w))));
 	}
 
 	// Find closest position to a target

@@ -36,6 +36,15 @@ MenuScene::~MenuScene()
 
 }
 
+Chimp::MusicTracksContainer container1({
+	GAME_SRC + std::string("/music1.wav"),
+	GAME_SRC + std::string("/test.wav")
+	});
+
+Chimp::MusicTracksContainer container2({
+	GAME_SRC + std::string("/music2.wav")
+	});
+
 void MenuScene::OnInit()
 {
 
@@ -52,6 +61,13 @@ void MenuScene::OnDeactivate()
 
 void MenuScene::OnUpdate()
 {
+	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::O)) {
+		m_Engine.GetMusicPlayer().SwitchMusic(container1);
+	}
+	else if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::P)) {
+		m_Engine.GetMusicPlayer().SwitchMusic(container2);
+	}
+
 	if (!Networking::GetClient()->IsConnected()) return;
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
 
@@ -59,7 +75,6 @@ void MenuScene::OnUpdate()
 		std::string map = m_MapList.StringArrays["Files"][clientHandlers.CurrentMatchHandler->GetMapFileIndex()];
 		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<GameScene>(m_Engine, m_GameShader, map));
 	}
-
 }
 
 void MenuScene::OnRender()

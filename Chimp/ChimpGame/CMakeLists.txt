@@ -14,6 +14,7 @@ target_include_directories(ChimpGame PUBLIC "src/")
 
 # Include chimp
 add_compile_definitions(CHIMP_FLECS=1)
+add_compile_definitions(CHIMP_LIBSNDFILE=1)
 target_include_directories(ChimpGame PUBLIC "../src/")
 target_link_libraries(ChimpGame PRIVATE imgui)
 target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
