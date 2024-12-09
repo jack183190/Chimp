@@ -7,21 +7,11 @@ namespace Chimp {
 	{
 	}
 
-	const std::string& MusicTracksContainer::GetRandomTrack(Chimp::Random& random) 
+	const std::string& MusicTracksContainer::GetRandomTrack(Chimp::Random& random) const
 	{
 		assert(!IsEmpty());
-		int pickedIndex = 0;
-		
-		if (m_TrackList.size() > 1) {
-			// Don't pick the same track twice in a row
-			pickedIndex = random.GetRandomInt(0, m_TrackList.size() - 1);
-			if (pickedIndex == m_LastPickedIndex) {
-				pickedIndex = (pickedIndex + 1) % m_TrackList.size();
-			}
-			m_LastPickedIndex = pickedIndex;
-		}
 
-		return m_TrackList[pickedIndex];
+		return m_TrackList[random.GetRandomInt(0, m_TrackList.size() - 1)];
 	}
 
 	const std::vector<std::string>& MusicTracksContainer::GetTrackList() const

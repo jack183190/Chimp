@@ -37,7 +37,8 @@ MenuScene::~MenuScene()
 }
 
 Chimp::MusicTracksContainer container1({
-	GAME_SRC + std::string("/music1.wav")
+	GAME_SRC + std::string("/music1.wav"),
+	GAME_SRC + std::string("/test.wav")
 	});
 
 Chimp::MusicTracksContainer container2({

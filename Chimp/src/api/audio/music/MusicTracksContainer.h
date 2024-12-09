@@ -10,7 +10,7 @@ namespace Chimp {
 		MusicTracksContainer(const std::vector<std::string>& trackList);
 		MusicTracksContainer(const MusicTracksContainer& other) = default;
 
-		[[nodiscard]] const std::string& GetRandomTrack(Chimp::Random& random) ;
+		[[nodiscard]] const std::string& GetRandomTrack(Chimp::Random& random) const;
 
 		[[nodiscard]] const std::vector<std::string>& GetTrackList() const;
 
@@ -20,6 +20,5 @@ namespace Chimp {
 		
 	private:
 		std::vector<std::string> m_TrackList;
-		int m_LastPickedIndex = 0;
 	};
 }

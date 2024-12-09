@@ -20,6 +20,7 @@ namespace Chimp {
 		Loggers::Audio().Info(std::format("Switching music tracks container"));
 
 		m_TracksContainer = tracksContainer;
+		m_MusicFadeOutStartTime = std::chrono::system_clock::now();
 		m_NextTrack.Reset();
 
 		if (HasTracks()) {
@@ -64,15 +65,12 @@ namespace Chimp {
 		else {
 			m_CurrentTrack.Sound = m_Engine.GetAudioManager().LoadSound(m_TracksContainer->GetRandomTrack(m_Engine.GetRandom()));
 			m_CurrentTrack.PlayingAudio.reset();
-			Loggers::Audio().Info(std::format("Loaded new current track"));
 		}
 
-		m_CurrentTrack.PlayingAudio = m_CurrentTrack.Sound->Play(m_Position, m_Velocity, m_Pitch, GetStartingVolume());
+		m_CurrentTrack.PlayingAudio = m_CurrentTrack.Sound->Play(m_Position, m_Velocity, 1.0f, GetStartingVolume());
 
-		const auto trackDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<float>(m_CurrentTrack.Sound->GetDurationSeconds()));
+		const auto trackDuration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::duration<float>(m_CurrentTrack.Sound->GetDurationSeconds()));
 		m_MusicFadeOutStartTime = std::chrono::system_clock::now() + trackDuration - std::chrono::milliseconds((int)GetMillisToFade());
-
-		Loggers::Audio().Info(std::format("Playing new track"));
 	}
 
 	void MusicPlayer::EnsureTracksLoaded()

@@ -68,9 +68,8 @@ namespace Chimp {
 		Music m_NextTrack;
 		float MinVolume = 0;
 		float MaxVolume = 1;
-		std::chrono::system_clock::time_point m_MusicFadeOutStartTime;
+		std::chrono::system_clock::time_point m_MusicFadeOutStartTime; // Time stamp which fading out has or should start
 		Vector3f m_Position = { 0, 0, 0 };
 		Vector3f m_Velocity = { 0, 0, 0 };
-		float m_Pitch = 1.0f;
 	};
 }
