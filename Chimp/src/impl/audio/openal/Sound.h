@@ -9,7 +9,9 @@ namespace Chimp {
 		Sound(std::unique_ptr<IAudioImporter::AudioData> data) :
 			ISound(std::move(data)) {
 			alGenBuffers(1, &m_Id);
+			CHECK_AL_ERROR();
 			alBufferData(m_Id, m_Data->Format, m_Data->Data.data(), m_Data->Data.size() * sizeof(short), m_Data->Frequency);
+			CHECK_AL_ERROR();
 		}
 
 		virtual ~Sound() {
@@ -18,15 +20,17 @@ namespace Chimp {
 			}
 
 			alDeleteBuffers(1, &m_Id);
+			CHECK_AL_ERROR();
 		}
 
 		std::shared_ptr<IPlayingAudio> Play(
 			Vector3f position,
 			Vector3f velocity,
 			float pitch,
-			float gain
+			float gain,
+			bool looping
 		) override {
-			m_PlayingAudios.push_back(std::make_shared<PlayingAudio>(m_Id, position, velocity, pitch, gain));
+			m_PlayingAudios.push_back(std::make_shared<PlayingAudio>(m_Id, position, velocity, pitch, gain, looping));
 			return m_PlayingAudios.back();
 		}
 
@@ -36,8 +40,6 @@ namespace Chimp {
 
 		void Update() override {
 			std::erase_if(m_PlayingAudios, [](const std::shared_ptr<IPlayingAudio>& audio) {
-				std::cout << "use count: " << audio.use_count() << std::endl;
-				std::cout << "is playing: " << audio->IsPlaying() << std::endl;
 				return audio.use_count() <= 1 && !audio->IsPlaying();
 				});
 		}

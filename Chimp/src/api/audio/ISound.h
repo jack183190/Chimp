@@ -22,12 +22,14 @@ namespace Chimp {
 		// velocity - The velocity of the sound
 		// pitch - The pitch of the sound
 		// gain - The gain of the sound
+		// looping - If the sound should loop
 		// returns a shared ptr to the playing audio, this can be used to modify the audio while it is playing (e.g change pitch)
 		[[nodiscard]] virtual std::shared_ptr<IPlayingAudio> Play(
 			Vector3f position,
 			Vector3f velocity = {0,0,0},
 			float pitch = 1.0f,
-			float gain = 1.0f
+			float gain = 1.0f,
+			bool looping = false
 		) = 0;
 
 		// Check if any sounds are playing
