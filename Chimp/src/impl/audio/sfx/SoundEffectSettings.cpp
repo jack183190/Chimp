@@ -1,4 +1,5 @@
 #include "audio/sfx/SoundEffectSettings.h"
+#include "api/utils/FilePath.h"
 
 namespace Chimp {
 	SoundEffectSettings::SoundEffectSettings(const std::vector<std::string>& soundFiles, 
@@ -10,6 +11,13 @@ namespace Chimp {
 		m_MinPitch(minPitch),
 		m_MaxPitch(maxPitch)
 	{
+	}
+
+	void SoundEffectSettings::MakeFilesRelativeTo(std::string_view path)
+	{
+		for (size_t i = 0; i < m_SoundFiles.size(); i++) {
+			m_SoundFiles[i] = GetPathRelativeToFile(m_SoundFiles[i], path);
+		}
 	}
 
 	void SoundEffectSettings::Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const

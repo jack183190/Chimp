@@ -33,6 +33,14 @@ GameScene::GameScene(Chimp::Engine& engine,
 	LoadModels();
 
 	m_GameRunningTimer.Start();
+
+	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
+	GAME_SRC + std::string("/assets/music/game.wav"),
+	GAME_SRC + std::string("/assets/music/game2.wav")
+	} });
+
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/assets/sounds/bloon.yml"));
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/assets/sounds/place.yml"));
 }
 
 GameScene::~GameScene()

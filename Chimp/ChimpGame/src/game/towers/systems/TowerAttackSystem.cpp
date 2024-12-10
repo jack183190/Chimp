@@ -35,7 +35,7 @@ void TowerAttackSystem::Update()
 				m_ECS,
 				m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + std::string("/assets/textures/Dart.png")),
 				Chimp::Vector2f(transform.GetTranslation()),
-				Chimp::ComponentMultiply(Chimp::VectorNormalized(direction), { 100, 100 }),
+				Chimp::VectorNormalized(direction) * DEBUG_PROJECTILE_SPEED_MULTIPLIER,
 				upgrades.GetDamage(tower.AttackDamage),
 				angle - Chimp::PI / 2
 			);

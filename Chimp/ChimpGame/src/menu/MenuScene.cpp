@@ -13,6 +13,13 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	m_Engine.GetWindow().SetSize({ 1280, 720 });
 	m_Engine.GetWindow().SetResizable(true);
 
+	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
+		GAME_SRC + std::string("/assets/music/menu.wav")
+		} });
+	m_Engine.GetMusicPlayer().SetVolumeRange(0.0f, 0.25f);
+
+	m_Engine.GetAudioManager().GetListener().SetPosition((Chimp::Vector3f)m_Engine.GetWindow().GetSize() / 2.0f);
+
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
 	if (shader == nullptr) {
@@ -29,8 +36,6 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 		Networking::GetServer()->Shutdown();
 		Networking::GetClient()->Disconnect();
 	}
-
-	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/test.yml"));
 }
 
 MenuScene::~MenuScene()
@@ -53,11 +58,6 @@ void MenuScene::OnDeactivate()
 
 void MenuScene::OnUpdate()
 {
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::O)) {
-		auto& sfx = m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_SRC + std::string("/test.yml"));
-		sfx.Play();
-	}
-
 	if (!Networking::GetClient()->IsConnected()) return;
 	auto& clientHandlers = Networking::GetClient()->GetHandlers();
 

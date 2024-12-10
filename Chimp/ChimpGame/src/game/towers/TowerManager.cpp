@@ -32,6 +32,8 @@ Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f positio
 {
 	position += m_SimulationPosition;
 
+	m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_SRC + std::string("/assets/sounds/place.yml")).Play({position.x, -position.y, 0.0f});
+
 	switch (type) {
 	case TOWER_TYPE_DART_MONKEY:
 		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModels().Get(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj"), position);

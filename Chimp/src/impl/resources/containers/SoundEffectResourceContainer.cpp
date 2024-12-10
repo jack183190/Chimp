@@ -19,6 +19,7 @@ namespace Chimp {
 		assert(!path.empty());
 
 		auto settings = UNIQUE_PTR_CAST_AND_MOVE(SoundEffectSettings, engine.GetYAMLSerialiser().ReadFromFile(std::filesystem::path(path)));
+		settings->MakeFilesRelativeTo(path);
 		return Resource<SoundEffect>(std::make_unique<SoundEffect>(engine.GetRandom(), soundResourceContainer, *settings));
 	}
 
