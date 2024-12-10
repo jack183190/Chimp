@@ -60,6 +60,21 @@ namespace Chimp {
 			return m_IsValid && m_SoundId != 0 && m_SourceId != 0;
 		}
 
+		void Pause() override {
+			alSourcePause(m_SourceId);
+			CHECK_AL_ERROR();
+		}
+
+		void Resume() override {
+			alSourcePlay(m_SourceId);
+			CHECK_AL_ERROR();
+		}
+
+		void Stop() override {
+			alSourceStop(m_SourceId);
+			CHECK_AL_ERROR();
+		}
+
 		void SetPitch(float pitch) override {
 			m_Pitch = pitch;
 #ifndef NDEBUG

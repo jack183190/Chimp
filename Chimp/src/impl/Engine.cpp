@@ -19,6 +19,7 @@
 
 #include "api/networking/PacketTypeRegistry.h"
 #include "Loggers.h"
+#include "api/audio/sfx/SoundEffect.h"
 
 namespace Chimp {
 	Engine::Engine() :
@@ -35,6 +36,7 @@ namespace Chimp {
 		PacketTypeRegistry::RegisterChimpPacketTypes();
 
 		RegisterYAMLSerialisableMathsTypes(m_YAMLSerialiser);
+		m_YAMLSerialiser.RegisterSerialisable<SoundEffectSettings>("SoundEffectSettings", SoundEffectSettings::Deserialise);
 
 		Loggers::Main().Info("Initialized Chimp Engine!");
 	}

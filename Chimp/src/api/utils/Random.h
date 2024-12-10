@@ -9,14 +9,20 @@ namespace Chimp {
 			: m_RandomEngine(seed) {}
 
 		// Returns a random int between min (inclusive) and max (exclusive)
-		[[nodiscard]] int GetRandomInt(int min, int max) {
+		[[nodiscard]] int GetRandomIntExclusive(int min, int max) {
+			assert(min < max);
+			return std::uniform_int_distribution<int>(min, max - 1)(m_RandomEngine);
+		}
+
+		// Returns a random int between min (inclusive) and max (inclusive)
+		[[nodiscard]] int GetRandomIntInclusive(int min, int max) {
 			assert(min <= max);
 			return std::uniform_int_distribution<int>(min, max)(m_RandomEngine);
 		}
 
-		// Returns a random float between min (inclusive) and max (exclusive)
-		[[nodiscard]] float GetRandomFloat(float min, float max) {
-			assert(min <= max);
+		// Returns a random float between min (inclusive) and max (inclusive)
+		[[nodiscard]] float GetRandomFloatInclusive(float min, float max) {
+			assert(min < max);
 			return std::uniform_real_distribution<float>(min, max)(m_RandomEngine);
 		}
 
