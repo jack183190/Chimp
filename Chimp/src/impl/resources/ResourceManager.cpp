@@ -48,7 +48,7 @@ namespace Chimp {
 		return m_Images;
 	}
 
-	ResourceContainer<SoundResourcePath, ISound>& ResourceManager::GetSounds() {
+	ResourceContainer<SoundResourcePath, ISound>& ResourceManager::GetBasicSounds() {
 		return m_Sounds;
 	}
 

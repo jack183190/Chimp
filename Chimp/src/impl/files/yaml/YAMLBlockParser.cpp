@@ -152,7 +152,7 @@ namespace Chimp {
 			// Parse remaining items now we know the map to use
 		for (auto iter = begin + 1; iter < end; ++iter) {
 			if (!IsListElement(*iter)) {
-				break;
+				return iter;
 			}
 			std::string_view value = GetValue(*iter);
 

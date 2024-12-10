@@ -42,8 +42,10 @@ namespace Chimp {
 		// Stores images (cpu side) - not used for rendering!
 		[[nodiscard]] ResourceContainer<ImageResourcePath, IImageLoader::LoadedImage>& GetImages();
 
-		// Stores audio files
-		[[nodiscard]] ResourceContainer<SoundResourcePath, ISound>& GetSounds();
+		// Stores audio files, you probably don't need this.
+		// For music, use a MusicPlayer
+		// For sound effects, use the sound effects container (this allows multiple sounds per effect, random pitch, and more)
+		[[nodiscard]] ResourceContainer<SoundResourcePath, ISound>& GetBasicSounds();
 
 		// Stores sound effects
 		[[nodiscard]] SoundEffectResourceContainer& GetSoundEffects();
