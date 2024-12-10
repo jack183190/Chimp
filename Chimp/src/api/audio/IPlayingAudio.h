@@ -27,6 +27,10 @@ namespace Chimp {
 		virtual bool IsPlaying() const = 0;
 		virtual bool IsValid() const = 0;
 
+		virtual void Pause() = 0;
+		virtual void Resume() = 0;
+		virtual void Stop() = 0;
+
 		// Pitch (range 0.5 - 2.0)
 		virtual void SetPitch(float pitch) = 0;
 

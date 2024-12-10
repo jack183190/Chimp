@@ -97,7 +97,7 @@ void MatchHandler::StartMatch(int player1, int player2)
 		m_MatchSet.AddMatch(match);
 	}
 
-	int mapIndex = m_Engine.GetRandom().GetRandomInt(0, MapCount - 1);
+	int mapIndex = m_Engine.GetRandom().GetRandomIntExclusive(0, MapCount - 1);
 
 	// Send match start packet to both players
 	ClientMatchStartPacket matchStartPacket;

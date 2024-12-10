@@ -29,6 +29,8 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 		Networking::GetServer()->Shutdown();
 		Networking::GetClient()->Disconnect();
 	}
+
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/test.yml"));
 }
 
 MenuScene::~MenuScene()
@@ -36,18 +38,8 @@ MenuScene::~MenuScene()
 
 }
 
-Chimp::MusicTracksContainer container1({
-	GAME_SRC + std::string("/music1.wav"),
-	GAME_SRC + std::string("/test.wav")
-	});
-
-Chimp::MusicTracksContainer container2({
-	GAME_SRC + std::string("/music2.wav")
-	});
-
 void MenuScene::OnInit()
 {
-
 }
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
@@ -62,10 +54,8 @@ void MenuScene::OnDeactivate()
 void MenuScene::OnUpdate()
 {
 	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::O)) {
-		m_Engine.GetMusicPlayer().SwitchMusic(container1);
-	}
-	else if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::P)) {
-		m_Engine.GetMusicPlayer().SwitchMusic(container2);
+		auto& sfx = m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_SRC + std::string("/test.yml"));
+		sfx.Play();
 	}
 
 	if (!Networking::GetClient()->IsConnected()) return;

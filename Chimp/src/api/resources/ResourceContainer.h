@@ -1,15 +1,9 @@
 #pragma once
 
 #include "Resource.h"
-#include "api/graphics/shaders/ShaderTypes.h"
+#include "ResourcePaths.h"
 
 namespace Chimp {
-	typedef std::string TextureResourcePath;
-	typedef std::string ImageResourcePath;
-	typedef ShaderFilePaths ShaderResourcePath;
-	typedef std::string ModelResourcePath;
-	typedef std::string SoundResourcePath;
-
 	template <typename K, typename T>
 	class ResourceContainer {
 	public:
