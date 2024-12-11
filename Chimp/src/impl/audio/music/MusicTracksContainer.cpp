@@ -11,7 +11,7 @@ namespace Chimp {
 	{
 		assert(!IsEmpty());
 
-		return m_TrackList[random.GetRandomIntExclusive(0, m_TrackList.size() - 1)];
+		return m_TrackList[random.GetRandomIntExclusive(0, m_TrackList.size())];
 	}
 
 	const std::vector<std::string>& MusicTracksContainer::GetTrackList() const

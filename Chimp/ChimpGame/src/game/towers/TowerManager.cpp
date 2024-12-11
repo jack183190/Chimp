@@ -1,5 +1,6 @@
 #include "TowerManager.h"
 #include "Logger.h"
+#include "menu/Settings.h"
 
 TowerManager::TowerManager(
 	Chimp::Engine& engine,
@@ -31,6 +32,8 @@ void TowerManager::RenderUI()
 Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f position)
 {
 	position += m_SimulationPosition;
+
+	m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_SRC + std::string("/assets/sounds/place.yml")).Play({ position.x, -position.y, 0.0f }, {}, Settings::SoundVolume);
 
 	switch (type) {
 	case TOWER_TYPE_DART_MONKEY:

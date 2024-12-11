@@ -53,6 +53,13 @@ namespace Chimp {
 	{
 		m_MinVolume = minVolume;
 		m_MaxVolume = Max(maxVolume, minVolume);
+		if (m_MaxVolume <= 0.01) {
+			m_MaxVolume = 0.0f;
+			m_MinVolume = 0.0f;
+			if (m_CurrentTrack.PlayingAudio) {
+				m_CurrentTrack.PlayingAudio->SetVolume(0.0f);
+			}
+		}
 	}
 
 	void MusicPlayer::SetMusicFadeSpeed(float fadeSpeed)
@@ -118,7 +125,7 @@ namespace Chimp {
 			auto sound = m_Engine.GetAudioManager().LoadSound(m_TracksContainer->GetRandomTrack(m_Engine.GetRandom()));
 			timer.Stop();
 			Loggers::Audio().Info(std::format("Loaded next music track in {}s", timer.GetSecondsElapsed()));
-			
+
 			std::lock_guard lock(m_NextTrackWriteMutex);
 			if (m_NextTrackLoadId == loadId) { // double check we still need it
 				m_NextTrack.Sound = std::move(sound);
@@ -134,7 +141,7 @@ namespace Chimp {
 
 	void MusicPlayer::Update()
 	{
-		if (!HasTracks()) return;
+		if (!HasTracks() || m_MaxVolume <= 0) return;
 
 		// Update sounds
 		if (m_CurrentTrack.Sound) m_CurrentTrack.Sound->Update();

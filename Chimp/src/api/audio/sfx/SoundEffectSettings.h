@@ -10,8 +10,13 @@ namespace Chimp {
 	public:
 		SoundEffectSettings(const std::vector<std::string>& soundFiles, int maxSimultaneousSounds, float minPitch, float maxPitch);
 
+		// Make all files relative to the given path unless they are already absolute paths
+		// see GetPathRelativeToFile
+		void MakeFilesRelativeTo(std::string_view path);
+
 		void Serialise(YAMLBlock& block, const SerialiseChildFunc& serialiseChild) const override;
 
+		// If not using chimp resource manager, make sure your paths are correct (might need to call MakeFilesRelativeTo)
 		static std::unique_ptr<SoundEffectSettings> Deserialise(const YAMLBlock& block, const DeserialiseChildFunc& deserialiseChild);
 
 		[[nodiscard]] const std::vector<std::string>& GetSoundFiles() const;

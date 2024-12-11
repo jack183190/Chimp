@@ -1,8 +1,0 @@
-_type: SoundEffectSettings
-Files:
- - C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/music1.wav
- - C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/music2.wav
- - C:/Coding/Uni/CMP316/Chimp/Chimp/ChimpGame/short.wav
-MaxSimultaneousSounds: 2
-MinPitch: 0.5
-MaxPitch: 2.0
