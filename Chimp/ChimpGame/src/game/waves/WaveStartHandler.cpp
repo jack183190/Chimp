@@ -7,7 +7,7 @@ WaveStartHandler::WaveStartHandler(Chimp::WaveManager& playerWaveManager,
 	m_OpponentWaveManager(opponentWaveManager)
 {
 	m_PlayerWaveManager.AddWaveFinishedCallback([this, &scheduler](unsigned int waveIndex) {
-		scheduler.RunDelayedTask(10.0f, [this, waveIndex]() {
+		scheduler.RunDelayedTask(5.0f, [this, waveIndex]() {
 			ServerWaveEndPacket packet = {};
 			packet.PacketType = Networking::SERVER_WAVE_END;
 			packet.MatchId = Networking::GetClient()->GetHandlers().CurrentMatchHandler->GetMatchId();

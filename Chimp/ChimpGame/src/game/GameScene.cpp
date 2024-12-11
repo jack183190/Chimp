@@ -28,7 +28,7 @@ GameScene::GameScene(Chimp::Engine& engine,
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameShader);
 
-	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager, *m_TaskScheduler);
+	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager, *m_TaskScheduler, m_PlayerSimulation->GetWaveManager());
 
 	LoadModels();
 
@@ -110,7 +110,7 @@ void GameScene::OnRenderUI()
 
 	ImGui::SetWindowFontScale(2.5f);
 	ImGui::SetCursorPosY(100);
-	m_Engine.GetImGuiHelper().CenteredTextHorizontally(std::format("Wave: {}", m_PlayerSimulation->GetWaveManager().GetWave()));
+	m_Engine.GetImGuiHelper().CenteredTextHorizontally(std::format("Wave: {} / {}", Chimp::Min(m_PlayerSimulation->GetWaveManager().GetWave(), m_PlayerSimulation->GetWaveManager().NumWaves()), m_PlayerSimulation->GetWaveManager().NumWaves()));
 	ImGui::SetWindowFontScale(2.0f);
 	m_Engine.GetImGuiHelper().CenteredTextHorizontally(m_Engine.GetTimeManager().FormatTime(m_GameRunningTimer.GetSecondsElapsed()));
 	m_Engine.GetImGuiHelper().CenteredTextHorizontally(std::format("${} (+${}/{}s)", m_MoneyManager.GetMoney(), m_MoneyManager.GetIncome(), MoneyManager::IncomeInterval));

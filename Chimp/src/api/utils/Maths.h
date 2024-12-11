@@ -675,6 +675,11 @@ namespace Chimp {
 		return glm::distance((glm::vec4)a, (glm::vec4)b);
 	}
 
+	// Power
+	inline float Power(float base, float exponent) {
+		return std::pow(base, exponent);
+	}
+
 	// Get squared distance between two points
 	inline float GetSquaredDistanceBetween(float a, float b) {
 		return (a - b) * (a - b);

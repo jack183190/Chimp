@@ -9,12 +9,10 @@ namespace Waves
 	public:
 		Wave1(BloonManager& bloonManager)
 			: GameWave(bloonManager) {
-			Delay(1.0f);
-			MultipleBloons(Bloons::BloonType::RED, 0.25f, 4);
-			Delay(1.0f);
-			SingleBloon(Bloons::BloonType::BLUE);
-			Delay(0.25f);
-			SingleBloon(Bloons::BloonType::GREEN);
+			Delay(8);
+			MultipleBloons(Bloons::BloonType::RED, 1.0f, 5);
+			Delay(5);
+			MultipleBloons(Bloons::BloonType::RED, 1.0f, 20);
 		}
 	};
 }

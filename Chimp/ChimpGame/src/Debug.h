@@ -7,7 +7,7 @@
 //#define DEBUG_AUTOSTART_WITH_1_PLAYER 0 // Starts the game even if only one player connected (by sending a fake start packet)
 
 //#define DEBUG_DISABLE_WAVE_SPAWNING 0
-//#define DEBUG_LOTS_OF_LIVES 0
+#define DEBUG_LOTS_OF_LIVES 0
 
 // Keep these always
 #define DEBUG_BLOON_SPEED_MULTIPLIER 1.0f

@@ -14,11 +14,11 @@ struct UpgradableComponent {
 	}
 
 	float GetAttackSpeedMultiplier() const {
-		return 1.0f + 0.1f * NumAttackSpeedUpgrades;
+		return Chimp::Power(1.5f, NumAttackSpeedUpgrades);
 	}
 
 	int GetDamageUpgradeCost() const {
-		return 250 * (NumDamageUpgrades + 1);
+		return 50 * (NumDamageUpgrades + 1);
 	}
 
 	int GetDamage(int base) const {

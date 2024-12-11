@@ -10,7 +10,8 @@ public:
 	BloonSpawner(Chimp::Engine& engine, 
 		BloonManager& opponentBloonManager,
 		MoneyManager& moneyManager,
-		Chimp::TaskScheduler& taskScheduler);
+		Chimp::TaskScheduler& taskScheduler,
+		Chimp::WaveManager& waveManager);
 
 	void Update();
 	void RenderUI();
@@ -24,4 +25,5 @@ private:
 	float m_BloonSendsDisabledTime = 0;
 	MoneyManager& m_MoneyManager;
 	Chimp::TaskScheduler& m_TaskScheduler;
+	Chimp::WaveManager& m_WaveManager;
 };
