@@ -77,6 +77,7 @@ void MenuScene::OnRender()
 
 void MenuScene::OnRenderUI()
 {
+	ImGui::SetNextWindowPos({ 100, 100 });
 	ImGui::Begin("Networking", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 	// Host
 	static char buffer[256] = "";
@@ -152,6 +153,7 @@ void MenuScene::OnRenderUI()
 
 	ImGui::End();
 
+	ImGui::SetNextWindowPos({500, 100});
 	ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
 	m_Settings.RenderUI();

@@ -24,7 +24,7 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_OpponentSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager, m_CurrentMap);
 	m_PlayerSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager, m_CurrentMap);
 
-	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
+	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager(), *m_TaskScheduler);
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameShader);
 
