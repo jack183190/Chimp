@@ -1,4 +1,5 @@
 #include "TowerProjectileSystem.h"
+#include "menu/Settings.h"
 
 TowerProjectileSystem::TowerProjectileSystem(Chimp::Engine& engine,
 	Chimp::ECS& ecs,
@@ -51,7 +52,7 @@ void TowerProjectileSystem::Update()
 				if (Chimp::GetSquaredDistanceBetween({ projPos.x, projPos.y }, bloonPos) < damageRadiusSquared) {
 					auto& [bloon, bloonTransform, bloonId] = bloons.GetByIndex(i);
 					Bloons::DamageBloon(m_ECS, m_Engine, bloonId.Id, projectile.Damage);
-					m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_SRC + std::string("/assets/sounds/bloon.yml")).PlayForce({ bloonPos.x, -bloonPos.y, 0.0f });
+					m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_SRC + std::string("/assets/sounds/bloon.yml")).PlayForce({ bloonPos.x, -bloonPos.y, 0.0f }, {}, Settings::SoundVolume);
 					if (--projHealth.Health <= 0) {
 						break;
 					}

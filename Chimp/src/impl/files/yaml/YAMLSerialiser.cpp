@@ -44,10 +44,15 @@ namespace Chimp {
 		return block;
 	}
 
-	void YAMLSerialiser::WriteToFile(const YAMLSerialisable& serialsiable, const std::filesystem::path& path) const
+	void YAMLSerialiser::WriteToFile(const YAMLSerialisable& serialisable, const std::filesystem::path& path) const
 	{
-		YAMLBlock block = Serialise(serialsiable);
+		YAMLBlock block = Serialise(serialisable);
 		YAMLWriter::Write(block, path);
+	}
+
+	void YAMLSerialiser::Write(const YAMLBlock& root, const std::filesystem::path& path)
+	{
+		YAMLWriter::Write(root, path);
 	}
 
 	std::unique_ptr<YAMLSerialisable> YAMLSerialiser::ReadFromFile(const std::filesystem::path& path) const

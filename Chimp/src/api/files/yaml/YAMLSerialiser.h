@@ -43,7 +43,11 @@ namespace Chimp {
 		[[nodiscard]] YAMLBlock Serialise(const YAMLSerialisable& serialisable) const;
 
 		// Write a YAMLSerialisable to a file, overwrites existing contents
-		void WriteToFile(const YAMLSerialisable& serialsiable, const std::filesystem::path& path) const;
+		void WriteToFile(const YAMLSerialisable& serialisable, const std::filesystem::path& path) const;
+
+		// Writes the YAMLBlock to file, overwrites existing contents
+		// path - path to write to
+		void Write(const YAMLBlock& root, const std::filesystem::path& path);
 
 		// Read a YAMLSerialisable from a file
 		[[nodiscard]] std::unique_ptr<YAMLSerialisable> ReadFromFile(const std::filesystem::path& path) const;

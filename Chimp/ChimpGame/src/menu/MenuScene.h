@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "networking/Networking.h"
 
 class MenuScene : public Chimp::Scene {
@@ -24,4 +25,5 @@ private:
 	std::shared_ptr<Chimp::GameShader> m_GameShader;
 	Chimp::ConnectionInfo m_ConnectionInfo;
 	Chimp::YAMLBlock m_MapList;
+	Settings m_Settings;
 };

@@ -7,7 +7,8 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	std::shared_ptr<Chimp::GameShader> shader)
 	: m_Engine(engine),
 	m_ConnectionInfo({}),
-	m_MapList(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/maps/Maps.yml")).Data)
+	m_MapList(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/maps/Maps.yml")).Data),
+	m_Settings(engine)
 {
 	m_Engine.GetWindow().SetTitle("Chimp Challenge");
 	m_Engine.GetWindow().SetSize({ 1280, 720 });
@@ -16,7 +17,6 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
 		GAME_SRC + std::string("/assets/music/menu.wav")
 		} });
-	m_Engine.GetMusicPlayer().SetVolumeRange(0.0f, 0.25f);
 
 	m_Engine.GetAudioManager().GetListener().SetPosition((Chimp::Vector3f)m_Engine.GetWindow().GetSize() / 2.0f);
 
@@ -146,6 +146,12 @@ void MenuScene::OnRenderUI()
 	else {
 		ImGui::Text("Client is not connected");
 	}
+
+	ImGui::End();
+
+	ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+	m_Settings.RenderUI();
 
 	ImGui::End();
 }
