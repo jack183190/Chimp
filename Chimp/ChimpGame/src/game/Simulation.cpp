@@ -29,7 +29,7 @@ void Simulation::Init()
 {
 	Entities::CreateBaseEntity(
 		m_ECS,
-		m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + m_CurrentMap.Strings["Background"]),
+		m_Engine.GetResourceManager().GetSprites().Get(GAME_DATA_FOLDER + m_CurrentMap.Strings["Background"]),
 		{
 			{ m_Position.x, m_Position.y, 10.0f },
 			{ 0.0f, 0.0f, 0.0f },

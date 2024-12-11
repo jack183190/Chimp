@@ -15,7 +15,7 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	m_SimulationSize(simulationSize),
 	m_SelectionSystem(engine, ecs, simulationPosition),
 	m_MoneyManager(moneyManager),
-	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_SRC + std::string("/assets/textures/X.png")),
+	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_DATA_FOLDER + std::string("/assets/textures/X.png")),
 	m_CurrentMap(currentMap)
 {
 	m_TowerIconTextures.reserve(NUM_TOWERS);
@@ -54,7 +54,7 @@ void TowerEditor::Update()
 
 void TowerEditor::RenderUI()
 {
-	auto errorTowerOverlay = (intptr_t)m_Engine.GetResourceManager().GetTextures().Get(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png")).GetId();
+	auto errorTowerOverlay = (intptr_t)m_Engine.GetResourceManager().GetTextures().Get(GAME_DATA_FOLDER + std::string("/assets/textures/ErrorTowerOverlay.png")).GetId();
 	if (m_IsPlacing) {
 		ImGui::SetCursorPos({ 0,0 });
 		ImGui::Image(errorTowerOverlay, { m_SimulationPosition.x, m_Engine.GetWindow().GetSize().y });
@@ -241,7 +241,7 @@ void TowerEditor::UpgradeSelectedTower(UpgradeType type)
 
 bool TowerEditor::CollidesWithTrack(Chimp::Vector2i pos) const
 {
-	auto& collisions = m_Engine.GetResourceManager().GetImages().Get(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
+	auto& collisions = m_Engine.GetResourceManager().GetImages().Get(GAME_DATA_FOLDER + m_CurrentMap.Strings["Collisions"]);
 
 	return collisions.GetPixel({ collisions.Width - pos.x, collisions.Height - pos.y }).w > 0;
 }

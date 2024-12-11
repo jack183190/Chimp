@@ -8,17 +8,17 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_Engine(engine),
 	m_GameShader(gameShader),
 	m_TaskScheduler(engine.CreateTaskScheduler()),
-	m_CurrentMap(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/maps/") + map + ".yml").Data)
+	m_CurrentMap(Chimp::YAMLBlockParser::Parse(GAME_DATA_FOLDER + std::string("/maps/") + map + ".yml").Data)
 {
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
-	sprites.Depend(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
-	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
+	sprites.Depend(GAME_DATA_FOLDER + std::string("/assets/textures/ErrorTowerOverlay.png"));
+	sprites.Depend(GAME_DATA_FOLDER + std::string("/assets/textures/Dart.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
-		sprites.Depend(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
+		sprites.Depend(GAME_DATA_FOLDER + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
 	}
 
-	sprites.Depend(GAME_SRC + m_CurrentMap.Strings["Background"]);
-	m_Engine.GetResourceManager().GetImages().Depend(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
+	sprites.Depend(GAME_DATA_FOLDER + m_CurrentMap.Strings["Background"]);
+	m_Engine.GetResourceManager().GetImages().Depend(GAME_DATA_FOLDER + m_CurrentMap.Strings["Collisions"]);
 
 	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
 	m_OpponentSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager, m_CurrentMap);
@@ -35,25 +35,25 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_GameRunningTimer.Start();
 
 	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
-	GAME_SRC + std::string("/assets/music/game.wav"),
-	GAME_SRC + std::string("/assets/music/game2.wav")
+	GAME_DATA_FOLDER + std::string("/assets/music/game.wav"),
+	GAME_DATA_FOLDER + std::string("/assets/music/game2.wav")
 	} });
 
-	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/assets/sounds/bloon.yml"));
-	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/assets/sounds/place.yml"));
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_DATA_FOLDER + std::string("/assets/sounds/bloon.yml"));
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_DATA_FOLDER + std::string("/assets/sounds/place.yml"));
 }
 
 GameScene::~GameScene()
 {
 	auto& sprites = m_Engine.GetResourceManager().GetSprites();
 
-	sprites.Release(GAME_SRC + m_CurrentMap.Strings["Background"]);
-	m_Engine.GetResourceManager().GetImages().Release(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
+	sprites.Release(GAME_DATA_FOLDER + m_CurrentMap.Strings["Background"]);
+	m_Engine.GetResourceManager().GetImages().Release(GAME_DATA_FOLDER + m_CurrentMap.Strings["Collisions"]);
 
-	sprites.Release(GAME_SRC + std::string("/assets/textures/Dart.png"));
-	sprites.Release(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
+	sprites.Release(GAME_DATA_FOLDER + std::string("/assets/textures/Dart.png"));
+	sprites.Release(GAME_DATA_FOLDER + std::string("/assets/textures/ErrorTowerOverlay.png"));
 	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
-		sprites.Release(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
+		sprites.Release(GAME_DATA_FOLDER + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
 	}
 
 	UnloadModels();
@@ -134,10 +134,10 @@ void GameScene::LoadModels()
 	settings.IncludeTextureCoordinates = true;
 
 	m_Engine.GetResourceManager().GetModels().ImportSettings = settings;
-	m_Engine.GetResourceManager().GetModels().Depend(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
+	m_Engine.GetResourceManager().GetModels().Depend(std::string(GAME_DATA_FOLDER) + "/assets/models/monkey/MonkeyOBJ.obj");
 }
 
 void GameScene::UnloadModels()
 {
-	m_Engine.GetResourceManager().GetModels().Release(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
+	m_Engine.GetResourceManager().GetModels().Release(std::string(GAME_DATA_FOLDER) + "/assets/models/monkey/MonkeyOBJ.obj");
 }

@@ -7,7 +7,7 @@ static constexpr TowerType TOWER_TYPE_DART_MONKEY = 0;
 static constexpr int NUM_TOWERS = 1;
 
 static const std::array<std::string, NUM_TOWERS> TOWER_ICONS = {
-	GAME_SRC + std::string("/assets/textures/Towers/Monkey.png")
+	GAME_DATA_FOLDER + std::string("/assets/textures/Towers/Monkey.png")
 };
 static const std::array<int, NUM_TOWERS> TOWER_COSTS = {
 	100

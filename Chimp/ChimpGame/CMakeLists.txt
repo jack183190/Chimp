@@ -19,10 +19,14 @@ target_include_directories(ChimpGame PUBLIC "../src/")
 target_link_libraries(ChimpGame PRIVATE imgui)
 target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
 
-add_compile_definitions(GAME_SRC="${CMAKE_CURRENT_SOURCE_DIR}")
+add_compile_definitions(GAME_DATA_FOLDER="Data/")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ChimpGame PROPERTY CXX_STANDARD 20)
 endif()
 
-# TODO: Copy chimp shaders to exe location
+# Copy data folder into build directory
+add_custom_command(TARGET ChimpGame POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_CURRENT_SOURCE_DIR}/Data ${CMAKE_BINARY_DIR}/Data
+)
