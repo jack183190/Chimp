@@ -3,7 +3,7 @@
 namespace Entities {
 	Chimp::EntityId CreateBloonEntity(Chimp::ECS& ecs, Chimp::Engine& engine, Chimp::Vector2f position, Bloons::BloonType type)
 	{
-		auto& mesh = engine.GetResourceManager().GetSprites().Get(GAME_DATA_FOLDER + std::string("/assets/textures/") + Bloons::TexturePaths[(size_t)type]);
+		auto& mesh = engine.GetResourceManager().GetSprites().Get(GAME_DATA_FOLDER + std::string("/Assets/Textures/") + Bloons::TexturePaths[(size_t)type]);
 		Chimp::EntityId entity = CreateBaseEntity(ecs, mesh, {
 			{ position.x, position.y, 0.0f },
 			{ 0.0f, 0.0f, 0.0f },
@@ -25,6 +25,6 @@ void Bloons::DamageBloon(Chimp::ECS& ecs, Chimp::Engine& engine, Chimp::EntityId
 
 	// Update texture
 	const auto bloonType = HealthToBloonType(health->Health);
-	auto& newMesh = engine.GetResourceManager().GetSprites().Get(GAME_DATA_FOLDER + std::string("/assets/textures/") + Bloons::TexturePaths[(size_t)bloonType]);
+	auto& newMesh = engine.GetResourceManager().GetSprites().Get(GAME_DATA_FOLDER + std::string("/Assets/Textures/") + Bloons::TexturePaths[(size_t)bloonType]);
 	ecs.GetMutableComponent<Chimp::MeshComponent>(bloonEntity)->Mesh = &newMesh;
 }

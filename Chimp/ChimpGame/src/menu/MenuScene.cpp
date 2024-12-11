@@ -7,7 +7,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	std::shared_ptr<Chimp::GameShader> shader)
 	: m_Engine(engine),
 	m_ConnectionInfo({}),
-	m_MapList(Chimp::YAMLBlockParser::Parse(GAME_DATA_FOLDER + std::string("/maps/Maps.yml")).Data),
+	m_MapList(Chimp::YAMLBlockParser::Parse(GAME_DATA_FOLDER + std::string("/Maps/Maps.yml")).Data),
 	m_Settings(engine)
 {
 	m_Engine.GetWindow().SetTitle("Chimp Challenge");
@@ -15,7 +15,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	m_Engine.GetWindow().SetResizable(true);
 
 	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
-		GAME_DATA_FOLDER + std::string("/assets/music/menu.wav")
+		GAME_DATA_FOLDER + std::string("/Assets/Music/menu.wav")
 		} });
 
 	m_Engine.GetAudioManager().GetListener().SetPosition((Chimp::Vector3f)m_Engine.GetWindow().GetSize() / 2.0f);
@@ -23,7 +23,10 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	auto& renderingManager = m_Engine.GetRenderingManager();
 
 	if (shader == nullptr) {
-		m_GameShader = std::make_shared<Chimp::GameShader>(m_Engine);
+		m_GameShader = std::make_shared<Chimp::GameShader>(m_Engine, Chimp::ShaderFilePaths{
+			GAME_DATA_FOLDER + std::string("/Assets/Shaders/Default.vert"),
+			GAME_DATA_FOLDER + std::string("/Assets/Shaders/Default.frag")
+			});
 
 #ifdef DEBUG_AUTOHOST_AUTOCONNECT
 		Networking::GetServer()->Start(m_ConnectionInfo);

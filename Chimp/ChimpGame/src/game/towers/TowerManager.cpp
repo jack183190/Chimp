@@ -33,11 +33,11 @@ Chimp::EntityId TowerManager::PlaceTower(TowerType type, Chimp::Vector2f positio
 {
 	position += m_SimulationPosition;
 
-	m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_DATA_FOLDER + std::string("/assets/sounds/place.yml")).Play({ position.x, -position.y, 0.0f }, {}, Settings::SoundVolume);
+	m_Engine.GetResourceManager().GetSoundEffects().Get(GAME_DATA_FOLDER + std::string("/Assets/Sounds/Place.yml")).Play({ position.x, -position.y, 0.0f }, {}, Settings::SoundVolume);
 
 	switch (type) {
 	case TOWER_TYPE_DART_MONKEY:
-		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModels().Get(std::string(GAME_DATA_FOLDER) + "/assets/models/monkey/MonkeyOBJ.obj"), position);
+		return Entities::CreateMonkeyTower(m_ECS, m_Engine.GetResourceManager().GetModels().Get(std::string(GAME_DATA_FOLDER) + "/Assets/Models/monkey/MonkeyOBJ.obj"), position);
 	default:
 		GetLogger().Error("Unknown tower type when placing tower: " + std::to_string(type));
 		assert(false);

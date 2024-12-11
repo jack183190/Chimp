@@ -53,10 +53,10 @@ namespace Chimp {
 		// Get the mesh storage, used to store meshes/models that weren't loaded from file (see MeshStorage for more information)
 		[[nodiscard]] MeshStorage& GetMeshStorage();
 
-		// Unload all assets with 0 references
+		// Unload all Assets with 0 references
 		void UnloadUnusedResources();
 
-		// Load required assets
+		// Load required Assets
 		void LoadRequiredResources();
 
 	private:

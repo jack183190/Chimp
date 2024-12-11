@@ -19,14 +19,24 @@ target_include_directories(ChimpGame PUBLIC "../src/")
 target_link_libraries(ChimpGame PRIVATE imgui)
 target_link_libraries(ChimpGame PRIVATE flecs::flecs_static)
 
-add_compile_definitions(GAME_DATA_FOLDER="Data/")
+# In debug mode, we'll just use the data folder in the source directory
+# in release mode, we'll copy it to the build directory and use that one
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+add_compile_definitions(GAME_DATA_FOLDER="Data")
+else()
+add_compile_definitions(GAME_DATA_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/Data")
+endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ChimpGame PROPERTY CXX_STANDARD 20)
 endif()
 
 # Copy data folder into build directory
+# only copy in release
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/Data)
 add_custom_command(TARGET ChimpGame POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_CURRENT_SOURCE_DIR}/Data ${CMAKE_BINARY_DIR}/Data
 )
+endif()

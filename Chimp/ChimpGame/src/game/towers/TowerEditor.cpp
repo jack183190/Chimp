@@ -15,7 +15,7 @@ TowerEditor::TowerEditor(TowerManager& towerManager,
 	m_SimulationSize(simulationSize),
 	m_SelectionSystem(engine, ecs, simulationPosition),
 	m_MoneyManager(moneyManager),
-	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_DATA_FOLDER + std::string("/assets/textures/X.png")),
+	m_DeselectTexture(engine.GetResourceManager().GetTextures(), GAME_DATA_FOLDER + std::string("/Assets/Textures/X.png")),
 	m_CurrentMap(currentMap)
 {
 	m_TowerIconTextures.reserve(NUM_TOWERS);
@@ -54,7 +54,7 @@ void TowerEditor::Update()
 
 void TowerEditor::RenderUI()
 {
-	auto errorTowerOverlay = (intptr_t)m_Engine.GetResourceManager().GetTextures().Get(GAME_DATA_FOLDER + std::string("/assets/textures/ErrorTowerOverlay.png")).GetId();
+	auto errorTowerOverlay = (intptr_t)m_Engine.GetResourceManager().GetTextures().Get(GAME_DATA_FOLDER + std::string("/Assets/Textures/ErrorTowerOverlay.png")).GetId();
 	if (m_IsPlacing) {
 		ImGui::SetCursorPos({ 0,0 });
 		ImGui::Image(errorTowerOverlay, { m_SimulationPosition.x, m_Engine.GetWindow().GetSize().y });
