@@ -37,22 +37,24 @@ void BloonSpawner::RenderUI()
 
 #pragma region Bloon Buttons
 	bool canNotAfford = !m_MoneyManager.HasMoney(20);
-	if (canNotAfford) {
-		ImGui::BeginDisabled();
-	}
-	if (ImGui::Button("Red x5 (-$20) (+$1/8s)")) {
-		m_BloonSendsDisabledTime += 2.5f;
-		m_MoneyManager.RemoveMoney(20);
-		m_MoneyManager.AddToIncome(1.0f);
-		for (size_t i = 0; i < 5; i++) {
-			SendBloon(Bloons::BloonType::RED, i * 0.5f);
+	if (wave > 1) {
+		if (canNotAfford) {
+			ImGui::BeginDisabled();
+		}
+		if (ImGui::Button("Red x5 (-$20) (+$1/8s)")) {
+			m_BloonSendsDisabledTime += 2.5f;
+			m_MoneyManager.RemoveMoney(20);
+			m_MoneyManager.AddToIncome(1.0f);
+			for (size_t i = 0; i < 5; i++) {
+				SendBloon(Bloons::BloonType::RED, i * 0.5f);
+			}
+		}
+		if (canNotAfford) {
+			ImGui::EndDisabled();
 		}
 	}
-	if (canNotAfford) {
-		ImGui::EndDisabled();
-	}
 
-	if (wave > 1) {
+	if (wave > 2) {
 		canNotAfford = !m_MoneyManager.HasMoney(30);
 		if (canNotAfford) {
 			ImGui::BeginDisabled();
@@ -71,7 +73,7 @@ void BloonSpawner::RenderUI()
 		}
 	}
 
-	if (wave > 2) {
+	if (wave > 3) {
 		canNotAfford = !m_MoneyManager.HasMoney(50);
 		if (canNotAfford) {
 			ImGui::BeginDisabled();
@@ -128,7 +130,7 @@ void BloonSpawner::RenderUI()
 		}
 	}
 
-	if (wave > 5) {
+	if (wave > 6) {
 		canNotAfford = !m_MoneyManager.HasMoney(350);
 		if (canNotAfford) {
 			ImGui::BeginDisabled();
