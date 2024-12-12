@@ -68,11 +68,7 @@ void Simulation::RenderUI()
 
 bool Simulation::HasLost() const
 {
-	return m_BloonManager.HasLost() ||
-#ifndef NDEBUG
-		m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::L) ||
-#endif
-		!Networking::GetClient()->IsConnected();
+	return m_BloonManager.HasLost() || !Networking::GetClient()->IsConnected();
 }
 
 Chimp::WaveManager& Simulation::GetWaveManager()
