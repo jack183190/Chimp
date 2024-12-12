@@ -34,6 +34,25 @@ target_include_directories(Chimp PRIVATE "src/impl/")
 
 target_link_libraries(Chimp PRIVATE ChimpGame)
 
+# libsndfile
+add_compile_definitions(CHIMP_LIBSNDFILE=1)
+set(LIBSNDFILE_BUILD_TYPE "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	set(LIBSNDFILE_BUILD_TYPE "Release")
+endif()
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat libsndfile/libsndfile-src https://github.com/libsndfile/libsndfile.git 1.2.2
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libsndfile_build.bat ${LIBSNDFILE_BUILD_TYPE}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile
+)
+set(LIBSNDFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile")
+set(LIBSNDFILE_LIB "${LIBSNDFILE_DIR}/libsndfile-build/${LIBSNDFILE_BUILD_TYPE}/sndfile.lib")
+target_link_libraries(Chimp PRIVATE ${LIBSNDFILE_LIB})
+target_include_directories(Chimp PRIVATE ${LIBSNDFILE_DIR}/libsndfile-src/include)
+
 # GLM
 add_compile_definitions(CHIMP_GLM=1)
 execute_process(
@@ -114,25 +133,6 @@ endif()
 add_custom_command(TARGET Chimp POST_BUILD
     COMMAND ${CMAKE_COMMAND} -P ${COPY_DLL_SCRIPT}
 )
-
-# libsndfile
-add_compile_definitions(CHIMP_LIBSNDFILE=1)
-set(LIBSNDFILE_BUILD_TYPE "Debug")
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-	set(LIBSNDFILE_BUILD_TYPE "Release")
-endif()
-execute_process(
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat libsndfile/libsndfile-src https://github.com/libsndfile/libsndfile.git 1.2.2
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-execute_process(
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libsndfile_build.bat ${LIBSNDFILE_BUILD_TYPE}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile
-)
-set(LIBSNDFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile")
-set(LIBSNDFILE_LIB "${LIBSNDFILE_DIR}/libsndfile-build/${LIBSNDFILE_BUILD_TYPE}/sndfile.lib")
-target_link_libraries(Chimp PRIVATE ${LIBSNDFILE_LIB})
-target_include_directories(Chimp PRIVATE ${LIBSNDFILE_DIR}/libsndfile-src/include)
 
 # OpenGL
 add_compile_definitions(CHIMP_OPENGL=1)
