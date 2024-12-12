@@ -102,19 +102,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(openal)
 target_link_libraries(Chimp PRIVATE OpenAL::OpenAL)
 # Copy OpenAL dll into build directory, since apparantly that is necessary
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-add_custom_command(TARGET Chimp POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32d.dll
-    $<TARGET_FILE_DIR:Chimp>
-)
-else()
-add_custom_command(TARGET Chimp POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32.dll
-    $<TARGET_FILE_DIR:Chimp>
-)
+set(COPY_DLL_SCRIPT ${CMAKE_BINARY_DIR}/copy_openal_dlls.cmake)
+file(WRITE ${COPY_DLL_SCRIPT} "
+if(EXISTS \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32.dll\")
+    file(COPY \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32.dll\" DESTINATION \"${CMAKE_BINARY_DIR}\")
 endif()
+if(EXISTS \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32d.dll\")
+    file(COPY \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32d.dll\" DESTINATION \"${CMAKE_BINARY_DIR}\")
+endif()
+")
+add_custom_command(TARGET Chimp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P ${COPY_DLL_SCRIPT}
+)
 
 # libsndfile
 add_compile_definitions(CHIMP_LIBSNDFILE=1)
