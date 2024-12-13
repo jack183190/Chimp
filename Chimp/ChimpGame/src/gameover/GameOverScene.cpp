@@ -10,10 +10,12 @@ GameOverScene::GameOverScene(Chimp::Engine& engine,
 	m_GameShader(gameShader),
 	m_DidWin(didWin)
 {
+	LoadResources();
 }
 
 GameOverScene::~GameOverScene()
 {
+	UnloadResources();
 }
 
 void GameOverScene::OnInit()
@@ -43,4 +45,12 @@ void GameOverScene::OnRenderUI()
 	if (ImGui::Button("Go To Main Menu")) {
 		m_Engine.GetSceneManager().QueueSceneChange(std::make_unique<MenuScene>(m_Engine, m_GameShader));
 	}
+}
+
+void GameOverScene::LoadResources()
+{
+}
+
+void GameOverScene::UnloadResources()
+{
 }

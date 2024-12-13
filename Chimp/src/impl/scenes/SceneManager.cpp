@@ -49,13 +49,13 @@ namespace Chimp {
 			m_CurrentScene->OnDeactivate();
 			std::unique_ptr<Scene> previousScene = std::move(m_CurrentScene);
 			m_CurrentScene = std::move(m_NextScene);
+			m_CurrentScene->OnActivate(std::move(previousScene));
 			m_Engine.GetResourceManager().UnloadUnusedResources();
 			m_Engine.GetResourceManager().LoadRequiredResources();
 			if (!m_CurrentScene->m_HasInitialized) {
 				m_CurrentScene->OnInit();
 				m_CurrentScene->m_HasInitialized = true;
 			}
-			m_CurrentScene->OnActivate(std::move(previousScene));
 			return true;
 			}
 		return false;

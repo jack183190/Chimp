@@ -10,13 +10,11 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 	m_MapList(Chimp::YAMLBlockParser::Parse(GAME_DATA_FOLDER + std::string("/Maps/Maps.yml")).Data),
 	m_Settings(engine)
 {
+	LoadResources();
+
 	m_Engine.GetWindow().SetTitle("Chimp Challenge");
 	m_Engine.GetWindow().SetSize({ 1280, 720 });
 	m_Engine.GetWindow().SetResizable(true);
-
-	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
-		GAME_DATA_FOLDER + std::string("/Assets/Music/menu.wav")
-		} });
 
 	m_Engine.GetAudioManager().GetListener().SetPosition((Chimp::Vector3f)m_Engine.GetWindow().GetSize() / 2.0f);
 
@@ -43,7 +41,7 @@ MenuScene::MenuScene(Chimp::Engine& engine,
 
 MenuScene::~MenuScene()
 {
-
+	UnloadResources();
 }
 
 void MenuScene::OnInit()
@@ -52,7 +50,9 @@ void MenuScene::OnInit()
 
 void MenuScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
 {
-
+	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
+		GAME_DATA_FOLDER + std::string("/Assets/Music/menu.wav")
+		} });
 }
 
 void MenuScene::OnDeactivate()
@@ -159,4 +159,12 @@ void MenuScene::OnRenderUI()
 	m_Settings.RenderUI();
 
 	ImGui::End();
+}
+
+void MenuScene::LoadResources()
+{
+}
+
+void MenuScene::UnloadResources()
+{
 }

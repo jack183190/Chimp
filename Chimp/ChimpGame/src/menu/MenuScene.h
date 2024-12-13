@@ -20,6 +20,9 @@ protected:
 	void OnRender() override;
 	void OnRenderUI() override;
 
+	void LoadResources() override;
+	void UnloadResources() override;
+
 private:
 	Chimp::Engine& m_Engine;
 	std::shared_ptr<Chimp::GameShader> m_GameShader;

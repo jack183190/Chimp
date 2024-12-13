@@ -20,6 +20,9 @@ public:
 	void OnRender() override;
 	void OnRenderUI() override;
 
+	void LoadResources() override;
+	void UnloadResources() override;
+
 	bool ShouldExit(Chimp::Engine& engine) const override;
 
 private:
