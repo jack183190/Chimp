@@ -6,7 +6,7 @@ float Settings::SoundVolume = 1.0f;
 
 Settings::Settings(Chimp::Engine& engine)
 	: m_Engine(engine),
-	m_Settings(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/Settings.yml")).Data)
+	m_Settings(Chimp::YAMLBlockParser::Parse(GAME_DATA_FOLDER + std::string("/Settings.yml")).Data)
 {
 	INSERT_IN_MAP_IF_NOT_EXISTS(m_Settings.Floats, "MusicVolume", 0.25f);
 	m_Engine.GetMusicPlayer().SetVolumeRange(0.0f, m_Settings.Floats["MusicVolume"]);
@@ -17,7 +17,7 @@ Settings::Settings(Chimp::Engine& engine)
 
 Settings::~Settings()
 {
-	m_Engine.GetYAMLSerialiser().Write(m_Settings, GAME_SRC + std::string("/Settings.yml"));
+	m_Engine.GetYAMLSerialiser().Write(m_Settings, GAME_DATA_FOLDER + std::string("/Settings.yml"));
 }
 
 void Settings::RenderUI()

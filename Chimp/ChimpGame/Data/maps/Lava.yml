@@ -1,5 +1,5 @@
-Background: /assets/textures/LavaMapBg.png
-Collisions: /assets/textures/LavaMapC.png
+Background: /Assets/Textures/LavaMapBg.png
+Collisions: /Assets/Textures/LavaMapC.png
 Path:
 	0:
 		x: 315.0

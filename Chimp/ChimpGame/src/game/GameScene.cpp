@@ -8,55 +8,26 @@ GameScene::GameScene(Chimp::Engine& engine,
 	m_Engine(engine),
 	m_GameShader(gameShader),
 	m_TaskScheduler(engine.CreateTaskScheduler()),
-	m_CurrentMap(Chimp::YAMLBlockParser::Parse(GAME_SRC + std::string("/maps/") + map + ".yml").Data)
+	m_CurrentMap(Chimp::YAMLBlockParser::Parse(GAME_DATA_FOLDER + std::string("/Maps/") + map + ".yml").Data)
 {
-	auto& sprites = m_Engine.GetResourceManager().GetSprites();
-	sprites.Depend(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
-	sprites.Depend(GAME_SRC + std::string("/assets/textures/Dart.png"));
-	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
-		sprites.Depend(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
-	}
-
-	sprites.Depend(GAME_SRC + m_CurrentMap.Strings["Background"]);
-	m_Engine.GetResourceManager().GetImages().Depend(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
-
 	const auto simulationSize = Chimp::ComponentMultiply(m_Engine.GetWindow().GetSize(), { 0.5, 1.0 });
 	m_OpponentSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ 0.0f, 0.0f }, simulationSize, false, m_MoneyManager, m_CurrentMap);
 	m_PlayerSimulation = std::make_unique<Simulation>(engine, m_GameShader, Chimp::Vector2f{ m_Engine.GetWindow().GetSize().x / 2.0f, 0.0f }, simulationSize, true, m_MoneyManager, m_CurrentMap);
 
-	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager());
+	m_WaveStartHandler = std::make_unique<WaveStartHandler>(m_PlayerSimulation->GetWaveManager(), m_OpponentSimulation->GetWaveManager(), *m_TaskScheduler);
 
 	m_MatchWinLoseHandler = std::make_unique<MatchWinLoseHandler>(m_Engine, *m_PlayerSimulation, m_GameShader);
 
-	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager, *m_TaskScheduler);
-
-	LoadModels();
+	m_BloonSpawner = std::make_unique<BloonSpawner>(m_Engine, m_OpponentSimulation->GetBloonManager(), m_MoneyManager, *m_TaskScheduler, m_PlayerSimulation->GetWaveManager());
 
 	m_GameRunningTimer.Start();
 
-	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
-	GAME_SRC + std::string("/assets/music/game.wav"),
-	GAME_SRC + std::string("/assets/music/game2.wav")
-	} });
-
-	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/assets/sounds/bloon.yml"));
-	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_SRC + std::string("/assets/sounds/place.yml"));
+	LoadResources();
 }
 
 GameScene::~GameScene()
 {
-	auto& sprites = m_Engine.GetResourceManager().GetSprites();
-
-	sprites.Release(GAME_SRC + m_CurrentMap.Strings["Background"]);
-	m_Engine.GetResourceManager().GetImages().Release(GAME_SRC + m_CurrentMap.Strings["Collisions"]);
-
-	sprites.Release(GAME_SRC + std::string("/assets/textures/Dart.png"));
-	sprites.Release(GAME_SRC + std::string("/assets/textures/ErrorTowerOverlay.png"));
-	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
-		sprites.Release(GAME_SRC + std::string("/assets/textures/") + Bloons::TexturePaths[i]);
-	}
-
-	UnloadModels();
+	UnloadResources();
 }
 
 void GameScene::OnInit()
@@ -67,6 +38,10 @@ void GameScene::OnInit()
 
 void GameScene::OnActivate(std::unique_ptr<Chimp::Scene> previousScene)
 {
+	m_Engine.GetMusicPlayer().SwitchMusic(Chimp::MusicTracksContainer{ {
+	GAME_DATA_FOLDER + std::string("/Assets/Music/game.wav"),
+	GAME_DATA_FOLDER + std::string("/Assets/Music/game2.wav")
+	} });
 }
 
 void GameScene::OnDeactivate()
@@ -110,7 +85,7 @@ void GameScene::OnRenderUI()
 
 	ImGui::SetWindowFontScale(2.5f);
 	ImGui::SetCursorPosY(100);
-	m_Engine.GetImGuiHelper().CenteredTextHorizontally(std::format("Wave: {}", m_PlayerSimulation->GetWaveManager().GetWave()));
+	m_Engine.GetImGuiHelper().CenteredTextHorizontally(std::format("Wave: {} / {}", Chimp::Min(m_PlayerSimulation->GetWaveManager().GetWave(), m_PlayerSimulation->GetWaveManager().NumWaves()), m_PlayerSimulation->GetWaveManager().NumWaves()));
 	ImGui::SetWindowFontScale(2.0f);
 	m_Engine.GetImGuiHelper().CenteredTextHorizontally(m_Engine.GetTimeManager().FormatTime(m_GameRunningTimer.GetSecondsElapsed()));
 	m_Engine.GetImGuiHelper().CenteredTextHorizontally(std::format("${} (+${}/{}s)", m_MoneyManager.GetMoney(), m_MoneyManager.GetIncome(), MoneyManager::IncomeInterval));
@@ -120,24 +95,49 @@ void GameScene::OnRenderUI()
 	ImGui::End();
 }
 
-bool GameScene::ShouldExit(Chimp::Engine& engine) const
+void GameScene::LoadResources()
 {
-	return m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::ESCAPE)
-		|| Scene::ShouldExit(engine);
-}
+	auto& sprites = m_Engine.GetResourceManager().GetSprites();
+	sprites.Depend(GAME_DATA_FOLDER + std::string("/Assets/Textures/ErrorTowerOverlay.png"));
+	sprites.Depend(GAME_DATA_FOLDER + std::string("/Assets/Textures/Dart.png"));
+	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
+		sprites.Depend(GAME_DATA_FOLDER + std::string("/Assets/Textures/") + Bloons::TexturePaths[i]);
+	}
 
-void GameScene::LoadModels()
-{
+	sprites.Depend(GAME_DATA_FOLDER + m_CurrentMap.Strings["Background"]);
+	m_Engine.GetResourceManager().GetImages().Depend(GAME_DATA_FOLDER + m_CurrentMap.Strings["Collisions"]);
+
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_DATA_FOLDER + std::string("/Assets/Sounds/Bloon.yml"));
+	m_Engine.GetResourceManager().GetSoundEffects().Depend(GAME_DATA_FOLDER + std::string("/Assets/Sounds/Place.yml"));
+
+	// Models
 	Chimp::IModelImporter::Settings settings;
 	settings.FlipUVs = false;
 	settings.IncludeNormals = false;
 	settings.IncludeTextureCoordinates = true;
 
 	m_Engine.GetResourceManager().GetModels().ImportSettings = settings;
-	m_Engine.GetResourceManager().GetModels().Depend(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
+	m_Engine.GetResourceManager().GetModels().Depend(std::string(GAME_DATA_FOLDER) + "/Assets/Models/monkey/MonkeyOBJ.obj");
 }
 
-void GameScene::UnloadModels()
+void GameScene::UnloadResources()
 {
-	m_Engine.GetResourceManager().GetModels().Release(std::string(GAME_SRC) + "/assets/models/monkey/MonkeyOBJ.obj");
+	auto& sprites = m_Engine.GetResourceManager().GetSprites();
+
+	sprites.Release(GAME_DATA_FOLDER + m_CurrentMap.Strings["Background"]);
+	m_Engine.GetResourceManager().GetImages().Release(GAME_DATA_FOLDER + m_CurrentMap.Strings["Collisions"]);
+
+	sprites.Release(GAME_DATA_FOLDER + std::string("/Assets/Textures/Dart.png"));
+	sprites.Release(GAME_DATA_FOLDER + std::string("/Assets/Textures/ErrorTowerOverlay.png"));
+	for (size_t i = 0; i < Bloons::NUM_BLOON_TYPES; ++i) {
+		sprites.Release(GAME_DATA_FOLDER + std::string("/Assets/Textures/") + Bloons::TexturePaths[i]);
+	}
+
+	m_Engine.GetResourceManager().GetModels().Release(std::string(GAME_DATA_FOLDER) + "/Assets/Models/monkey/MonkeyOBJ.obj");
+}
+
+bool GameScene::ShouldExit(Chimp::Engine& engine) const
+{
+	return m_Engine.GetWindow().GetInputManager().IsKeyDown(Chimp::Keyboard::ESCAPE)
+		|| Scene::ShouldExit(engine);
 }

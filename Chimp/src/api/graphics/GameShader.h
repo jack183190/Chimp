@@ -11,10 +11,7 @@ namespace Chimp {
 	class GameShader {
 	public:
 		GameShader(Engine& engine,
-			const ShaderFilePaths& shaderFilePaths = ShaderFilePaths{
-				(std::filesystem::current_path() / "shaders/default.vert").string(),
-				(std::filesystem::current_path() / "shaders/default.frag").string()
-			},
+			const ShaderFilePaths& shaderFilePaths,
 			const std::string& cameraBufferName = "Camera",
 			const std::string& modelBufferName = "Model");
 		virtual ~GameShader();

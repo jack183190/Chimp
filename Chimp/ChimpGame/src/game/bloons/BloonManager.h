@@ -27,9 +27,11 @@ private:
 	Chimp::Vector2f m_SimulationPosition;
 	static constexpr  int StartingLives =
 #ifdef DEBUG_LOTS_OF_LIVES
-		10000;
+		100000;
 #else
 		100;
 #endif
 	int m_Lives = StartingLives;
+	std::array<float, Bloons::NUM_BLOON_TYPES> m_ConstantSpawningTimes;
+	Chimp::Timer m_SimTimer;
 };

@@ -161,7 +161,7 @@ namespace Chimp {
 
 	std::array<Vector3f, 3> GetForwardUpRightVectors(const Vector3f yawPitchRoll)
 	{
-		// https://chatgpt.com/c/670ba852-a8f4-8003-844d-82eb84a0a3ec
+		// https://stackoverflow.com/questions/74672991/convert-yaw-pitch-roll-from-gyro-to-forward-up-vector-for-openal-listener-or
 		// Extract yaw, pitch, and roll
 		const float yaw = yawPitchRoll.x;
 		const float pitch = yawPitchRoll.y;

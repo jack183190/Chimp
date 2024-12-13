@@ -6,7 +6,8 @@
 class WaveStartHandler {
 public:
 	WaveStartHandler(Chimp::WaveManager& playerWaveManager,
-		Chimp::WaveManager& opponentWaveManager);
+		Chimp::WaveManager& opponentWaveManager,
+		Chimp::TaskScheduler& scheduler);
 	
 	void Update();
 

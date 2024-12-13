@@ -27,6 +27,7 @@ namespace Chimp {
 			m_Device = alcOpenDevice(nullptr);
 			if (!m_Device) {
 				Loggers::Audio().Error("Failed to open audio device!");
+				Loggers::Audio().Error("Your device may be incapable of playing audio (try plugging some headphones in and running the application again!)");
 				return;
 			}
 

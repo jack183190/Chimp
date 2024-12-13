@@ -9,23 +9,29 @@ BloonManager::BloonManager(
 	m_ECS(ecs),
 	m_Engine(engine),
 	m_Path(Chimp::Path<Chimp::Vector2f>::Deserialise(currentMap.Blocks["Path"], simulationPosition)),
-	m_SimulationPosition(simulationPosition)
+	m_SimulationPosition(simulationPosition),
+	m_ConstantSpawningTimes({ 0.0f })
 {
-
+	m_SimTimer.Start();
 }
 
 void BloonManager::Update()
 {
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::R)) {
-		SpawnBloon(Bloons::BloonType::RED);
-	}
-
-	if (m_Engine.GetWindow().GetInputManager().IsKeyPressed(Chimp::Keyboard::B)) {
-		m_Lives -= 25;
-	}
-
 	float dt = m_Engine.GetTimeManager().GetDeltaTime();
 	HandleMovement(dt);
+
+	Bloons::BloonType type = Bloons::BloonType::RED;
+	for (auto& time : m_ConstantSpawningTimes) {
+		if (m_SimTimer.GetSecondsElapsed() < 90 + 60 * ((size_t)type)) break;
+
+		time += dt;
+		if (time >= 1.0f + 2.0f * (float)(type == Bloons::BloonType::RAINBOW)) {
+			SpawnBloon(type);
+			time = 0.0f;
+		}
+
+		type = (Bloons::BloonType)((size_t)type + 1);
+	}
 }
 
 void BloonManager::RenderUI()

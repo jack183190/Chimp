@@ -34,6 +34,25 @@ target_include_directories(Chimp PRIVATE "src/impl/")
 
 target_link_libraries(Chimp PRIVATE ChimpGame)
 
+# libsndfile
+add_compile_definitions(CHIMP_LIBSNDFILE=1)
+set(LIBSNDFILE_BUILD_TYPE "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	set(LIBSNDFILE_BUILD_TYPE "Release")
+endif()
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat libsndfile/libsndfile-src https://github.com/libsndfile/libsndfile.git 1.2.2
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+execute_process(
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libsndfile_build.bat ${LIBSNDFILE_BUILD_TYPE}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile
+)
+set(LIBSNDFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile")
+set(LIBSNDFILE_LIB "${LIBSNDFILE_DIR}/libsndfile-build/${LIBSNDFILE_BUILD_TYPE}/sndfile.lib")
+target_link_libraries(Chimp PRIVATE ${LIBSNDFILE_LIB})
+target_include_directories(Chimp PRIVATE ${LIBSNDFILE_DIR}/libsndfile-src/include)
+
 # GLM
 add_compile_definitions(CHIMP_GLM=1)
 execute_process(
@@ -102,30 +121,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(openal)
 target_link_libraries(Chimp PRIVATE OpenAL::OpenAL)
 # Copy OpenAL dll into build directory, since apparantly that is necessary
-add_custom_command(TARGET Chimp POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32d.dll
-    $<TARGET_FILE_DIR:Chimp>
-)
-
-# libsndfile
-add_compile_definitions(CHIMP_LIBSNDFILE=1)
-set(LIBSNDFILE_BUILD_TYPE "Debug")
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-	set(LIBSNDFILE_BUILD_TYPE "Release")
+set(COPY_DLL_SCRIPT ${CMAKE_BINARY_DIR}/copy_openal_dlls.cmake)
+file(WRITE ${COPY_DLL_SCRIPT} "
+if(EXISTS \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32.dll\")
+    file(COPY \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32.dll\" DESTINATION \"${CMAKE_BINARY_DIR}\")
 endif()
-execute_process(
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clone_lib.bat libsndfile/libsndfile-src https://github.com/libsndfile/libsndfile.git 1.2.2
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+if(EXISTS \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32d.dll\")
+    file(COPY \"${CMAKE_BINARY_DIR}/_deps/openal-build/OpenAL32d.dll\" DESTINATION \"${CMAKE_BINARY_DIR}\")
+endif()
+")
+add_custom_command(TARGET Chimp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -P ${COPY_DLL_SCRIPT}
 )
-execute_process(
-	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libsndfile_build.bat ${LIBSNDFILE_BUILD_TYPE}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile
-)
-set(LIBSNDFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/libsndfile")
-set(LIBSNDFILE_LIB "${LIBSNDFILE_DIR}/libsndfile-build/${LIBSNDFILE_BUILD_TYPE}/sndfile.lib")
-target_link_libraries(Chimp PRIVATE ${LIBSNDFILE_LIB})
-target_include_directories(Chimp PRIVATE ${LIBSNDFILE_DIR}/libsndfile-src/include)
 
 # OpenGL
 add_compile_definitions(CHIMP_OPENGL=1)

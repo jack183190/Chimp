@@ -68,18 +68,18 @@ namespace Chimp {
 		[[nodiscard]] std::unique_ptr<IImageLoader> CreateImageLoader() const;
 
 	private:
-		ResourceManager m_ResourceManager;
-		TimeManager m_TimeManager;
-		UpdateSubscriber m_UpdateSubscriber;
-		std::unique_ptr<IWindow> m_Window;
+		std::unique_ptr<AudioManager> m_AudioManager;
+		std::unique_ptr<IWindow> m_Window; // Must be above rendering manager
 		std::unique_ptr<IImageLoader> m_ImageLoader; // must be above rendering manager
 		std::unique_ptr<IRenderingManager> m_RenderingManager;
+		MusicPlayer m_MusicPlayer;
+		ResourceManager m_ResourceManager; // Must be below stuff that this uses (e.g Audio, Rendering)
+		TimeManager m_TimeManager;
+		UpdateSubscriber m_UpdateSubscriber;
 		std::unique_ptr<SceneManager> m_SceneManager; // initialized in MainLoop
 		ThreadPool m_ThreadPool;
 		ImGuiHelper m_ImGuiHelper;
 		YAMLSerialiser m_YAMLSerialiser;
 		Random m_Random;
-		std::unique_ptr<AudioManager> m_AudioManager;
-		MusicPlayer m_MusicPlayer;
 	};
 }

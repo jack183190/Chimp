@@ -33,7 +33,7 @@ void TowerAttackSystem::Update()
 			tower.SecondsUntilNextAttack = tower.AttackInterval;
 			Entities::CreateProjectile(
 				m_ECS,
-				m_Engine.GetResourceManager().GetSprites().Get(GAME_SRC + std::string("/assets/textures/Dart.png")),
+				m_Engine.GetResourceManager().GetSprites().Get(GAME_DATA_FOLDER + std::string("/Assets/Textures/Dart.png")),
 				Chimp::Vector2f(transform.GetTranslation()),
 				Chimp::VectorNormalized(direction) * DEBUG_PROJECTILE_SPEED_MULTIPLIER,
 				upgrades.GetDamage(tower.AttackDamage),
