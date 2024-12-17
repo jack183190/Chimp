@@ -11,7 +11,5 @@ Student Number: 2202960
 
 [COMPILING.md](COMPILING.md) for information on Chimp's build system.
 
-[REFERENCES.md](REFERENCES.md) for a list of references.
-
 ## Bugs
 With default camera and image loading settings, uv coordinates must be multiplied by (-2, -2) in the fragment shader.
